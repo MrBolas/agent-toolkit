@@ -6,39 +6,21 @@
  * Supports multiple collections for different services/contexts
  */
 
-import { ChromaClient } from "chromadb";
-import { DefaultEmbeddingFunction } from "@chroma-core/default-embed";
 import { log, logSuccess, logError, logInfo } from "./logger.js";
 
 const CHROMA_URL = process.env.CHROMA_URL || "http://localhost:8000";
+const API_VERSION = "v1";
 const DEFAULT_COLLECTION = "repo_memory";
 
-const client = new ChromaClient({
-  host: "localhost",
-  port: 8000,
-});
+logInfo("ChromaDB server skill initialized", { url: CHROMA_URL });
 
-const embedder = new DefaultEmbeddingFunction();
 
-logInfo("ChromaDB skill initialized", { url: CHROMA_URL });
-
-async function getOrCreateCollection(collectionName = DEFAULT_COLLECTION) {
-  try {
-    return await client.getOrCreateCollection({
-      name: collectionName,
-      metadata: { description: `Memory for ${collectionName}` },
-      embeddingFunction: embedder,
-    });
-  } catch (error) {
-    throw new Error(
-      `Failed to get/create collection '${collectionName}': ${error.message}`,
-    );
-  }
-}
 
 async function listCollections() {
   try {
-    const collections = await client.listCollections();
+    const response = await fetch(`${CHROMA_URL}/api/v1/collections`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const collections = await response.json();
     return collections.map((c) => ({ name: c.name, metadata: c.metadata }));
   } catch (error) {
     throw new Error(`Failed to list collections: ${error.message}`);
@@ -47,7 +29,10 @@ async function listCollections() {
 
 async function deleteCollection(collectionName) {
   try {
-    await client.deleteCollection({ name: collectionName });
+    const response = await fetch(`${CHROMA_URL}/api/v1/collections/${collectionName}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return { success: true, collection: collectionName };
   } catch (error) {
     throw new Error(
@@ -57,15 +42,28 @@ async function deleteCollection(collectionName) {
 }
 
 async function addMemory(collectionName, id, content, metadata = {}) {
-  const collection = await getOrCreateCollection(collectionName);
+  try {
+    // Ensure collection exists
+    await fetch(`${CHROMA_URL}/api/v1/collections`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: collectionName }),
+    });
 
-  await collection.add({
-    ids: [id],
-    documents: [content],
-    metadatas: [metadata],
-  });
-
-  return { success: true, collection: collectionName, id };
+    const response = await fetch(`${CHROMA_URL}/api/v1/collections/${collectionName}/add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ids: [id],
+        documents: [content],
+        metadatas: [metadata],
+      }),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return { success: true, collection: collectionName, id };
+  } catch (error) {
+    throw new Error(`Failed to add memory: ${error.message}`);
+  }
 }
 
 async function searchMemory(
@@ -74,63 +72,87 @@ async function searchMemory(
   nResults = 5,
   filter = null,
 ) {
-  const collection = await getOrCreateCollection(collectionName);
+  try {
+    const body = {
+      query_texts: [query],
+      n_results: nResults,
+    };
+    if (filter) body.where = filter;
 
-  const queryParams = {
-    queryTexts: [query],
-    nResults: nResults,
-  };
-
-  if (filter) {
-    queryParams.where = filter;
+    const response = await fetch(`${CHROMA_URL}/api/v1/collections/${collectionName}/query`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    throw new Error(`Failed to search memory: ${error.message}`);
   }
-
-  const results = await collection.query(queryParams);
-
-  return results;
 }
 
 async function updateMemory(collectionName, id, content, metadata = {}) {
-  const collection = await getOrCreateCollection(collectionName);
-
-  await collection.update({
-    ids: [id],
-    documents: [content],
-    metadatas: [metadata],
-  });
-
-  return { success: true, collection: collectionName, id };
+  try {
+    const response = await fetch(`${CHROMA_URL}/api/v1/collections/${collectionName}/update`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ids: [id],
+        documents: [content],
+        metadatas: [metadata],
+      }),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return { success: true, collection: collectionName, id };
+  } catch (error) {
+    throw new Error(`Failed to update memory: ${error.message}`);
+  }
 }
 
 async function deleteMemory(collectionName, id) {
-  const collection = await getOrCreateCollection(collectionName);
-
-  await collection.delete({
-    ids: [id],
-  });
-
-  return { success: true, collection: collectionName, id };
+  try {
+    const response = await fetch(`${CHROMA_URL}/api/v1/collections/${collectionName}/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ids: [id],
+      }),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return { success: true, collection: collectionName, id };
+  } catch (error) {
+    throw new Error(`Failed to delete memory: ${error.message}`);
+  }
 }
 
 async function listMemories(collectionName, limit = 100) {
-  const collection = await getOrCreateCollection(collectionName);
-
-  const results = await collection.get({
-    limit: limit,
-  });
-
-  return results;
+  try {
+    const response = await fetch(`${CHROMA_URL}/api/v1/collections/${collectionName}/get?limit=${limit}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    throw new Error(`Failed to list memories: ${error.message}`);
+  }
 }
 
 async function getStats(collectionName) {
-  const collection = await getOrCreateCollection(collectionName);
-  const count = await collection.count();
+  try {
+    const countResponse = await fetch(`${CHROMA_URL}/api/v1/collections/${collectionName}/count`);
+    if (!countResponse.ok) throw new Error(`HTTP ${countResponse.status}`);
+    const count = await countResponse.json();
 
-  return {
-    name: collection.name,
-    count: count,
-    metadata: collection.metadata,
-  };
+    const collResponse = await fetch(`${CHROMA_URL}/api/v1/collections/${collectionName}`);
+    if (!collResponse.ok) throw new Error(`HTTP ${collResponse.status}`);
+    const collection = await collResponse.json();
+
+    return {
+      name: collection.name,
+      count: count,
+      metadata: collection.metadata,
+    };
+  } catch (error) {
+    throw new Error(`Failed to get stats: ${error.message}`);
+  }
 }
 
 // CLI Interface

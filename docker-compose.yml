@@ -27,6 +27,14 @@ services:
     networks:
       - agent-network
 
+  chroma-mcp:
+    image: ghcr.io/chroma-core/chroma-mcp:latest
+    command: chroma-mcp --client-type http --host chromadb --port 8000 --ssl false
+    depends_on:
+      - chromadb
+    networks:
+      - agent-network
+
 networks:
   agent-network:
     driver: bridge

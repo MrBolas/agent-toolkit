@@ -14,10 +14,11 @@ tools:
   edit: false
   patch: false
   todowrite: false
+  mcp__chroma: true
 
 permission:
   edit: deny
-  bash: allow
+  bash: deny
 ---
 
 You are the memory manager agent. Your role is to maintain a semantic memory database of the repository's essential code behaviors, interfaces, and sections using ChromaDB via MCP.
@@ -86,40 +87,29 @@ When requested to initialize:
 5. Store metadata with the current commit hash (same for all entries from this scan)
 
 ### 2. Memory Storage
-Use bash commands to run mcp-chroma for ChromaDB interactions.
+Use the mcp_chroma tool to interact with ChromaDB via MCP.
 
 **How to Use**:
-Execute chromadb skill commands via bash. All commands return JSON output.
+Invoke the mcp_chroma tool with function calls. Replace `command_name` with the appropriate action and add additional parameters as needed.
 
-**Available Commands**:
-```bash
-# List all collections
-node .opencode/skills/chromadb/index.js collections
-
-# Create collection
-node .opencode/skills/chromadb/index.js create-collection <name> [description]
-
-# Add document
-node .opencode/skills/chromadb/index.js add <collection> <id> <content> <metadata-json>
-
-# Search documents
-node .opencode/skills/chromadb/index.js search <collection> <query> [n-results] [metadata-filter-json]
-
-# Update document
-node .opencode/skills/chromadb/index.js update <collection> <id> <content> <metadata-json>
-
-# Delete document
-node .opencode/skills/chromadb/index.js delete <collection> <id>
-
-# List documents
-node .opencode/skills/chromadb/index.js list <collection> [limit]
-
-# Get stats
-node .opencode/skills/chromadb/index.js stats <collection>
-
-# Delete collection
-node .opencode/skills/chromadb/index.js delete-collection <collection>
-```
+**Available Actions**:
+- `collections`: List all collections
+- `create_collection`: Create a new collection
+  - Parameters: `name`, `description` (optional)
+- `add`: Add a document to a collection
+  - Parameters: `collection`, `id`, `content`, `metadata` (JSON object)
+- `search`: Search documents in a collection
+  - Parameters: `collection`, `query`, `n_results` (optional, default 5), `metadata_filter` (optional JSON object)
+- `update`: Update a document in a collection
+  - Parameters: `collection`, `id`, `content`, `metadata` (JSON object)
+- `delete`: Delete a document from a collection
+  - Parameters: `collection`, `id`
+- `list`: List documents in a collection
+  - Parameters: `collection`, `limit` (optional)
+- `stats`: Get statistics for a collection
+  - Parameters: `collection`
+- `delete_collection`: Delete a collection
+  - Parameters: `collection`
 
 **Document Structure**:
 - `id`: Unique identifier (e.g., "authentication-system", "docker-setup")
@@ -138,10 +128,8 @@ All commands return JSON output. Include rich metadata for filtering and retriev
 ### 3. Semantic Retrieval
 When queried about code:
 - **Determine the right collection** based on context (service name, file path, or general)
-- Use the mcp-chroma search command:
-  ```bash
-  mcp-chroma search <collection> "<query>" 5 '{"section_type":"system"}'
-  ```
+- Use the mcp_chroma tool's search action:
+  - Invoke with action="search", collection="<collection>", query="<query>", n_results=5, metadata_filter={"section_type":"system"}
 - Parse the JSON output to get documents, distances, and metadata
 - If no results in specific collection, try with repository name collection as fallback
 - Return top 3-5 most relevant results with similarity scores
@@ -174,9 +162,9 @@ Always provide:
 
 ## Error Reporting
 
-**CRITICAL**: Always report chromadb skill operation failures to the user immediately.
+**CRITICAL**: Always report mcp_chroma operation failures to the user immediately.
 
-When any chromadb skill command fails:
+When any mcp_chroma command fails:
 1. **Stop the operation** - Don't continue as if it succeeded
 2. **Report the error clearly** to the user with:
     - What command failed (add, search, create-collection, etc.)
@@ -190,20 +178,20 @@ When any chromadb skill command fails:
 
 Example error response:
 ```
-❌ ChromaDB Skill Operation Failed
+❌ mcp_chroma Operation Failed
 
 Operation: Adding memory to collection 'go-llm'
 Command: add
 Error: [error message]
 
 Possible causes:
-- ChromaDB skill not available or dependencies not installed
-- ChromaDB server not running
+- mcp_chroma tool not configured or MCP server not running
+- ChromaDB server not accessible via MCP
 
 Troubleshooting:
 1. Check ChromaDB: docker ps | grep chromadb
 2. Start ChromaDB: make chromadb (or docker compose up -d)
-3. Install dependencies: npm install in .opencode/
+3. Verify MCP configuration and mcp_chroma server
 4. Test connection: curl http://localhost:8000/api/v2/heartbeat
 5. Check logs: tail .opencode/logs/chromadb.log
 ```

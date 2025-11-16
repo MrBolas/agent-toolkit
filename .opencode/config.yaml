@@ -1,23 +1,27 @@
 default_agent: orchestrator
 
-mcp_servers:
-  chroma:
-    command: docker
-    args:
-      [
-        "run",
-        "-i",
-        "--rm",
-        "mcp/chroma",
-        "--client-type",
-        "http",
-        --host",
-        "localohost",
-        "--port",
-        "8000",
-      ]
-
 models:
   gemini:
     api_key: "{env:GEMINI_API_KEY}"
     model: "gemini-1.5-flash"
+
+mcp:
+  chroma:
+    type: local
+    command: docker
+    args:
+      [
+        "run",
+        "--rm",
+        "-i",
+        "ghcr.io/chroma-core/chroma-mcp:latest",
+        "chroma-mcp",
+        "--client-type",
+        "http",
+        "--host",
+        "localhost",
+        "--port",
+        "8000",
+        "--ssl",
+        "false",
+      ]

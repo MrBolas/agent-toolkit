@@ -1,8 +1,6 @@
 {
   "type": "module",
   "dependencies": {
-    "@chroma-core/default-embed": "^0.1.9",
-    "@opencode-ai/plugin": "1.0.51",
-    "chromadb": "^3.1.4"
+    "@opencode-ai/plugin": "1.0.51"
   }
 }
