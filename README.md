@@ -4,15 +4,20 @@ This repository provides a blueprint for configuring the OpenCode Agent Toolkit.
 
 ## Setup
 
-1. Clone this repository:
+This repository serves as a blueprint/template for OpenCode agent configuration. Use it to bootstrap new projects.
+
+### Using as a Template
+
+1. **For new projects**: Copy the `.opencode` folder to your project root:
    ```bash
-   git clone <repository-url>
-   cd agent-toolkit
+   cp -r /path/to/agent-toolkit/.opencode /path/to/your-project/
+   cd /path/to/your-project
+   npm install  # Install dependencies in .opencode/
    ```
 
-2. Copy the `.opencode` folder to your system-wide OpenCode configuration directory (only copying files that don't already exist):
+2. **Optional - Install globally** (for reference or fallback):
    ```bash
-   make opencode
+   make opencode  # Copies to ~/.config/opencode/
    ```
 
 3. Set the `GEMINI_API_KEY` environment variable with your API key:
@@ -20,7 +25,17 @@ This repository provides a blueprint for configuring the OpenCode Agent Toolkit.
    export GEMINI_API_KEY=your_api_key_here
    ```
 
-    Add this to your shell profile (e.g., `~/.bashrc` or `~/.zshrc`) for persistence.
+   Add this to your shell profile (e.g., `~/.bashrc` or `~/.zshrc`) for persistence.
+
+### Project-Local Configuration
+
+Each project should have its own `.opencode/` directory with:
+- Agent configurations
+- Skills (like chromadb)
+- Dependencies (node_modules)
+- Logs
+
+Agents will always use the **project-local** `.opencode/` directory in the repository they're working on.
 
 ## Agents
 
@@ -55,39 +70,26 @@ Repository memory is managed by the **memory_manager** agent using ChromaDB with
 3. **Initialize repository memory**:
    Ask the orchestrator: `@memory_manager scan and initialize the repository memory`
 
-### ChromaDB Skill Commands
+### ChromaDB OpenCode Skill
 
-The memory_manager uses `.opencode/skills/chromadb.js` to interact with ChromaDB. **Collections are automatically created** when first used, allowing the agent to organize memories by service or context.
+The memory_manager uses a custom **OpenCode skill** to interact with ChromaDB. This provides seamless integration using the chromadb npm package without dependency conflicts.
 
-```bash
-# List all collections
-node .opencode/skills/chromadb.js collections
+**How it works**:
+- The chromadb skill is located at `.opencode/skills/chromadb/` (project-local)
+- The memory_manager invokes the `skills_chromadb` tool to access it
+- The skill provides commands for all ChromaDB operations
+- Collections are automatically created when first used
+- All operations are logged to `.opencode/logs/chromadb.log`
 
-# Add memory (creates collection if needed)
-node .opencode/skills/chromadb.js add <collection> <id> <content> <metadata_json>
-
-# Search memories in a collection
-node .opencode/skills/chromadb.js search <collection> "<query>" [n_results]
-
-# Update memory
-node .opencode/skills/chromadb.js update <collection> <id> <content> <metadata_json>
-
-# Delete memory
-node .opencode/skills/chromadb.js delete <collection> <id>
-
-# List all memories in a collection
-node .opencode/skills/chromadb.js list <collection> [limit]
-
-# Get collection stats
-node .opencode/skills/chromadb.js stats <collection>
-
-# Delete entire collection
-node .opencode/skills/chromadb.js delete-collection <collection>
-```
+**Available Commands** (used by memory_manager):
+- Collection management: `collections`, `create-collection`, `delete-collection`
+- Document operations: `add`, `update`, `delete`, `list`
+- Search: `search` (semantic vector search)
+- Stats: `stats` (collection statistics)
 
 **Collection Strategy**: The agent intelligently chooses collections based on context:
+- Repository name for general code (e.g., `agent-toolkit`, `my-api`)
 - `service-<name>` for service-specific code (e.g., `service-bananas`, `service-auth`)
-- `repo_memory` for general repository knowledge
 - Custom collections for specific contexts as needed
 
 ### Memory Structure

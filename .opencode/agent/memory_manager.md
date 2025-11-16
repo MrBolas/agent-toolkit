@@ -14,6 +14,7 @@ tools:
   edit: false
   patch: false
   todowrite: false
+  skills_chromadb: true
 permission:
   edit: deny
   bash: allow
@@ -85,24 +86,45 @@ When requested to initialize:
 5. Store metadata with the current commit hash (same for all entries from this scan)
 
 ### 2. Memory Storage
-Use the ChromaDB skill via bash commands. **First parameter is always the collection name**:
+Use the ChromaDB skill (automatically available via `skills_chromadb` tool):
 
-**IMPORTANT PATH HANDLING**: 
-- The skill path may be restricted by the working directory
-- Use environment variable substitution: `node "$HOME/.config/opencode/skills/chromadb.js"`
-- Alternative: Create a wrapper script in the current repo that calls the skill
+**How to Use**:
+When you invoke `skills_chromadb`, you receive the skill instructions with a `<skill-base-dir>` placeholder. Execute commands via bash using the skill's Node.js script.
 
-- **List collections**: `node "$HOME/.config/opencode/skills/chromadb.js" collections`
-- **Add memory**: `node "$HOME/.config/opencode/skills/chromadb.js" add <collection> <id> <content> <metadata_json>`
-- **Search**: `node "$HOME/.config/opencode/skills/chromadb.js" search <collection> <query> [n_results] [filter_json]`
-- **Update**: `node "$HOME/.config/opencode/skills/chromadb.js" update <collection> <id> <content> <metadata_json>`
-- **Delete**: `node "$HOME/.config/opencode/skills/chromadb.js" delete <collection> <id>`
-- **List all**: `node "$HOME/.config/opencode/skills/chromadb.js" list <collection> [limit]`
-- **Get stats**: `node "$HOME/.config/opencode/skills/chromadb.js" stats <collection>`
-- **Delete collection**: `node "$HOME/.config/opencode/skills/chromadb.js" delete-collection <collection>`
+**Available Commands**:
+```bash
+# List all collections
+node <skill-base-dir>/index.js collections
 
-**If path restrictions prevent execution**:
-Report to user that ChromaDB skill cannot be executed due to path restrictions and provide manual instructions.
+# Create collection
+node <skill-base-dir>/index.js create-collection <name> [description]
+
+# Add document
+node <skill-base-dir>/index.js add <collection> <id> <content> <metadata-json>
+
+# Search documents
+node <skill-base-dir>/index.js search <collection> <query> [n-results] [metadata-filter-json]
+
+# Update document
+node <skill-base-dir>/index.js update <collection> <id> <content> <metadata-json>
+
+# Delete document
+node <skill-base-dir>/index.js delete <collection> <id>
+
+# List documents
+node <skill-base-dir>/index.js list <collection> [limit]
+
+# Get stats
+node <skill-base-dir>/index.js stats <collection>
+
+# Delete collection
+node <skill-base-dir>/index.js delete-collection <collection>
+```
+
+**Document Structure**:
+- `id`: Unique identifier (e.g., "authentication-system", "docker-setup")
+- `content`: The summary/description text
+- `metadata`: JSON object with area_name, file_paths, commit_hash, section_type, importance, etc.
 
 **Collection Selection Logic**:
 1. **First, always determine the base collection name** from the repository
@@ -116,10 +138,12 @@ All commands return JSON output. Include rich metadata for filtering and retriev
 ### 3. Semantic Retrieval
 When queried about code:
 - **Determine the right collection** based on context (service name, file path, or general)
-- Use `node .opencode/skills/chromadb.js search <collection> "<query>" 5` to search
-- Add metadata filters as JSON: `'{"section_type": "interface"}'` when applicable
-- Parse the JSON results to get documents, distances, and metadata
-- If no results in specific collection, try `repo_memory` as fallback
+- Use the chromadb skill's search command:
+  ```bash
+  node <skill-base-dir>/index.js search <collection> "<query>" 5 '{"section_type":"system"}'
+  ```
+- Parse the JSON output to get documents, distances, and metadata
+- If no results in specific collection, try with repository name collection as fallback
 - Return top 3-5 most relevant results with similarity scores
 - Provide concise explanations based on stored memories
 
@@ -150,35 +174,38 @@ Always provide:
 
 ## Error Reporting
 
-**CRITICAL**: Always report ChromaDB operation failures to the user immediately.
+**CRITICAL**: Always report ChromaDB skill operation failures to the user immediately.
 
-When any ChromaDB operation fails:
+When any ChromaDB skill command fails:
 1. **Stop the operation** - Don't continue as if it succeeded
 2. **Report the error clearly** to the user with:
-   - What operation failed (add, search, update, etc.)
+   - What command failed (add, search, create-collection, etc.)
    - The exact error message received
-   - Potential causes (ChromaDB not running, network issues, skill file missing, etc.)
+   - Potential causes (ChromaDB server not running, dependencies not installed, collection doesn't exist, etc.)
 3. **Provide troubleshooting steps**:
    - Check if ChromaDB is running: `docker ps | grep chromadb`
-   - Verify skill file exists: `ls -l ~/.config/opencode/skills/chromadb.js`
-   - Test manually: `node ~/.config/opencode/skills/chromadb.js collections`
+   - Start ChromaDB if needed: `make chromadb` or `docker compose up -d`
+   - Check logs: `.opencode/logs/chromadb.log`
 4. **Do not silently fail** - User must know when memory operations don't work
 
 Example error response:
 ```
-❌ ChromaDB Operation Failed
+❌ ChromaDB Skill Operation Failed
 
 Operation: Adding memory to collection 'go-llm'
+Command: add
 Error: Cannot find module 'chromadb'
 
 Possible causes:
-- npm dependencies not installed in ~/.config/opencode
+- ChromaDB npm dependencies not installed in .opencode/
 - ChromaDB server not running
 
 Troubleshooting:
 1. Check ChromaDB: docker ps | grep chromadb
-2. Install dependencies: cd ~/.config/opencode && npm install
-3. Test skill: node ~/.config/opencode/skills/chromadb.js collections
+2. Start ChromaDB: make chromadb (or docker compose up -d)
+3. Install dependencies: cd .opencode && npm install
+4. Test connection: curl http://localhost:8000/api/v2/heartbeat
+5. Check logs: tail .opencode/logs/chromadb.log
 ```
 
 ## Best Practices
