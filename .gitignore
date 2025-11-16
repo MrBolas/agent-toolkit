@@ -2,3 +2,5 @@
 .DS_Store
 *.log
 *.tmp
+
+chroma_data
