@@ -5,7 +5,10 @@ mcp_servers:
     command: docker
     args:
       [
-        "chroma-mcp",
+        "run",
+        "-i",
+        "--rm",
+        "mcp/chroma",
         "--client-type",
         "http",
         --host",

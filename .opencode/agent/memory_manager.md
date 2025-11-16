@@ -14,7 +14,7 @@ tools:
   edit: false
   patch: false
   todowrite: false
-  skills_chromadb: true
+
 permission:
   edit: deny
   bash: allow
@@ -86,39 +86,39 @@ When requested to initialize:
 5. Store metadata with the current commit hash (same for all entries from this scan)
 
 ### 2. Memory Storage
-Use the ChromaDB skill (automatically available via `skills_chromadb` tool):
+Use bash commands to run mcp-chroma for ChromaDB interactions.
 
 **How to Use**:
-When you invoke `skills_chromadb`, you receive the skill instructions with a `<skill-base-dir>` placeholder. Execute commands via bash using the skill's Node.js script.
+Execute chromadb skill commands via bash. All commands return JSON output.
 
 **Available Commands**:
 ```bash
 # List all collections
-node <skill-base-dir>/index.js collections
+node .opencode/skills/chromadb/index.js collections
 
 # Create collection
-node <skill-base-dir>/index.js create-collection <name> [description]
+node .opencode/skills/chromadb/index.js create-collection <name> [description]
 
 # Add document
-node <skill-base-dir>/index.js add <collection> <id> <content> <metadata-json>
+node .opencode/skills/chromadb/index.js add <collection> <id> <content> <metadata-json>
 
 # Search documents
-node <skill-base-dir>/index.js search <collection> <query> [n-results] [metadata-filter-json]
+node .opencode/skills/chromadb/index.js search <collection> <query> [n-results] [metadata-filter-json]
 
 # Update document
-node <skill-base-dir>/index.js update <collection> <id> <content> <metadata-json>
+node .opencode/skills/chromadb/index.js update <collection> <id> <content> <metadata-json>
 
 # Delete document
-node <skill-base-dir>/index.js delete <collection> <id>
+node .opencode/skills/chromadb/index.js delete <collection> <id>
 
 # List documents
-node <skill-base-dir>/index.js list <collection> [limit]
+node .opencode/skills/chromadb/index.js list <collection> [limit]
 
 # Get stats
-node <skill-base-dir>/index.js stats <collection>
+node .opencode/skills/chromadb/index.js stats <collection>
 
 # Delete collection
-node <skill-base-dir>/index.js delete-collection <collection>
+node .opencode/skills/chromadb/index.js delete-collection <collection>
 ```
 
 **Document Structure**:
@@ -138,9 +138,9 @@ All commands return JSON output. Include rich metadata for filtering and retriev
 ### 3. Semantic Retrieval
 When queried about code:
 - **Determine the right collection** based on context (service name, file path, or general)
-- Use the chromadb skill's search command:
+- Use the mcp-chroma search command:
   ```bash
-  node <skill-base-dir>/index.js search <collection> "<query>" 5 '{"section_type":"system"}'
+  mcp-chroma search <collection> "<query>" 5 '{"section_type":"system"}'
   ```
 - Parse the JSON output to get documents, distances, and metadata
 - If no results in specific collection, try with repository name collection as fallback
@@ -174,18 +174,18 @@ Always provide:
 
 ## Error Reporting
 
-**CRITICAL**: Always report ChromaDB skill operation failures to the user immediately.
+**CRITICAL**: Always report chromadb skill operation failures to the user immediately.
 
-When any ChromaDB skill command fails:
+When any chromadb skill command fails:
 1. **Stop the operation** - Don't continue as if it succeeded
 2. **Report the error clearly** to the user with:
-   - What command failed (add, search, create-collection, etc.)
-   - The exact error message received
-   - Potential causes (ChromaDB server not running, dependencies not installed, collection doesn't exist, etc.)
+    - What command failed (add, search, create-collection, etc.)
+    - The exact error message received
+    - Potential causes (ChromaDB server not running, dependencies not installed, collection doesn't exist, etc.)
 3. **Provide troubleshooting steps**:
-   - Check if ChromaDB is running: `docker ps | grep chromadb`
-   - Start ChromaDB if needed: `make chromadb` or `docker compose up -d`
-   - Check logs: `.opencode/logs/chromadb.log`
+    - Check if ChromaDB is running: `docker ps | grep chromadb`
+    - Start ChromaDB if needed: `make chromadb` or `docker compose up -d`
+    - Check logs: `.opencode/logs/chromadb.log`
 4. **Do not silently fail** - User must know when memory operations don't work
 
 Example error response:
@@ -194,16 +194,16 @@ Example error response:
 
 Operation: Adding memory to collection 'go-llm'
 Command: add
-Error: Cannot find module 'chromadb'
+Error: [error message]
 
 Possible causes:
-- ChromaDB npm dependencies not installed in .opencode/
+- ChromaDB skill not available or dependencies not installed
 - ChromaDB server not running
 
 Troubleshooting:
 1. Check ChromaDB: docker ps | grep chromadb
 2. Start ChromaDB: make chromadb (or docker compose up -d)
-3. Install dependencies: cd .opencode && npm install
+3. Install dependencies: npm install in .opencode/
 4. Test connection: curl http://localhost:8000/api/v2/heartbeat
 5. Check logs: tail .opencode/logs/chromadb.log
 ```
