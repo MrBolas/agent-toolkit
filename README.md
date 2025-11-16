@@ -24,11 +24,22 @@ This repository provides a blueprint for configuring the OpenCode Agent Toolkit.
 
 ## Agents
 
-This toolkit includes a primary orchestrator agent and three subagents for specialized tasks:
+This toolkit includes a primary orchestrator agent and four subagents for specialized tasks:
 
 - **Orchestrator** (primary): The default agent that manages tasks and delegates to subagents as needed.
 - **General Coder** (subagent): Handles general coding, refactoring, and best practices.
 - **Debugger** (subagent): Focuses on bug identification and fixes.
 - **Code Reviewer** (subagent): Reviews code for quality, security, and standards.
+- **Memory Manager** (subagent): Manages repository memory, storing/retrieving code explanations.
 
 The orchestrator calls subagents using @mentions (e.g., @debugger) for specific workflows.
+
+## Memory Setup
+
+Repository memory is managed by the memory_manager agent using ChromaDB via MCP.
+
+1. Start ChromaDB using Docker Compose: `docker-compose up -d`
+2. Ensure MCP server for ChromaDB is configured in `.opencode/config.yaml`.
+3. Use the orchestrator to call @memory_manager for scanning/updating memory (e.g., "Scan the repository for initial memories").
+
+The orchestrator will prompt to update memory after significant changes.
