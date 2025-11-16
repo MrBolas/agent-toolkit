@@ -4,8 +4,3 @@ models:
   gemini:
     api_key: "{env:GEMINI_API_KEY}"
     model: "gemini-1.5-flash"
-
-mcp_servers:
-  chroma:
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-chroma", "--host", "localhost", "--port", "8000"]

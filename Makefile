@@ -1,4 +1,4 @@
-.PHONY: opencode chromadb viewdb stop clean
+.PHONY: opencode chromadb viewdb stop clean memory-collections memory-stats memory-list
 
 opencode:
 	mkdir -p ~/.config/opencode
@@ -18,3 +18,22 @@ stop:
 clean:
 	docker compose down -v
 	@echo "All containers stopped and volumes removed."
+
+memory-collections:
+	@cd .opencode && node skills/chromadb.js collections
+
+memory-stats:
+	@echo "Usage: make memory-stats COLLECTION=<name>"
+	@if [ -z "$(COLLECTION)" ]; then \
+		echo "Example: make memory-stats COLLECTION=repo_memory"; \
+		exit 1; \
+	fi
+	@cd .opencode && node skills/chromadb.js stats $(COLLECTION)
+
+memory-list:
+	@echo "Usage: make memory-list COLLECTION=<name>"
+	@if [ -z "$(COLLECTION)" ]; then \
+		echo "Example: make memory-list COLLECTION=repo_memory"; \
+		exit 1; \
+	fi
+	@cd .opencode && node skills/chromadb.js list $(COLLECTION)

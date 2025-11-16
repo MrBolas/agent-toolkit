@@ -36,12 +36,68 @@ The orchestrator calls subagents using @mentions (e.g., @debugger) for specific 
 
 ## Memory Setup
 
-Repository memory is managed by the memory_manager agent using ChromaDB via MCP.
+Repository memory is managed by the **memory_manager** agent using ChromaDB with a custom skill.
 
-1. Start ChromaDB: `make chromadb`
-2. View the database: `make viewdb` (shows URL for API/docs at :8000)
-3. For a graphical UI, clone and run https://github.com/Mintplex-Labs/vector-admin separately, setting VECTOR_DB=chroma and CHROMA_URL=http://localhost:8000
-2. Ensure MCP server for ChromaDB is configured in `.opencode/config.yaml`.
-3. Use the orchestrator to call @memory_manager for scanning/updating memory (e.g., "Scan the repository for initial memories").
+### Quick Start
 
-The orchestrator will prompt to update memory after significant changes.
+1. **Start ChromaDB**:
+   ```bash
+   make chromadb
+   ```
+
+2. **View the database**:
+   ```bash
+   make viewdb
+   ```
+   - ChromaDB API: http://localhost:8000/docs
+   - ChromaDB Admin UI: http://localhost:3000
+
+3. **Initialize repository memory**:
+   Ask the orchestrator: `@memory_manager scan and initialize the repository memory`
+
+### ChromaDB Skill Commands
+
+The memory_manager uses `.opencode/skills/chromadb.js` to interact with ChromaDB. **Collections are automatically created** when first used, allowing the agent to organize memories by service or context.
+
+```bash
+# List all collections
+node .opencode/skills/chromadb.js collections
+
+# Add memory (creates collection if needed)
+node .opencode/skills/chromadb.js add <collection> <id> <content> <metadata_json>
+
+# Search memories in a collection
+node .opencode/skills/chromadb.js search <collection> "<query>" [n_results]
+
+# Update memory
+node .opencode/skills/chromadb.js update <collection> <id> <content> <metadata_json>
+
+# Delete memory
+node .opencode/skills/chromadb.js delete <collection> <id>
+
+# List all memories in a collection
+node .opencode/skills/chromadb.js list <collection> [limit]
+
+# Get collection stats
+node .opencode/skills/chromadb.js stats <collection>
+
+# Delete entire collection
+node .opencode/skills/chromadb.js delete-collection <collection>
+```
+
+**Collection Strategy**: The agent intelligently chooses collections based on context:
+- `service-<name>` for service-specific code (e.g., `service-bananas`, `service-auth`)
+- `repo_memory` for general repository knowledge
+- Custom collections for specific contexts as needed
+
+### Memory Structure
+
+Memories are stored with metadata:
+- `file_path`: Full path to the file
+- `commit_hash`: Git commit hash
+- `section_type`: Type (interface, class, function, config, documentation, architecture)
+- `language`: Programming language
+- `importance`: Relevance score (1-10)
+- `dependencies`: Related file paths
+
+The orchestrator will suggest updating memory after significant code changes.
