@@ -5,27 +5,13 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - chroma_data:/chroma/chroma
+      - chroma_data:/data
     environment:
       - CHROMA_SERVER_HOST=0.0.0.0
       - CHROMA_SERVER_HTTP_PORT=8000
       - CHROMA_SERVER_CORS_ALLOW_ORIGINS=*
     networks:
       - agent-network
-
-  chromadb-mcp:
-    image: python:3.11-slim
-    container_name: chromadb-mcp
-    command: >
-      sh -c "pip install --quiet chroma-mcp-server &&
-             python -m chroma_mcp_server --host chromadb --port 8000"
-    ports:
-      - "3002:3002"
-    depends_on:
-      - chromadb
-    networks:
-      - agent-network
-    restart: unless-stopped
 
   chromadb-admin:
     build:

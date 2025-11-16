@@ -1,4 +1,4 @@
-.PHONY: opencode chromadb viewdb stop clean memory-collections memory-stats memory-list
+.PHONY: opencode up viewdb stop clean memory-collections memory-stats memory-list
 
 opencode:
 	mkdir -p ~/.config/opencode
@@ -7,7 +7,7 @@ opencode:
 	cd ~/.config/opencode && npm install
 	@echo "OpenCode configuration installed successfully!"
 
-chromadb:
+up:
 	docker compose up -d
 
 viewdb:
