@@ -38,7 +38,9 @@ The orchestrator calls subagents using @mentions (e.g., @debugger) for specific 
 
 Repository memory is managed by the memory_manager agent using ChromaDB via MCP.
 
-1. Start ChromaDB using Docker Compose: `docker-compose up -d`
+1. Start ChromaDB: `make chromadb`
+2. View the database: `make viewdb` (shows URL for API/docs at :8000)
+3. For a graphical UI, clone and run https://github.com/Mintplex-Labs/vector-admin separately, setting VECTOR_DB=chroma and CHROMA_URL=http://localhost:8000
 2. Ensure MCP server for ChromaDB is configured in `.opencode/config.yaml`.
 3. Use the orchestrator to call @memory_manager for scanning/updating memory (e.g., "Scan the repository for initial memories").
 
