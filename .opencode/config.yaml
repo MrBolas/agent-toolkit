@@ -1,5 +1,19 @@
 default_agent: orchestrator
 
+mcp_servers:
+  chroma:
+    command: docker
+    args:
+      [
+        "chroma-mcp",
+        "--client-type",
+        "http",
+        --host",
+        "localohost",
+        "--port",
+        "8000",
+      ]
+
 models:
   gemini:
     api_key: "{env:GEMINI_API_KEY}"
