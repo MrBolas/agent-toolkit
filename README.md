@@ -1,2 +1,34 @@
-# agent-toolkit
-Agent toolkit
+# OpenCode Agent Toolkit
+
+This repository provides a blueprint for configuring the OpenCode Agent Toolkit.
+
+## Setup
+
+1. Clone this repository:
+   ```bash
+   git clone <repository-url>
+   cd agent-toolkit
+   ```
+
+2. Copy the `.opencode` folder to your system-wide OpenCode configuration directory (only copying files that don't already exist):
+   ```bash
+   make opencode
+   ```
+
+3. Set the `GEMINI_API_KEY` environment variable with your API key:
+   ```bash
+   export GEMINI_API_KEY=your_api_key_here
+   ```
+
+    Add this to your shell profile (e.g., `~/.bashrc` or `~/.zshrc`) for persistence.
+
+## Agents
+
+This toolkit includes a primary orchestrator agent and three subagents for specialized tasks:
+
+- **Orchestrator** (primary): The default agent that manages tasks and delegates to subagents as needed.
+- **General Coder** (subagent): Handles general coding, refactoring, and best practices.
+- **Debugger** (subagent): Focuses on bug identification and fixes.
+- **Code Reviewer** (subagent): Reviews code for quality, security, and standards.
+
+The orchestrator calls subagents using @mentions (e.g., @debugger) for specific workflows.
