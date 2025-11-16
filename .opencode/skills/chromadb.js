@@ -8,6 +8,7 @@
 
 import { ChromaClient } from "chromadb";
 import { DefaultEmbeddingFunction } from "@chroma-core/default-embed";
+import { log, logSuccess, logError, logInfo } from "./logger.js";
 
 const CHROMA_URL = process.env.CHROMA_URL || "http://localhost:8000";
 const DEFAULT_COLLECTION = "repo_memory";
@@ -18,6 +19,8 @@ const client = new ChromaClient({
 });
 
 const embedder = new DefaultEmbeddingFunction();
+
+logInfo("ChromaDB skill initialized", { url: CHROMA_URL });
 
 async function getOrCreateCollection(collectionName = DEFAULT_COLLECTION) {
   try {
@@ -157,7 +160,9 @@ async function main() {
         }
         const metadata =
           metaParts.length > 0 ? JSON.parse(metaParts.join(" ")) : {};
+        logInfo("Adding memory", { collection, id });
         const addResult = await addMemory(collection, id, content, metadata);
+        logSuccess("Memory added", { collection, id });
         console.log(JSON.stringify(addResult));
         break;
 
@@ -169,12 +174,21 @@ async function main() {
           );
         }
         const filter = filterJson ? JSON.parse(filterJson) : null;
+        logInfo("Searching memory", {
+          collection: searchColl,
+          query,
+          nResults,
+        });
         const results = await searchMemory(
           searchColl,
           query,
           parseInt(nResults),
           filter,
         );
+        logSuccess("Search completed", {
+          collection: searchColl,
+          resultCount: results.ids[0]?.length || 0,
+        });
         console.log(JSON.stringify(results, null, 2));
         break;
 
@@ -241,6 +255,7 @@ async function main() {
         process.exit(1);
     }
   } catch (error) {
+    logError(`Command '${command}' execution`, error, { args });
     console.error(JSON.stringify({ error: error.message }));
     process.exit(1);
   }

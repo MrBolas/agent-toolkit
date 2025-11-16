@@ -3,6 +3,9 @@
 opencode:
 	mkdir -p ~/.config/opencode
 	rsync -a --ignore-existing .opencode/ ~/.config/opencode/
+	@echo "Installing ChromaDB skill dependencies..."
+	cd ~/.config/opencode && npm install
+	@echo "OpenCode configuration installed successfully!"
 
 chromadb:
 	docker compose up -d
