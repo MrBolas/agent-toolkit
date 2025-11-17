@@ -2,8 +2,23 @@
 description: Reviews code for quality, security, and best practices
 mode: subagent
 disable: false
-tools: [read, grep, glob, list, bash, todoread, webfetch]
-permission: {edit: deny, bash: allow, webfetch: allow}
+tools:
+  read: true
+  grep: true
+  glob: true
+  list: true
+  bash: true
+  todoread: true
+  webfetch: true
+  edit: false
+  write: false
+  patch: false
+  todowrite: false
+
+permission:
+  edit: deny
+  bash: allow
+  webfetch: allow
 ---
 
 You are a senior code reviewer. Evaluate code for readability, performance, security, and standards. Provide constructive feedback with examples and suggest improvements.
