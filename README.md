@@ -8,6 +8,11 @@ This repository provides a blueprint for configuring the OpenCode Agent Toolkit.
    - `GEMINI_API_KEY`: Your Google Gemini API key
    - `GITHUB_TOKEN`: Your GitHub Personal Access Token (with `repo` scope for PR access)
 
+2. **OS-Specific Configuration**: This toolkit automatically detects your OS and uses the appropriate config:
+   - **macOS**: Uses `.opencode/opencode.macos.jsonc` (with `host.docker.internal`)
+   - **Linux**: Uses `.opencode/opencode.linux.jsonc` (with `--network host`)
+   - Run `make opencode` to install the correct config to `~/.config/opencode/`
+
 This repository serves as a blueprint/template for OpenCode agent configuration. Use it to bootstrap new projects.
 
 ### Using as a Template
@@ -63,17 +68,17 @@ Repository memory is managed by the **memory_manager** agent using ChromaDB with
 
 ### Quick Start
 
-1. **Start ChromaDB**:
+1. **Start ChromaDB and Admin UI**:
    ```bash
-   make chromadb
+   make up
    ```
 
 2. **View the database**:
    ```bash
    make viewdb
    ```
-   - ChromaDB API: http://localhost:8000/docs
-   - ChromaDB Admin UI: http://localhost:3000
+   - ChromaDB API: http://localhost:8420/docs
+   - ChromaDB Admin UI: http://localhost:3001 (connect to `http://chromadb:8000` in setup)
 
 3. **Initialize repository memory**:
    Ask the orchestrator: `@memory_manager scan and initialize the repository memory`

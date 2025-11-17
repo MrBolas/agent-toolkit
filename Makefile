@@ -1,15 +1,32 @@
-.PHONY: opencode up viewdb stop clean memory-collections memory-stats memory-list
+.PHONY: help opencode up viewdb stop clean clean-mcp memory-collections memory-stats memory-list
+
+.DEFAULT_GOAL := help
+
+help:
+	@echo "Available commands:"
+	@echo "  make opencode          - Install OS-specific OpenCode configuration to ~/.config/opencode/"
+	@echo "  make up                - Start ChromaDB and ChromaDB Admin UI containers"
+	@echo "  make viewdb            - Show URLs for accessing ChromaDB"
+	@echo "  make stop              - Stop all containers"
+	@echo "  make clean             - Stop containers and remove volumes"
+	@echo "  make clean-mcp         - Clean up orphaned chroma-mcp containers"
 
 opencode:
 	mkdir -p ~/.config/opencode
+	@if [ "$$(uname -s)" = "Darwin" ]; then \
+		cp .opencode/opencode.macos.jsonc ~/.config/opencode/opencode.jsonc; \
+	else \
+		cp .opencode/opencode.linux.jsonc ~/.config/opencode/opencode.jsonc; \
+	fi
 	rsync -a --ignore-existing .opencode/ ~/.config/opencode/
 
 up:
 	docker compose up -d
 
 viewdb:
-	@echo "ChromaDB API/docs available at: http://localhost:8000/docs"
-	@echo "ChromaDB Admin UI available at: http://localhost:3000"
+	@echo "ChromaDB API/docs available at: http://localhost:8420/docs"
+	@echo "ChromaDB Admin UI available at: http://localhost:3001"
+	@echo "Connect to http://chromadb:8000 in the admin UI setup."
 	@echo "Open these URLs in your browser to view and interact with the database."
 
 stop:
@@ -19,21 +36,7 @@ clean:
 	docker compose down -v
 	@echo "All containers stopped and volumes removed."
 
-memory-collections:
-	@cd .opencode && node skills/chromadb.js collections
-
-memory-stats:
-	@echo "Usage: make memory-stats COLLECTION=<name>"
-	@if [ -z "$(COLLECTION)" ]; then \
-		echo "Example: make memory-stats COLLECTION=repo_memory"; \
-		exit 1; \
-	fi
-	@cd .opencode && node skills/chromadb.js stats $(COLLECTION)
-
-memory-list:
-	@echo "Usage: make memory-list COLLECTION=<name>"
-	@if [ -z "$(COLLECTION)" ]; then \
-		echo "Example: make memory-list COLLECTION=repo_memory"; \
-		exit 1; \
-	fi
-	@cd .opencode && node skills/chromadb.js list $(COLLECTION)
+clean-mcp:
+	docker stop $$(docker ps -q --filter ancestor=ghcr.io/chroma-core/chroma-mcp:latest) || true
+	docker rm $$(docker ps -aq --filter ancestor=ghcr.io/chroma-core/chroma-mcp:latest) || true
+	@echo "Stopped and removed all chroma-mcp containers."

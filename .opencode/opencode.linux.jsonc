@@ -1,0 +1,24 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "mcp": {
+    "chroma": {
+      "type": "local",
+      "command": ["docker", "run", "--network", "host", "--rm", "-i", "ghcr.io/chroma-core/chroma-mcp:latest", "chroma-mcp", "--client-type", "ephemeral", "--host", "localhost", "--port", "8420", "--ssl", "false"],
+      "enabled": true
+    },
+    "github": {
+      "type": "local",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server:latest"
+      ],
+      "enabled": true
+    }
+  }
+}
