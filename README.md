@@ -41,6 +41,10 @@ Each project should have its own `.opencode/` directory with:
 
 Agents will always use the **project-local** `.opencode/` directory in the repository they're working on.
 
+## Commands
+
+- **PR Review**: Use `/review-pr https://github.com/user/repo/pull/123` in the TUI to trigger automated PR code review with inline comments.
+
 ## Agents
 
 This toolkit includes a primary orchestrator agent and four subagents for specialized tasks:
