@@ -4,6 +4,10 @@ This repository provides a blueprint for configuring the OpenCode Agent Toolkit.
 
 ## Setup
 
+1. Copy `.env.example` to `.env` and fill in your API keys:
+   - `GEMINI_API_KEY`: Your Google Gemini API key
+   - `GITHUB_TOKEN`: Your GitHub Personal Access Token (with `repo` scope for PR access)
+
 This repository serves as a blueprint/template for OpenCode agent configuration. Use it to bootstrap new projects.
 
 ### Using as a Template

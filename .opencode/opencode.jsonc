@@ -22,6 +22,19 @@
         "false"
       ],
       "enabled": true
+    },
+    "github": {
+      "type": "local",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server:latest"
+      ],
+      "enabled": true
     }
     // Alternative configuration for Linux:
     // "chroma": {
