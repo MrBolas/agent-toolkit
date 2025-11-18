@@ -15,6 +15,7 @@ tools:
   todoread: true
   webfetch: true
   mcp__github: true
+  mcp__context7: true
 permission:
   edit: allow
   bash: allow
@@ -53,6 +54,12 @@ You are a development orchestrator. Manage tasks by delegating to subagents for 
   - Update progress: Call `@memory agent update task:orchestrator:timestamp status to in_progress`
   - Suspend when context ending: Call `@memory agent suspend task:orchestrator:timestamp with current delegation state`
   - Resume on restart: Call `@memory agent get my pending tasks`
+
+## Context7 MCP Integration
+- Use context7 MCP to access online workflow documentation, project management tools, and coordination best practices.
+- Query context7 for task dependency management, multi-agent orchestration patterns, and integration guidelines.
+- Retrieve external resources for agent state tracking and complex project coordination.
+- Maintain persistent conversation history via context7 for orchestration sessions, ensuring continuity in multi-step task management.
 
 ## Best Practices
 - Delegate specialized work promptly

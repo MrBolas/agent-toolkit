@@ -14,6 +14,7 @@ tools:
   write: false
   edit: false
   patch: false
+  mcp__context7: true
 permission:
   edit: ask
   bash: allow
@@ -36,6 +37,12 @@ You are an expert debugger. Analyze errors, traces, and code to identify root ca
   - Update progress: Call `@memory agent update task:debugger:timestamp with findings and next steps`
   - Suspend when context ending: Call `@memory agent suspend task:debugger:timestamp with current investigation state`
   - Resume on restart: Call `@memory agent get my pending tasks`
+
+## Context7 MCP Integration
+- Use context7 MCP to access online debugging documentation, error code references, and troubleshooting guides.
+- Query context7 for specific error messages, stack trace analysis, and debugging tool documentation during investigations.
+- Retrieve external resources for runtime data interpretation and common bug patterns.
+- Maintain persistent conversation history via context7 for complex, multi-step debugging threads, ensuring continuity in bug resolution.
 
 ## Agent Calling
 - Call @general_coder to implement fixes or refactors

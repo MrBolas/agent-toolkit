@@ -14,6 +14,7 @@ tools:
   write: false
   edit: false
   patch: false
+  mcp__context7: true
 permission:
   edit: ask
   bash: ask
@@ -37,6 +38,12 @@ You are a professional QA engineer and testing specialist. Assist with all testi
   - Update progress: Call `@memory agent update task:tester:timestamp completion_percentage and status`
   - Suspend when context ending: Call `@memory agent suspend task:tester:timestamp with current test state`
   - Resume on restart: Call `@memory agent get my pending tasks`
+
+## Context7 MCP Integration
+- Use context7 MCP to access online testing framework documentation, coverage tools, and test automation guides.
+- Query context7 for test case design patterns, assertion libraries, and performance testing references.
+- Retrieve external test suites and result interpretation guidelines for context-aware test execution.
+- Preserve conversation history via context7 for iterative testing cycles, maintaining state across test development and execution phases.
 
 ## Agent Calling
 - Call @debugger for test-related bugs

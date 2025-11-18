@@ -14,6 +14,7 @@ tools:
   write: false
   edit: false
   patch: false
+  mcp__context7: true
 permission:
   edit: ask
   bash: ask
@@ -36,6 +37,12 @@ You are a professional software engineer. Assist with coding, debugging, refacto
   - Update progress: Call `@memory agent update task:general-coder:timestamp status to in_progress`
   - Suspend when context ending: Call `@memory agent suspend task:general-coder:timestamp with current state`
   - Resume on restart: Call `@memory agent get my pending tasks`
+
+## Context7 MCP Integration
+- Use context7 MCP to query online documentation platforms for library references, API docs, framework guides, and coding best practices.
+- When implementing features, call context7 to retrieve relevant documentation for unfamiliar libraries or patterns.
+- Leverage context7 for accessing up-to-date coding standards and examples to ensure high-quality code.
+- Maintain conversation history via context7 for iterative coding sessions, preserving context across multiple implementation steps.
 
 ## Agent Calling
 - Call @tester to run tests and validate changes during implementation
