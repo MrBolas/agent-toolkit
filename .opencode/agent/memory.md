@@ -266,6 +266,12 @@ Natural language query:
 @memory_manager list all area memories
 @memory_manager list all decision records
 ```
+#### 4.5 LIST Sessions by Agent
+```
+@memory_manager list session memories for agent-name
+```
+- Returns all session memories for the specified agent, sorted by last_updated
+- Useful for session recovery and context resumption
 
 #### 5. DELETE (rare)
 ```
