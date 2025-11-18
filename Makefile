@@ -1,4 +1,4 @@
-.PHONY: help opencode up viewdb stop clean clean-mcp memory-collections memory-stats memory-list
+.PHONY: help opencode up viewdb stop clean clean-mcp status
 
 .DEFAULT_GOAL := help
 
@@ -7,6 +7,7 @@ help:
 	@echo "  make opencode          - Install OS-specific OpenCode configuration to ~/.config/opencode/"
 	@echo "  make up                - Start ChromaDB and ChromaDB Admin UI containers"
 	@echo "  make viewdb            - Show URLs for accessing ChromaDB"
+	@echo "  make status            - Show status of all ChromaDB and MCP containers"
 	@echo "  make stop              - Stop all containers"
 	@echo "  make clean             - Stop containers and remove volumes"
 	@echo "  make clean-mcp         - Clean up orphaned chroma-mcp containers"
@@ -37,6 +38,7 @@ clean:
 	@echo "All containers stopped and volumes removed."
 
 clean-mcp:
-	docker stop $$(docker ps -q --filter ancestor=ghcr.io/chroma-core/chroma-mcp:latest) || true
-	docker rm $$(docker ps -aq --filter ancestor=ghcr.io/chroma-core/chroma-mcp:latest) || true
-	@echo "Stopped and removed all chroma-mcp containers."
+	@echo "Cleaning up chroma-mcp containers..."
+	@docker ps -q --filter ancestor=ghcr.io/chroma-core/chroma-mcp:latest | xargs -r docker stop || true
+	@docker ps -aq --filter ancestor=ghcr.io/chroma-core/chroma-mcp:latest | xargs -r docker rm || true
+	@echo "✓ All chroma-mcp containers stopped and removed."

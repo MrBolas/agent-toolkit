@@ -83,27 +83,31 @@ Repository memory is managed by the **memory_manager** agent using ChromaDB with
 3. **Initialize repository memory**:
    Ask the orchestrator: `@memory_manager scan and initialize the repository memory`
 
-### ChromaDB OpenCode Skill
+### ChromaDB MCP Integration
 
-The memory_manager uses a custom **OpenCode skill** to interact with ChromaDB. This provides seamless integration using the chromadb npm package without dependency conflicts.
+The memory_manager uses the **ChromaDB MCP server** to interact with a persistent ChromaDB instance via the Model Context Protocol.
+
+**Important Configuration**:
+- The MCP server connects to ChromaDB using `--client-type http` (NOT ephemeral)
+- This ensures memories persist across sessions and are visible in the Admin UI
+- ChromaDB runs on port 8420 (mapped from container port 8000)
+- Data is persisted to `./chroma_data/` volume
 
 **How it works**:
-- The chromadb skill is located at `.opencode/skills/chromadb/` (project-local)
-- The memory_manager invokes the `skills_chromadb` tool to access it
-- The skill provides commands for all ChromaDB operations
+- memory_manager uses MCP tools (`chroma_*`) to interact with ChromaDB
+- All operations target the persistent database at `http://localhost:8420`
 - Collections are automatically created when first used
-- All operations are logged to `.opencode/logs/chromadb.log`
+- Memories persist across agent sessions and container restarts
 
-**Available Commands** (used by memory_manager):
-- Collection management: `collections`, `create-collection`, `delete-collection`
-- Document operations: `add`, `update`, `delete`, `list`
-- Search: `search` (semantic vector search)
-- Stats: `stats` (collection statistics)
+**Collection Strategy**: 
+- Repository name as base collection (e.g., `agent-toolkit`)
+- Sub-collections for services/areas (e.g., `agent-toolkit-auth-service`)
+- Hierarchical memory IDs: `<collection>:<category>:<scope>:<identifier>`
 
-**Collection Strategy**: The agent intelligently chooses collections based on context:
-- Repository name for general code (e.g., `agent-toolkit`, `my-api`)
-- `service-<name>` for service-specific code (e.g., `service-bananas`, `service-auth`)
-- Custom collections for specific contexts as needed
+**After configuration changes**, reinstall the config:
+```bash
+make opencode  # Reinstalls OS-specific config to ~/.config/opencode/
+```
 
 ### Memory Structure
 
@@ -116,3 +120,21 @@ Memories are stored with metadata:
 - `dependencies`: Related file paths
 
 The orchestrator will suggest updating memory after significant code changes.
+
+## Troubleshooting
+
+### ChromaDB Admin UI shows no collections
+**Problem**: The MCP server was using `--client-type ephemeral`, creating a temporary in-memory database instead of connecting to your persistent ChromaDB.
+
+**Solution**: 
+1. Ensure configs use `--client-type http` (already fixed in this repo)
+2. Reinstall config: `make opencode`
+3. Restart your OpenCode session
+4. Verify connection: `@memory_manager list all collections`
+
+### Config changes not taking effect
+After modifying `.opencode/opencode.*.jsonc` files:
+```bash
+make opencode  # Copy to ~/.config/opencode/
+# Then restart OpenCode
+```

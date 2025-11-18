@@ -12,7 +12,7 @@
         "ghcr.io/chroma-core/chroma-mcp:latest",
         "chroma-mcp",
         "--client-type",
-        "ephemeral",
+        "http",
         "--host",
         "host.docker.internal",
         "--port",
