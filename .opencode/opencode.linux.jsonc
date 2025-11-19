@@ -1,6 +1,27 @@
 {
   "$schema": "https://opencode.ai/config.json",
-
+  "provider": {
+      "llama.cpp": {
+        "npm": "@ai-sdk/openai-compatible",
+        "models": {
+          "qwen3-coder-UD_Q4_K_XL": {
+            "id": "qwen3-coder-UD_Q4_K_XL",
+            "name": "qwen3-coder Q4",
+            "cost": {
+              "input": 0.000,
+              "output": 0.000
+            },
+            "limit": {
+              "context": 40000,
+              "output": 0
+            }
+          }
+        },
+        "options": {
+          "baseURL": "http://192.168.1.51:11434/v1"
+        }
+      }
+    },
   "mcp": {
     "chroma": {
       "type": "local",
