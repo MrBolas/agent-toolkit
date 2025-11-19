@@ -1,5 +1,44 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "tui": {
+    "scroll_speed": 3
+  },
+  "disabled_providers": ["local-llama.cpp"],
+  "provider": {
+    "local-llama.cpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local Llama.cpp",
+      "options": {
+        "baseURL": "http://192.168.1.51:11434/v1"
+      },
+      "models": {
+        "gpt-oss-20b-Q8_XL": {
+          "name": "GPT-OSS 20B Q8_XL",
+          "options": {
+            "limit": {
+              "context": 45384
+            }
+          },
+        },
+        "qwen3-30b-a3b-instruct-2507-Q4_K_XL": {
+          "name": "Qwen3 30B A3B Instruct 2507 Q4_K_XL",
+          "options": {
+            "limit": {
+              "context": 45384
+            }
+          },
+        },
+        "qwen3-coder-UD_Q4_K_XL": {
+          "name": "Qwen3 Coder UD Q4_K_XL",
+          "options": {
+            "limit": {
+              "context": 36384
+            }
+          },
+        }
+      }
+    }
+  },
 
   "mcp": {
     "chroma": {

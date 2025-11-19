@@ -1,27 +1,45 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "tui": {
+    "scroll_speed": 3
+  },
+  "disabled_providers": ["local-llama.cpp"],
   "provider": {
-      "llama.cpp": {
-        "npm": "@ai-sdk/openai-compatible",
-        "models": {
-          "qwen3-coder-UD_Q4_K_XL": {
-            "id": "qwen3-coder-UD_Q4_K_XL",
-            "name": "qwen3-coder Q4",
-            "cost": {
-              "input": 0.000,
-              "output": 0.000
-            },
+    "local-llama.cpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local Llama.cpp",
+      "options": {
+        "baseURL": "http://192.168.1.51:11434/v1"
+      },
+      "models": {
+        "gpt-oss-20b-Q8_XL": {
+          "name": "GPT-OSS 20B Q8_XL",
+          "options": {
             "limit": {
-              "context": 40000,
-              "output": 0
+              "context": 45384
             }
-          }
+          },
         },
-        "options": {
-          "baseURL": "http://192.168.1.51:11434/v1"
+        "qwen3-30b-a3b-instruct-2507-Q4_K_XL": {
+          "name": "Qwen3 30B A3B Instruct 2507 Q4_K_XL",
+          "options": {
+            "limit": {
+              "context": 45384
+            }
+          },
+        },
+        "qwen3-coder-UD_Q4_K_XL": {
+          "name": "Qwen3 Coder UD Q4_K_XL",
+          "options": {
+            "limit": {
+              "context": 36384
+            }
+          },
         }
       }
-    },
+    }
+  },
+
   "mcp": {
     "chroma": {
       "type": "local",
