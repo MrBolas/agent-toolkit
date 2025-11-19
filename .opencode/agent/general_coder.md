@@ -16,8 +16,8 @@ tools:
   patch: false
   mcp__context7: true
 permission:
-  edit: ask
-  bash: ask
+  edit: allow
+  bash: allow
   webfetch: allow
 ---
 
