@@ -12,7 +12,7 @@ tools:
   atlassian_transitionJiraIssue: false
   atlassian_lookupJiraAccountId: true
   atlassian_searchJiraIssuesUsingJql: true
-  atlassian_addCommentToJiraIssue: false
+  atlassian_addCommentToJiraIssue: true
   atlassian_getJiraIssueRemoteIssueLinks: true
   atlassian_getVisibleJiraProjects: true
   atlassian_getJiraProjectIssueTypesMetadata: true
