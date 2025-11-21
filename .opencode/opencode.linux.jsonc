@@ -3,7 +3,6 @@
   "tui": {
     "scroll_speed": 3
   },
-  "disabled_providers": ["local-llama.cpp"],
   "provider": {
     "local-llama.cpp": {
       "npm": "@ai-sdk/openai-compatible",
@@ -44,6 +43,17 @@
     "chroma": {
       "type": "local",
       "command": ["docker", "run", "--network", "host", "--rm", "-i", "ghcr.io/chroma-core/chroma-mcp:latest", "chroma-mcp", "--client-type", "http", "--host", "localhost", "--port", "8420", "--ssl", "false"],
+      "enabled": false
+    },
+    "serena": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server"
+      ],
       "enabled": true
     },
     "github": {

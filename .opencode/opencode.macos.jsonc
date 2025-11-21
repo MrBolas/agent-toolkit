@@ -3,7 +3,6 @@
   "tui": {
     "scroll_speed": 3
   },
-  "disabled_providers": ["local-llama.cpp"],
   "provider": {
     "local-llama.cpp": {
       "npm": "@ai-sdk/openai-compatible",
@@ -18,7 +17,7 @@
             "limit": {
               "context": 45384
             }
-          },
+          }
         },
         "qwen3-30b-a3b-instruct-2507-Q4_K_XL": {
           "name": "Qwen3 30B A3B Instruct 2507 Q4_K_XL",
@@ -26,7 +25,7 @@
             "limit": {
               "context": 45384
             }
-          },
+          }
         },
         "qwen3-coder-UD_Q4_K_XL": {
           "name": "Qwen3 Coder UD Q4_K_XL",
@@ -34,12 +33,11 @@
             "limit": {
               "context": 36384
             }
-          },
+          }
         }
       }
     }
   },
-
   "mcp": {
     "chroma": {
       "type": "local",
@@ -58,6 +56,17 @@
         "8420",
         "--ssl",
         "false"
+      ],
+      "enabled": false
+    },
+    "serena": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server"
       ],
       "enabled": true
     },
