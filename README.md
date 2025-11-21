@@ -5,7 +5,6 @@ This repository provides a blueprint for configuring the OpenCode Agent Toolkit.
 ## Setup
 
 1. Copy `.env.example` to `.env` and fill in your API keys:
-   - `GEMINI_API_KEY`: Your Google Gemini API key
    - `GITHUB_TOKEN`: Your GitHub Personal Access Token (with `repo` scope for PR access)
 
 2. **OS-Specific Configuration**: This toolkit automatically detects your OS and uses the appropriate config:
@@ -29,13 +28,6 @@ This repository serves as a blueprint/template for OpenCode agent configuration.
    make opencode  # Copies to ~/.config/opencode/
    ```
 
-3. Set the `GEMINI_API_KEY` environment variable with your API key:
-   ```bash
-   export GEMINI_API_KEY=your_api_key_here
-   ```
-
-   Add this to your shell profile (e.g., `~/.bashrc` or `~/.zshrc`) for persistence.
-
 ### Project-Local Configuration
 
 Each project should have its own `.opencode/` directory with:
@@ -52,74 +44,67 @@ Agents will always use the **project-local** `.opencode/` directory in the repos
 
 ## Agents
 
-This toolkit includes a primary orchestrator agent and four subagents for specialized tasks:
+This toolkit uses a streamlined **primary + subagent** architecture with 4 focused agents:
 
-- **Orchestrator** (primary): The default agent that manages tasks and delegates to subagents as needed.
-- **General Coder** (subagent): Handles general coding, refactoring, and best practices.
-- **Debugger** (subagent): Focuses on bug identification and fixes.
-- **Code Reviewer** (subagent): Reviews code for quality, security, and standards.
-- **Memory Manager** (subagent): Manages repository memory, storing/retrieving code explanations.
+- **orchestrator** (primary): Coordinates tasks, delegates to specialists, and makes strategic decisions
+- **developer** (subagent): Implements features, refactors code, and builds software
+- **code_reviewer** (subagent): Evaluates code quality, security, and best practices
+- **tester** (subagent): Executes tests, analyzes failures, and validates functionality
 
-The orchestrator calls subagents using @mentions (e.g., @debugger) for specific workflows.
+**Key Principles:**
+- All agents use **meta-prompting** language (describing capabilities, not prescribing actions)
+- **Subagents cannot delegate** to each other - only the orchestrator can coordinate
+- Each agent has optimized **temperature** settings for its task type
+- **Serena MCP** replaces ChromaDB for semantic memory and code analysis
 
-## Memory Setup
+The orchestrator delegates using @mentions (e.g., `@developer implement user auth`) with complete context.
 
-Repository memory is managed by the **memory_manager** agent using ChromaDB with a custom skill.
+## Semantic Memory with Serena
+
+**Serena MCP** provides semantic code understanding and persistent memory across sessions.
 
 ### Quick Start
 
-1. **Start ChromaDB and Admin UI**:
-   ```bash
-   make up
+Serena runs automatically when OpenCode starts (no separate setup needed):
+
+1. **Query existing knowledge**:
+   ```
+   Search Serena for authentication patterns in this codebase
    ```
 
-2. **View the database**:
-   ```bash
-   make viewdb
+2. **Store architectural decisions**:
    ```
-   - ChromaDB API: http://localhost:8420/docs
-   - ChromaDB Admin UI: http://localhost:3001 (connect to `http://chromadb:8000` in setup)
+   Store this database migration strategy in Serena for future reference
+   ```
 
-3. **Initialize repository memory**:
-   Ask the orchestrator: `@memory_manager scan and initialize the repository memory`
+3. **Before making changes**:
+   ```
+   Check Serena for existing error handling patterns
+   ```
 
-### ChromaDB MCP Integration
+### How It Works
 
-The memory_manager uses the **ChromaDB MCP server** to interact with a persistent ChromaDB instance via the Model Context Protocol.
+- **Automatic integration**: Serena MCP is enabled in `.opencode/opencode.*.jsonc`
+- **Semantic search**: Understands code by meaning, not just text matching
+- **Cross-session memory**: Knowledge persists across OpenCode sessions
+- **All agents have access**: Each agent can query and store in Serena
 
-**Important Configuration**:
-- The MCP server connects to ChromaDB using `--client-type http` (NOT ephemeral)
-- This ensures memories persist across sessions and are visible in the Admin UI
-- ChromaDB runs on port 8420 (mapped from container port 8000)
-- Data is persisted to `./chroma_data/` volume
+### Best Practices
 
-**How it works**:
-- memory_manager uses MCP tools (`chroma_*`) to interact with ChromaDB
-- All operations target the persistent database at `http://localhost:8420`
-- Collections are automatically created when first used
-- Memories persist across agent sessions and container restarts
+1. **Before implementation**: Query Serena for existing patterns
+2. **After significant changes**: Store architectural decisions and new patterns
+3. **For consistency**: Check Serena when choosing implementation approaches
+4. **Use hierarchical organization**: Structure knowledge by area/component/feature
 
-**Collection Strategy**: 
-- Repository name as base collection (e.g., `agent-toolkit`)
-- Sub-collections for services/areas (e.g., `agent-toolkit-auth-service`)
-- Hierarchical memory IDs: `<collection>:<category>:<scope>:<identifier>`
+### Migration from ChromaDB
 
-**After configuration changes**, reinstall the config:
-```bash
-make opencode  # Reinstalls OS-specific config to ~/.config/opencode/
-```
+This toolkit originally used ChromaDB. Serena MCP provides superior:
+- Semantic understanding of code structure
+- Automatic indexing and retrieval
+- No manual database management
+- Better integration with OpenCode workflows
 
-### Memory Structure
-
-Memories are stored with metadata:
-- `file_path`: Full path to the file
-- `commit_hash`: Git commit hash
-- `section_type`: Type (interface, class, function, config, documentation, architecture)
-- `language`: Programming language
-- `importance`: Relevance score (1-10)
-- `dependencies`: Related file paths
-
-The orchestrator will suggest updating memory after significant code changes.
+ChromaDB support remains available but disabled by default.
 
 ## Troubleshooting
 

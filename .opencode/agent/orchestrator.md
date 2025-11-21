@@ -2,6 +2,7 @@
 description: Primary agent for coordination and full development
 mode: primary
 disable: false
+temperature: 0.3
 tools:
   bash: true
   edit: true

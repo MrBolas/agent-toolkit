@@ -2,6 +2,7 @@
 description: Implements features and edits code
 mode: subagent
 disable: false
+temperature: 0.3
 tools:
   read: true
   grep: true

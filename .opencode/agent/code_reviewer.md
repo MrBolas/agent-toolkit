@@ -2,6 +2,7 @@
 description: Reviews code for quality, security, and best practices
 mode: subagent
 disable: false
+temperature: 0.1
 tools:
   read: true
   grep: true

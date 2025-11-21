@@ -91,5 +91,17 @@
       },
       "enabled": true
     }
+  },
+  "permission": {
+    "bash": {
+      "rm -rf *": "deny",
+      "rm -rf /": "deny",
+      "git push --force": "ask",
+      "git push -f": "ask",
+      "npm publish": "ask",
+      "docker system prune -a": "ask"
+    },
+    "doom_loop": "ask",
+    "external_directory": "ask"
   }
 }

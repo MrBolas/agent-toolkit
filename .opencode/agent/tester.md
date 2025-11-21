@@ -2,6 +2,7 @@
 description: A specialized agent for testing tasks, including test writing, execution, coverage analysis, and framework management
 mode: subagent
 disable: false
+temperature: 0.2
 tools:
   read: true
   grep: true
