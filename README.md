@@ -38,9 +38,110 @@ Each project should have its own `.opencode/` directory with:
 
 Agents will always use the **project-local** `.opencode/` directory in the repository they're working on.
 
+## Parallel Ticket Development
+
+Work on multiple tickets simultaneously using **git worktrees** with **Jira integration** via Atlassian MCP.
+
+### Create a Ticket Workspace
+
+In OpenCode TUI:
+```
+/ticket-create PROJ-123
+```
+
+Or with manual description:
+```
+/ticket-create AUTH-456 "Implement OAuth2 authentication"
+```
+
+Or use the script:
+```bash
+./scripts/create-ticket-workspace.sh PROJ-123
+```
+
+**With Jira Integration (Atlassian MCP enabled):**
+- ✅ Automatically fetches ticket details from Jira
+- ✅ Populates TICKET.md with description, acceptance criteria
+- ✅ Stores ticket context in Serena
+- ✅ Links related tickets and subtasks
+
+This creates:
+- New worktree at `../agent-toolkit-PROJ-123/`
+- New branch: `feature/PROJ-123`
+- Isolated `.serena/` project data with Jira context
+- `TICKET.md` with comprehensive ticket details
+
+### Work on the Ticket
+
+```bash
+cd ../agent-toolkit-AUTH-123
+opencode  # Start OpenCode in this worktree
+```
+
+Each worktree has:
+- ✅ Same `.opencode/` configuration (shared from master)
+- ✅ Isolated `.serena/` memories (ticket-specific knowledge)
+- ✅ Independent OpenCode session
+- ✅ Shared git history
+
+### Manage Workspaces
+
+**List active workspaces with Jira status:**
+```
+/ticket-list
+```
+Shows: worktree path, branch, commit, Jira status, assignee, priority
+
+**Clean up when done:**
+```
+/ticket-cleanup PROJ-123
+```
+- Removes worktree and optionally deletes branch
+- Can update Jira ticket status (Done/In Review)
+- Adds comment to Jira with branch/PR info
+
+### Why Worktrees + Jira Integration?
+
+- **Parallel work**: Multiple tickets open simultaneously
+- **No context switching**: Each ticket has its own terminal/editor
+- **Isolated Serena**: Ticket-specific knowledge doesn't pollute other tickets
+- **Shared config**: All tickets use the same agent configuration
+- **Jira integration**: Automatic ticket context and status updates
+- **Rich context**: Acceptance criteria, related tickets, and subtasks in TICKET.md
+
+### Atlassian MCP Setup
+
+The Atlassian MCP is enabled by default and provides:
+- Automatic Jira ticket fetching
+- Ticket status tracking
+- Jira status updates on cleanup
+- Rich ticket context in Serena
+
+**Authentication**: Follow Atlassian MCP prompts on first use to authenticate with your Jira instance.
+
+See `PARALLEL-DEVELOPMENT.md` for detailed guide.
+
 ## Commands
 
-- **PR Review**: Use `/review-pr https://github.com/user/repo/pull/123` in the TUI to trigger automated PR code review with inline comments.
+### Code Review & Analysis
+- **`/review-pr <url>`** - Automated PR code review with inline comments
+- **`/code-review`** - Review code for quality, security, and best practices
+- **`/refactor`** - Refactor code for clarity and maintainability
+
+### Development Workflow
+- **`/implement`** - Implement a feature or fix
+- **`/test`** - Run tests and analyze results
+- **`/debug`** - Debug issues and errors
+
+### Ticket Management (Parallel Development)
+- **`/ticket-create <id> [description]`** - Create a new ticket worktree with Jira integration
+- **`/ticket-list`** - List all active ticket worktrees with Jira status
+- **`/ticket-cleanup <id>`** - Clean up a completed ticket worktree and update Jira
+
+### Documentation & Planning
+- **`/document`** - Generate or update documentation
+- **`/feature-plan`** - Plan a new feature implementation
+- **`/query`** - Query Serena for project knowledge
 
 ## Agents
 
@@ -59,7 +160,11 @@ This toolkit uses a streamlined **primary + subagent** architecture with 4 focus
 
 The orchestrator delegates using @mentions (e.g., `@developer implement user auth`) with complete context.
 
-## Semantic Memory with Serena
+## MCP Integrations
+
+This toolkit integrates multiple MCP (Model Context Protocol) servers for enhanced capabilities:
+
+### Serena MCP - Semantic Code Memory
 
 **Serena MCP** provides semantic code understanding and persistent memory across sessions.
 
@@ -105,6 +210,52 @@ This toolkit originally used ChromaDB. Serena MCP provides superior:
 - Better integration with OpenCode workflows
 
 ChromaDB support remains available but disabled by default.
+
+### Atlassian MCP - Jira Integration
+
+**Atlassian MCP** provides seamless Jira integration for ticket management:
+
+**Features:**
+- Automatic ticket detail fetching
+- Live ticket status tracking
+- Bidirectional sync (git → Jira)
+- Rich context for agents
+
+**Usage:**
+```
+/ticket-create PROJ-123  # Fetches from Jira
+/ticket-list             # Shows Jira status
+/ticket-cleanup PROJ-123 # Updates Jira
+```
+
+**Setup:**
+- Enabled by default in both Linux and macOS
+- Authenticate on first use
+- Works with any Jira instance
+
+### Context7 MCP - Documentation Lookup
+
+**Context7 MCP** provides access to external documentation:
+
+**Features:**
+- API documentation lookup
+- Framework guides
+- Best practices and patterns
+
+**Usage:**
+Agents automatically use Context7 when they need external documentation.
+
+### GitHub MCP - Repository Integration
+
+**GitHub MCP** provides GitHub API access (disabled by default):
+
+**Features:**
+- PR management
+- Issue tracking
+- Repository operations
+
+**Enable:**
+Set `GITHUB_PERSONAL_ACCESS_TOKEN` in `.env` and enable in config.
 
 ## Troubleshooting
 

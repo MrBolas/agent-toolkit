@@ -75,7 +75,7 @@
         "npx",
         "-y",
         "mcp-remote",
-        "https://mcp.atlassian.com/v1/sse",
+        "https://mcp.atlassian.com/v1/sse"
       ],
       "enabled": true
     },
