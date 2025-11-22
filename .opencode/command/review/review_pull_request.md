@@ -6,7 +6,7 @@ agent: orchestrator
 # Command Name: /review_pull_request
 
 ## Purpose
-Review a GitHub PR with automated code review and inline comments. Uses GitHub MCP for inline comments when available, otherwise delegates to @code_reviewer.
+Review a GitHub PR with automated code review and inline comments. Provides a concise overall summary with detailed feedback in inline comments. Uses GitHub MCP for inline comments when available, otherwise delegates to @code_reviewer.
 
 ## Usage
 ```
@@ -48,8 +48,8 @@ Execute these steps:
 3. **If GitHub MCP available:**
    - Fetch PR details and changed files
    - Perform code analysis using Serena
-   - Post inline comments with specific line references
-   - Provide overall review summary
+    - Post inline comments with specific line references
+    - Provide a concise overall review summary (detailed feedback is in inline comments)
 4. **If GitHub MCP not available:**
    - Delegate to @code_reviewer for analysis
    - Generate review feedback for manual application
