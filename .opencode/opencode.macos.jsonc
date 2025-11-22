@@ -60,7 +60,7 @@
          "--ssl",
          "false"
        ],
-       "enabled": true
+       "enabled": false
      },
      "github": {
        "type": "local",
