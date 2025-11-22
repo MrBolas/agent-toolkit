@@ -69,7 +69,7 @@
         "GITHUB_PERSONAL_ACCESS_TOKEN",
         "ghcr.io/github/github-mcp-server:latest"
       ],
-      "enabled": false
+      "enabled": true
     },
     "atlassian": {
       "type": "local",
