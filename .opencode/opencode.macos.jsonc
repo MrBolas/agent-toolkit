@@ -83,17 +83,19 @@
         },
         "enabled": true
       },
-      "serena": {
-        "type": "local",
-        "command": [
-          "uvx",
-          "--from",
-          "git+https://github.com/oraios/serena",
-          "serena",
-          "start-mcp-server"
-        ],
-        "enabled": true
-      }
+       "serena": {
+         "type": "local",
+         "command": [
+           "uvx",
+           "--from",
+           "git+https://github.com/oraios/serena",
+           "serena",
+           "start-mcp-server",
+           "--enable-web-dashboard",
+           "false"
+         ],
+         "enabled": true
+       }
     },
     "permission": {
       "bash": {
