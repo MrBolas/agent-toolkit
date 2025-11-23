@@ -1,10 +1,11 @@
-.PHONY: help opencode up viewdb stop clean clean-mcp status
+.PHONY: help opencode openspec up viewdb stop clean clean-mcp status
 
 .DEFAULT_GOAL := help
 
 help:
 	@echo "Available commands:"
 	@echo "  make opencode          - Install OS-specific OpenCode configuration to ~/.config/opencode/"
+	@echo "  make openspec          - Install OpenSpec CLI globally"
 	@echo "  make up                - Start ChromaDB and ChromaDB Admin UI containers"
 	@echo "  make viewdb            - Show URLs for accessing ChromaDB"
 	@echo "  make status            - Show status of all ChromaDB and MCP containers"
@@ -20,6 +21,11 @@ opencode:
 		cp .opencode/opencode.linux.jsonc ~/.config/opencode/opencode.jsonc; \
 	fi
 	rsync -a --ignore-existing .opencode/ ~/.config/opencode/
+
+openspec:
+	@echo "Installing OpenSpec CLI globally..."
+	@npm install -g @fission-ai/openspec@latest
+	@echo "✓ OpenSpec CLI installed. Run 'openspec --version' to verify."
 
 up:
 	docker compose up -d

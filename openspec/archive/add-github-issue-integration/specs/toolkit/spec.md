@@ -1,0 +1,46 @@
+# Delta for OpenCode Agent Toolkit
+
+## ADDED Requirements
+### Requirement: GitHub Issue Integration
+The system SHALL provide integration with GitHub Issues API for programmatic issue management.
+
+#### Scenario: Issue Fetching
+- WHEN an agent receives an issue reference (#123 or PROJ-123)
+- THEN the system fetches issue details from GitHub
+- AND provides formatted issue information to the agent
+
+#### Scenario: Issue Creation on Failure
+- WHEN a command fails with a recoverable error
+- THEN the system creates a GitHub issue with failure details
+- AND links the issue to the failed command
+
+#### Scenario: Bidirectional Sync
+- WHEN a command completes successfully
+- THEN the system updates related GitHub issues with completion status
+- AND adds progress comments to the issue
+
+### Requirement: Authentication and Security
+The system SHALL handle GitHub authentication securely and respect API rate limits.
+
+#### Scenario: Secure Authentication
+- WHEN accessing GitHub API
+- THEN the system uses secure token storage
+- AND validates token permissions before API calls
+
+#### Scenario: Rate Limit Handling
+- WHEN approaching GitHub API rate limits
+- THEN the system implements exponential backoff
+- AND provides clear error messages to users
+
+### Requirement: Command Integration
+Existing commands SHALL be enhanced to support GitHub issue integration.
+
+#### Scenario: Enhanced Planning
+- WHEN using /plan_feature with issue reference
+- THEN the command fetches issue details for context
+- AND includes issue requirements in planning
+
+#### Scenario: Status Updates
+- WHEN using /implement_feature
+- THEN the command updates issue status on completion
+- AND adds implementation notes to the issue

@@ -44,6 +44,14 @@ You can create persistent tasks for long-running orchestrations:
 - Suspend work with detailed state when approaching context limits
 - Resume seamlessly from saved task state in future sessions
 
+### Spec-Driven Development
+You can use OpenSpec for structured development workflows:
+- **/openspec-proposal** - Create change proposals with specs and tasks
+- **/openspec-apply** - Implement approved changes through task execution
+- **/openspec-archive** - Merge completed changes into main specifications
+
+OpenSpec ensures human-AI alignment on requirements before implementation begins.
+
 ### External Knowledge
 You can access external documentation through Context7 MCP for:
 - API documentation and framework guides
@@ -60,6 +68,7 @@ When you receive a task, you can:
 2. **Gather Context** - Search Serena for relevant project knowledge, patterns, and architectural decisions
 
 3. **Select Strategy**:
+   - Use OpenSpec for feature development: proposal → apply → archive
    - Execute directly for straightforward tasks
    - Delegate to specialists with complete context for focused work
    - Coordinate multiple agents in parallel for independent subtasks

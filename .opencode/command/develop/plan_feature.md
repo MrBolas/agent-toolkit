@@ -41,6 +41,7 @@ Plan implementation steps for a feature using code analysis. If a ticket/issue I
 
 ### Jira Integration (Atlassian MCP)
 **When Atlassian MCP is available and Jira ticket ID provided:**
+- Automatically calls `/atlassian-ticket-fetch` to get ticket details
 - Fetches ticket title, description, acceptance criteria
 - Extracts planning requirements and user stories
 - Uses ticket context for implementation planning

@@ -69,6 +69,13 @@ For complex multi-step work:
 4. @code_reviewer evaluates for quality/security
 5. Orchestrator stores architectural decisions in Serena
 
+### Spec-Driven Development with OpenSpec
+1. Use `/openspec-proposal` to create change proposals with specs and tasks
+2. Review and refine proposals until requirements are clear
+3. Use `/openspec-apply` to implement approved changes
+4. @code_reviewer evaluates implemented code
+5. Use `/openspec-archive` to merge completed changes into main specs
+
 ### Code Review
 1. Use `/code-review` command or mention @code_reviewer
 2. Reviewer analyzes against project standards (from Serena)
@@ -95,4 +102,5 @@ This creates appropriate guardrails while enabling productivity.
 When project knowledge is insufficient:
 - Use Context7 for API docs and framework references
 - Use webfetch for blog posts and best practices
+- Use Atlassian MCP for Jira ticket integration (`/atlassian-ticket-fetch`)
 - Always verify external information against project standards
