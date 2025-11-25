@@ -27,6 +27,12 @@ services:
     networks:
       - agent-network
 
+  sequential-thinking-mcp:
+    image: mcp/sequentialthinking
+    container_name: sequential-thinking-mcp
+    command: ["--rm", "-i"]
+    networks:
+      - agent-network
 
 networks:
   agent-network:

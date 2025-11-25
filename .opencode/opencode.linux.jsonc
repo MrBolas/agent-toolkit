@@ -88,6 +88,19 @@
         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       },
       "enabled": true
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "docker",
+        "run",
+        "--network",
+        "host",
+        "--rm",
+        "-i",
+        "mcp/sequentialthinking"
+      ],
+      "enabled": true
     }
   },
   "permission": {

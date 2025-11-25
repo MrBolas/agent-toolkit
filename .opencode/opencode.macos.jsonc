@@ -75,38 +75,49 @@
        ],
        "enabled": true
      },
-      "context7": {
-        "type": "remote",
-        "url": "https://mcp.context7.com/mcp",
-        "headers": {
-          "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
-        },
-        "enabled": true
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       },
-       "serena": {
-         "type": "local",
-         "command": [
-           "uvx",
-           "--from",
-           "git+https://github.com/oraios/serena",
-           "serena",
-           "start-mcp-server",
-           "--enable-web-dashboard",
-           "false"
-         ],
-         "enabled": true
-       }
+      "enabled": true
     },
-    "permission": {
-      "bash": {
-        "rm -rf *": "deny",
-        "rm -rf /": "deny",
-        "git push --force": "ask",
-        "git push -f": "ask",
-        "npm publish": "ask",
-        "docker system prune -a": "ask"
-      },
-      "doom_loop": "ask",
-      "external_directory": "ask"
+    "serena": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--enable-web-dashboard",
+        "false"
+      ],
+      "enabled": true
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "mcp/sequentialthinking"
+      ],
+      "enabled": true
     }
+  },
+  "permission": {
+    "bash": {
+      "rm -rf *": "deny",
+      "rm -rf /": "deny",
+      "git push --force": "ask",
+      "git push -f": "ask",
+      "npm publish": "ask",
+      "docker system prune -a": "ask"
+    },
+    "doom_loop": "ask",
+    "external_directory": "ask"
+  }
  }
