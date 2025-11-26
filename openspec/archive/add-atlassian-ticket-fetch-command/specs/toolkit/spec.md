@@ -2,6 +2,7 @@
 
 ## Purpose
 Define the specifications for the OpenCode Agent Toolkit, including agent capabilities, command structures, and integration requirements.
+
 ## Requirements
 ### Requirement: GitHub Issue Integration
 The system SHALL provide integration with GitHub Issues API for programmatic issue management.
@@ -84,5 +85,5 @@ The validation SHALL check for proper OpenSpec delta format including section he
 #### Scenario: Malformed requirements
 - WHEN requirements don't follow "### Requirement: name" format
 - THEN validation identifies the specific issues
-- AND provides examples of correct format
-
+- AND provides examples of correct format</content>
+<parameter name="filePath">openspec/add-atlassian-ticket-fetch-command/specs/toolkit/spec.md

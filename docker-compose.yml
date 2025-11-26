@@ -34,6 +34,20 @@ services:
     networks:
       - agent-network
 
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - agent-network
+
 networks:
   agent-network:
     driver: bridge
+
+volumes:
+  ollama_data:
+  chroma_data:

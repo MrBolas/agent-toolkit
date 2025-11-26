@@ -8,34 +8,58 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "Local Llama.cpp",
       "options": {
-        "baseURL": "http://192.168.1.51:11434/v1"
+         "baseURL": "http://192.168.1.51:9292/v1"
       },
-      "models": {
-        "gpt-oss-20b-Q8_XL": {
-          "name": "GPT-OSS 20B Q8_XL",
-          "options": {
-            "limit": {
-              "context": 45384
-            }
-          },
-        },
-        "qwen3-30b-a3b-instruct-2507-Q4_K_XL": {
-          "name": "Qwen3 30B A3B Instruct 2507 Q4_K_XL",
-          "options": {
-            "limit": {
-              "context": 45384
-            }
-          },
-        },
-        "qwen3-coder-UD_Q4_K_XL": {
-          "name": "Qwen3 Coder UD Q4_K_XL",
-          "options": {
-            "limit": {
-              "context": 36384
-            }
-          },
-        }
-      }
+       "models": {
+         "glm-4.5-air": {
+           "name": "GLM 4.5 Air",
+           "options": {
+             "limit": {
+               "context": 65536
+             }
+           }
+         },
+         "gpt-oss-120b": {
+           "name": "GPT OSS 120B",
+           "options": {
+             "limit": {
+               "context": 65536
+             }
+           }
+         },
+         "gpt-oss-20b": {
+           "name": "GPT OSS 20B",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         },
+         "qwen3-coder-30b-instruct": {
+           "name": "Qwen3 Coder 30B Instruct",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         },
+         "qwen3-vl-30b-instruct": {
+           "name": "Qwen3 VL 30B Instruct",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         },
+         "qwen3-vl-30b-thinking": {
+           "name": "Qwen3 VL 30B Thinking",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         }
+       }
     }
   },
 
