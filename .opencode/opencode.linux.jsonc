@@ -11,28 +11,28 @@
          "baseURL": "http://192.168.1.50:9292/v1"
       },
       "models": {
-          "glm-4.5-air-Q5": {
-            "name": "GLM 4.5 Air Q5",
-            "options": {
-              "limit": {
-                "context": 131072
-              }
-            }
-          },
-          "glm-4.5-air-Q6": {
-            "name": "GLM 4.5 Air Q6",
-            "options": {
-              "limit": {
-                "context": 131072
-              }
-            }
-          },
-          "gpt-oss-120b": {
-          "name": "GPT OSS 120B",
+        "glm-4.5-air-Q5": {
+          "name": "GLM 4.5 Air Q5",
           "options": {
             "limit": {
-              "context": 65536
+              "context": 131072
             }
+          }
+        },
+        "glm-4.5-air-Q6": {
+          "name": "GLM 4.5 Air Q6",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
+        },
+        "gpt-oss-120b": {
+          "name": "GPT OSS 120B",
+            "options": {
+              "limit": {
+                "context": 65536
+              }
           }
         },
         "gpt-oss-20b": {
