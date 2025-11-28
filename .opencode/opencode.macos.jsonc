@@ -3,7 +3,7 @@
   "tui": {
     "scroll_speed": 3
   },
-  "disabled_providers": ["local-llama.cpp"],
+
   "provider": {
     "local-llama.cpp": {
       "npm": "@ai-sdk/openai-compatible",
