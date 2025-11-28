@@ -75,6 +75,14 @@
               "context": 131072
             }
           }
+        },
+        "qwen3-next-80b-a3b-instruct-q8": {
+          "name": "Qwen3 Next 80B A3B Instruct Q8",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
         }
       }
     }
