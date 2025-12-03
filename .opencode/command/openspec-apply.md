@@ -1,7 +1,7 @@
 ---
 description: Implement an approved OpenSpec change by working through the tasks
 agent: developer
-chain: run-tests, review-code
+chain: test-run, code-review
 ---
 
 # Command: /openspec-apply
@@ -27,7 +27,7 @@ Implement an approved OpenSpec change by executing the tasks defined in the chan
 ## Workflow Integration
 - **Before**: Change proposal must be reviewed and approved
 - **During**: Implement tasks from openspec/changes/{change-name}/tasks.md
-- **After**: Automatically chains to /run-tests and /review-code, then use /openspec-archive when done
+- **After**: Automatically chains to /test-run and /code-review, then use /openspec-archive when done
 
 ## Implementation Notes
 
@@ -88,8 +88,8 @@ Execute these steps:
    - Link to proposal and specs
 
 After implementation, automatically chains to:
-1. **/run-tests** - Validate functionality matches specs
-2. **/review-code** - Ensure quality and best practices
+1. **/test-run** - Validate functionality matches specs
+2. **/code-review** - Ensure quality and best practices
 
 Once all tasks are complete and code is reviewed, use:
 - **/openspec-archive** - Merge specs and archive the change

@@ -1,17 +1,17 @@
 ---
 description: Debug and fix issues in the codebase
 agent: developer
-chain: run-tests, review-code
+chain: test-run, code-review
 ---
 
-# Command: /debug-issue
+# Command: /issue-debug
 
 ## Purpose
 Debug and fix issues in the codebase. Identify and resolve bugs, errors, or unexpected behavior.
 
 ## Usage
 ```
-/debug-issue [issue description]
+/issue-debug [issue description]
 ```
 
 ## Arguments
@@ -19,14 +19,14 @@ Debug and fix issues in the codebase. Identify and resolve bugs, errors, or unex
 
 ## Examples
 ```
-/debug-issue "App crashes on login"
-/debug-issue "API returns 500 error"
+/issue-debug "App crashes on login"
+/issue-debug "API returns 500 error"
 ```
 
 ## Workflow Integration
 - **Before**: Reproduce the issue if possible
 - **During**: Use Serena for code analysis, check logs/stack traces
-- **After**: Run /run-tests and /review-code
+- **After**: Run /test-run and /code-review
 
 ## Implementation Notes
 Debug the issue: $ARGUMENTS

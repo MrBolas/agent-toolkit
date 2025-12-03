@@ -3,14 +3,14 @@ description: Generate or improve documentation for code or features
 agent: developer
 ---
 
-# Command: /generate-docs
+# Command: /docs-generate
 
 ## Purpose
 Generate or improve documentation for code or features. Create comprehensive documentation for code, APIs, or features.
 
 ## Usage
 ```
-/generate-docs [target]
+/docs-generate [target]
 ```
 
 ## Arguments
@@ -18,8 +18,8 @@ Generate or improve documentation for code or features. Create comprehensive doc
 
 ## Examples
 ```
-/generate-docs "User authentication API"
-/generate-docs "PaymentService class"
+/docs-generate "User authentication API"
+/docs-generate "PaymentService class"
 ```
 
 ## Workflow Integration

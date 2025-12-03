@@ -1,17 +1,17 @@
 ---
 description: Refactor code for better clarity, performance, or maintainability
 agent: developer
-chain: run-tests, review-code
+chain: test-run, code-review
 ---
 
-# Command: /refactor-code
+# Command: /code-refactor
 
 ## Purpose
 Refactor code for better clarity, performance, or maintainability. Improve existing code without changing functionality.
 
 ## Usage
 ```
-/refactor-code [target code]
+/code-refactor [target code]
 ```
 
 ## Arguments
@@ -19,14 +19,14 @@ Refactor code for better clarity, performance, or maintainability. Improve exist
 
 ## Examples
 ```
-/refactor-code "UserService class"
-/refactor-code "payment processing logic"
+/code-refactor "UserService class"
+/code-refactor "payment processing logic"
 ```
 
 ## Workflow Integration
 - **Before**: Ensure tests exist, understand patterns with Serena
 - **During**: Improve clarity/performance/maintainability
-- **After**: Run /run-tests and /review-code
+- **After**: Run /test-run and /code-review
 
 ## Implementation Notes
 Refactor the code described in: $ARGUMENTS
@@ -37,6 +37,6 @@ Before refactoring:
 3. Identify the specific improvement goal (clarity, performance, maintainability)
 
 After refactoring:
-1. Verify all tests still pass: /run-tests
+1. Verify all tests still pass: /test-run
 2. Store any new patterns or decisions in Serena
-3. Review code quality: /review-code
+3. Review code quality: /code-review

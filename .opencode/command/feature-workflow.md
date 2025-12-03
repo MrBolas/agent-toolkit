@@ -37,11 +37,11 @@ Execute the full feature development workflow. If a ticket/issue ID is provided,
 - **After**: Feature is complete and documented
 
 ## Workflow Steps
-1. Plan the feature: /plan-feature
-2. Implement the feature: /implement-feature
-3. Test the implementation: /run-tests
-4. Review the code: /review-code
-5. Document if needed: /generate-docs
+1. Plan the feature: /feature-plan
+2. Implement the feature: /feature-implement
+3. Test the implementation: /test-run
+4. Review the code: /code-review
+5. Document if needed: /docs-generate
 
 ## Integration Options
 

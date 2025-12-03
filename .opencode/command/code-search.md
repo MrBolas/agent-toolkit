@@ -3,14 +3,14 @@ description: Search for information using semantic code search
 agent: orchestrator
 ---
 
-# Command: /search-code
+# Command: /code-search
 
 ## Purpose
 Search for information using semantic code search. Find information, code patterns, or documentation using semantic search.
 
 ## Usage
 ```
-/search-code [search terms]
+/code-search [search terms]
 ```
 
 ## Arguments
@@ -18,8 +18,8 @@ Search for information using semantic code search. Find information, code patter
 
 ## Examples
 ```
-/search-code "authentication patterns"
-/search-code "error handling in API"
+/code-search "authentication patterns"
+/code-search "error handling in API"
 ```
 
 ## Workflow Integration

@@ -25,6 +25,6 @@ Fetch detailed information about a GitHub issue for use in planning and implemen
 ```
 
 ## Integration
-- Used by /plan-feature when issue IDs are provided
+- Used by /feature-plan when issue IDs are provided
 - Provides context for implementation planning
 - Supports both public and authenticated private repositories

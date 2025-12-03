@@ -25,7 +25,7 @@ Fetch detailed information about a Jira ticket from Atlassian for use in plannin
 ```
 
 ## Integration
-- Used by /plan-feature when Jira ticket IDs are provided
+- Used by /feature-plan when Jira ticket IDs are provided
 - Provides context for implementation planning
 - Supports both cloud and server Atlassian instances
 
