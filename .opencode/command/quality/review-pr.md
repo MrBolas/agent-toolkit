@@ -3,14 +3,14 @@ description: Review a GitHub PR with automated code review and inline comments
 agent: orchestrator
 ---
 
-# Command Name: /review_pull_request
+# Command: /review-pr
 
 ## Purpose
 Review a GitHub PR with automated code review and inline comments. Provides a concise overall summary with detailed feedback in inline comments. Uses GitHub MCP for inline comments when available, otherwise delegates to @code_reviewer.
 
 ## Usage
 ```
-/review_pull_request [PR URL]
+/review-pr [PR URL]
 ```
 
 ## Arguments
@@ -18,7 +18,7 @@ Review a GitHub PR with automated code review and inline comments. Provides a co
 
 ## Examples
 ```
-/review_pull_request https://github.com/user/repo/pull/123
+/review-pr https://github.com/user/repo/pull/123
 ```
 
 ## Workflow Integration

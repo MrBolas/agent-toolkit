@@ -1,17 +1,17 @@
 ---
 description: Run tests and analyze failures
 agent: tester
-chain: review_code
+chain: review-code
 ---
 
-# Command Name: /run_tests
+# Command: /run-tests
 
 ## Purpose
 Run tests and analyze failures. Execute test suite and fix any failing tests.
 
 ## Usage
 ```
-/run_tests
+/run-tests
 ```
 
 ## Arguments
@@ -19,18 +19,18 @@ None (runs all tests)
 
 ## Examples
 ```
-/run_tests
+/run-tests
 ```
 
 ## Workflow Integration
 - **Before**: Code changes committed
 - **During**: Run tests, analyze failures
-- **After**: If passing, suggest /review_code
+- **After**: If passing, suggest /review-code
 
 ## Implementation Notes
 Run tests and fix any failures. Use Serena for code queries to understand test context and implementation details.
 
 After testing:
-- If tests pass, consider a code review: /review_code
-- If failures persist, debug the issues: /debug_issue
+- If tests pass, consider a code review: /review-code
+- If failures persist, debug the issues: /debug-issue
 - Update test coverage insights in memory

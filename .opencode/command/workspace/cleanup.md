@@ -1,16 +1,16 @@
 ---
-description: Clean up a completed ticket/issue worktree and optionally update Jira/GitHub
+description: Clean up a completed worktree and optionally update ticket/issue status
 agent: orchestrator
 ---
 
-# Command Name: /cleanup_worktree
+# Command: /workspace-cleanup
 
 ## Purpose
-Remove a ticket/issue worktree and optionally delete its branch after work is complete. Can also update Jira ticket or GitHub issue status if respective MCP is available.
+Remove a worktree and optionally delete its branch after work is complete. Can also update Jira ticket or GitHub issue status if respective MCP is available.
 
 ## Usage
 ```
-/cleanup_worktree <ticket-id>
+/workspace-cleanup <ticket-id>
 ```
 
 ## Arguments
@@ -19,12 +19,12 @@ Remove a ticket/issue worktree and optionally delete its branch after work is co
 ## Examples
 ```
 # Jira tickets
-/cleanup_worktree AUTH-123
-/cleanup_worktree PROJ-456
+/workspace-cleanup AUTH-123
+/workspace-cleanup PROJ-456
 
 # GitHub issues
-/cleanup_worktree 789
-/cleanup_worktree "#101"
+/workspace-cleanup 789
+/workspace-cleanup "#101"
 ```
 
 ## Workflow Integration
@@ -70,15 +70,15 @@ Remove a ticket/issue worktree and optionally delete its branch after work is co
 
 - ⚠️ Warns about uncommitted changes before deletion
 - ⚠️ Warns if branch is not merged
-- ⚠️ Shows Jira status before cleanup
+- ⚠️ Shows ticket/issue status before cleanup
 - ✅ Requires confirmation for destructive actions
-- ✅ Optional Jira status update
+- ✅ Optional ticket/issue status update
 
 ## Workflow Examples
 
 **Scenario 1: Jira - Work completed and merged**
 ```
-/cleanup_worktree PROJ-123
+/workspace-cleanup PROJ-123
 → Branch merged to master
 → Offer to mark Jira ticket as "Done"
 → Remove worktree and branch
@@ -86,7 +86,7 @@ Remove a ticket/issue worktree and optionally delete its branch after work is co
 
 **Scenario 2: GitHub - Work completed and merged**
 ```
-/cleanup_worktree 789
+/workspace-cleanup 789
 → Branch merged to master
 → Offer to close GitHub issue
 → Remove worktree and branch
@@ -94,7 +94,7 @@ Remove a ticket/issue worktree and optionally delete its branch after work is co
 
 **Scenario 3: PR created but not merged**
 ```
-/cleanup_worktree AUTH-456
+/workspace-cleanup AUTH-456
 → Branch not merged (PR pending)
 → Offer to mark ticket/issue as "In Review"
 → Keep branch, remove worktree only
@@ -102,7 +102,7 @@ Remove a ticket/issue worktree and optionally delete its branch after work is co
 
 **Scenario 4: Work abandoned**
 ```
-/cleanup_worktree API-789
+/workspace-cleanup API-789
 → Uncommitted changes detected
 → Confirm deletion
 → Remove worktree and branch

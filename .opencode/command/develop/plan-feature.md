@@ -4,14 +4,14 @@ agent: orchestrator
 subtask: true
 ---
 
-# Command Name: /plan_feature
+# Command: /plan-feature
 
 ## Purpose
 Plan implementation steps for a feature using code analysis. If a ticket/issue ID is provided, fetches requirements from Jira/GitHub. Break down feature requirements into actionable implementation steps.
 
 ## Usage
 ```
-/plan_feature [feature description or ticket/issue ID]
+/plan-feature [feature description or ticket/issue ID]
 ```
 
 ## Arguments
@@ -20,28 +20,28 @@ Plan implementation steps for a feature using code analysis. If a ticket/issue I
 ## Examples
 ```
 # Manual descriptions
-/plan_feature "Add user profile page"
-/plan_feature "Implement payment processing"
+/plan-feature "Add user profile page"
+/plan-feature "Implement payment processing"
 
 # Jira tickets
-/plan_feature PROJ-123
-/plan_feature AUTH-456
+/plan-feature PROJ-123
+/plan-feature AUTH-456
 
 # GitHub issues
-/plan_feature 789
-/plan_feature "#101"
+/plan-feature 789
+/plan-feature "#101"
 ```
 
 ## Workflow Integration
 - **Before**: Gather requirements (fetch from ticket/issue if ID provided)
 - **During**: Analyze existing code patterns
-- **After**: Feed into /implement_feature command
+- **After**: Feed into /implement-feature command
 
 ## Integration Options
 
 ### Jira Integration (Atlassian MCP)
 **When Atlassian MCP is available and Jira ticket ID provided:**
-- Automatically calls `/atlassian-ticket-fetch` to get ticket details
+- Automatically calls `/jira-fetch` to get ticket details
 - Fetches ticket title, description, acceptance criteria
 - Extracts planning requirements and user stories
 - Uses ticket context for implementation planning

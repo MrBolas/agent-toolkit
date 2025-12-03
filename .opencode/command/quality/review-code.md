@@ -1,17 +1,17 @@
 ---
 description: Review code for quality, security, and best practices
 agent: code_reviewer
-chain: debug_issue, refactor_code, generate_documentation
+chain: debug-issue, refactor-code, generate-docs
 ---
 
-# Command Name: /review_code
+# Command: /review-code
 
 ## Purpose
 Review code for quality, security, and best practices. Use Serena tools for symbol searches and understanding code context.
 
 ## Usage
 ```
-/review_code
+/review-code
 ```
 
 ## Arguments
@@ -19,7 +19,7 @@ None (analyzes current codebase or specified files)
 
 ## Examples
 ```
-/review_code
+/review-code
 ```
 
 ## Workflow Integration
@@ -29,6 +29,6 @@ None (analyzes current codebase or specified files)
 
 ## Implementation Notes
 After review:
-- If issues found, suggest fixes: /debug_issue or /refactor_code
-- If code is ready, consider documentation: /generate_documentation
+- If issues found, suggest fixes: /debug-issue or /refactor-code
+- If code is ready, consider documentation: /generate-docs
 - Store review insights in repository memory

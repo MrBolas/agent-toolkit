@@ -1,16 +1,16 @@
 ---
-description: Create a new git worktree for parallel ticket/issue development with Jira/GitHub integration
+description: Create a new git worktree for parallel ticket/issue development
 agent: orchestrator
 ---
 
-# Command Name: /create_worktree
+# Command: /workspace-create
 
 ## Purpose
 Create a new git worktree workspace for developing a ticket/issue in parallel with other work. Automatically fetches ticket details from Jira (via Atlassian MCP) or GitHub issues (via GitHub MCP) if available.
 
 ## Usage
 ```
-/create_worktree <ticket-id> [description]
+/workspace-create <ticket-id> [description]
 ```
 
 ## Arguments
@@ -20,12 +20,12 @@ Create a new git worktree workspace for developing a ticket/issue in parallel wi
 ## Examples
 ```
 # Jira tickets
-/create_worktree PROJ-123
-/create_worktree AUTH-456 "Implement OAuth2 authentication"
+/workspace-create PROJ-123
+/workspace-create AUTH-456 "Implement OAuth2 authentication"
 
 # GitHub issues
-/create_worktree 123
-/create_worktree "#456" "Fix login bug"
+/workspace-create 123
+/workspace-create "#456" "Fix login bug"
 ```
 
 ## Workflow Integration

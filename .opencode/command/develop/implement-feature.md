@@ -1,17 +1,17 @@
 ---
 description: Implement a feature with high-quality code
 agent: developer
-chain: run_tests, review_code
+chain: run-tests, review-code
 ---
 
-# Command Name: /implement_feature
+# Command: /implement-feature
 
 ## Purpose
 Implement a feature with high-quality code. If a ticket/issue ID is provided, fetches requirements from Jira/GitHub. Write production-ready code for new features or functionality.
 
 ## Usage
 ```
-/implement_feature [feature description or ticket/issue ID]
+/implement-feature [feature description or ticket/issue ID]
 ```
 
 ## Arguments
@@ -20,22 +20,22 @@ Implement a feature with high-quality code. If a ticket/issue ID is provided, fe
 ## Examples
 ```
 # Manual descriptions
-/implement_feature "Add dark mode toggle"
-/implement_feature "Create user registration form"
+/implement-feature "Add dark mode toggle"
+/implement-feature "Create user registration form"
 
 # Jira tickets
-/implement_feature PROJ-123
-/implement_feature AUTH-456
+/implement-feature PROJ-123
+/implement-feature AUTH-456
 
 # GitHub issues
-/implement_feature 789
-/implement_feature "#101"
+/implement-feature 789
+/implement-feature "#101"
 ```
 
 ## Workflow Integration
 - **Before**: Review feature plan or fetch requirements from ticket/issue
 - **During**: Follow existing patterns, write tests
-- **After**: Run /run_tests and /review_code
+- **After**: Run /run-tests and /review-code
 
 ## Integration Options
 
@@ -68,7 +68,7 @@ Execute these steps:
 4. **Use Serena** for understanding existing code patterns and architecture
 
 After implementation:
-1. Run tests to validate functionality: /run_tests
-2. Review code quality: /review_code
+1. Run tests to validate functionality: /run-tests
+2. Review code quality: /review-code
 
 Consider updating repository memory with new patterns if significant architectural changes were made.

@@ -4,14 +4,14 @@ agent: orchestrator
 subtask: true
 ---
 
-# Command Name: /atlassian-ticket-fetch
+# Command: /jira-fetch
 
 ## Purpose
 Fetch detailed information about a Jira ticket from Atlassian for use in planning and implementation. Supports various ticket reference formats and provides structured context for development work.
 
 ## Usage
 ```
-/atlassian-ticket-fetch [ticket-reference]
+/jira-fetch [ticket-reference]
 ```
 
 ## Arguments
@@ -19,13 +19,13 @@ Fetch detailed information about a Jira ticket from Atlassian for use in plannin
 
 ## Examples
 ```
-/atlassian-ticket-fetch PROJ-123
-/atlassian-ticket-fetch JIRA-456
-/atlassian-ticket-fetch https://company.atlassian.net/browse/PROJ-789
+/jira-fetch PROJ-123
+/jira-fetch JIRA-456
+/jira-fetch https://company.atlassian.net/browse/PROJ-789
 ```
 
 ## Integration
-- Used by /plan_feature when Jira ticket IDs are provided
+- Used by /plan-feature when Jira ticket IDs are provided
 - Provides context for implementation planning
 - Supports both cloud and server Atlassian instances
 

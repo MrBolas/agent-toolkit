@@ -3,14 +3,14 @@ description: Complete feature development workflow (plan, implement, test, revie
 agent: orchestrator
 ---
 
-# Command Name: /feature_workflow
+# Command: /feature-workflow
 
 ## Purpose
 Execute the full feature development workflow. If a ticket/issue ID is provided, fetches description from Jira/GitHub. Complete feature development from planning to documentation.
 
 ## Usage
 ```
-/feature_workflow [feature description or ticket/issue ID]
+/feature-workflow [feature description or ticket/issue ID]
 ```
 
 ## Arguments
@@ -19,16 +19,16 @@ Execute the full feature development workflow. If a ticket/issue ID is provided,
 ## Examples
 ```
 # Manual descriptions
-/feature_workflow "Add user authentication"
-/feature_workflow "Implement payment system"
+/feature-workflow "Add user authentication"
+/feature-workflow "Implement payment system"
 
 # Jira tickets
-/feature_workflow PROJ-123
-/feature_workflow AUTH-456
+/feature-workflow PROJ-123
+/feature-workflow AUTH-456
 
 # GitHub issues
-/feature_workflow 789
-/feature_workflow "#101"
+/feature-workflow 789
+/feature-workflow "#101"
 ```
 
 ## Workflow Integration
@@ -37,11 +37,11 @@ Execute the full feature development workflow. If a ticket/issue ID is provided,
 - **After**: Feature is complete and documented
 
 ## Workflow Steps
-1. Plan the feature: /plan_feature
-2. Implement the feature: /implement_feature
-3. Test the implementation: /run_tests
-4. Review the code: /review_code
-5. Document if needed: /generate_documentation
+1. Plan the feature: /plan-feature
+2. Implement the feature: /implement-feature
+3. Test the implementation: /run-tests
+4. Review the code: /review-code
+5. Document if needed: /generate-docs
 
 ## Integration Options
 

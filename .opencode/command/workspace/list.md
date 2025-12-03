@@ -1,16 +1,16 @@
 ---
-description: List all active ticket/issue worktrees with Jira/GitHub status
+description: List all active worktrees with optional ticket/issue status
 agent: orchestrator
 ---
 
-# Command Name: /list_worktrees
+# Command: /workspace-list
 
 ## Purpose
 List all active git worktrees created for parallel ticket/issue development, with optional Jira/GitHub status integration.
 
 ## Usage
 ```
-/list_worktrees
+/workspace-list
 ```
 
 ## Arguments
@@ -18,7 +18,7 @@ None
 
 ## Examples
 ```
-/list_worktrees
+/workspace-list
 ```
 
 ## Workflow Integration
@@ -41,7 +41,7 @@ For each worktree:
 ## Example Output
 
 ```
-Active Ticket/Issue Worktrees:
+Active Worktrees:
 ==============================
 
 📁 ../agent-toolkit-PROJ-123
@@ -82,7 +82,7 @@ Active Ticket/Issue Worktrees:
 Execute these steps:
 
 1. **List all git worktrees** with `git worktree list`
-2. **Filter ticket/issue worktrees** (exclude main repo)
+2. **Filter worktrees** (exclude main repo)
 3. **Extract ticket/issue IDs** from branch names
 4. **Check MCP availability and query status:**
    - If Atlassian MCP available and ID matches Jira format → Query Jira for status/assignee/priority
