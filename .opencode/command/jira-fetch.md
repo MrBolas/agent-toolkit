@@ -29,6 +29,34 @@ Fetch detailed information about a Jira ticket from Atlassian for use in plannin
 - Provides context for implementation planning
 - Supports both cloud and server Atlassian instances
 
+## Implementation
+
+When this command is invoked, perform the following steps:
+
+1. **Extract Ticket Reference**: Parse the ticket reference from the command argument
+   - Support formats: `PROJ-123`, `JIRA-456`, or full Atlassian URLs
+   - Extract the project key and ticket number
+
+2. **Fetch Ticket Data**: Use the Atlassian MCP to retrieve ticket information
+   - Call the appropriate Atlassian MCP tool to fetch the ticket
+   - Include all relevant fields: title, description, status, assignee, priority, type, comments, related issues
+
+3. **Format Response**: Present the information in a clear, structured format
+   - Use the example output format as a template
+   - Include emoji indicators for visual clarity (🎫 for ticket header)
+   - Format acceptance criteria as checkboxes if present
+   - List related issues and recent comments
+
+4. **Error Handling**: Handle common failure scenarios
+   - Ticket not found: Inform user and verify ticket reference format
+   - Authentication issues: Guide user to check MCP configuration
+   - Permission denied: Explain access requirements
+   - MCP unavailable: Inform user that Atlassian MCP must be configured
+
+5. **Context Preservation**: Store the fetched information for use in subsequent commands
+   - This data will be used by `/feature-plan` and other workflow commands
+   - Include ticket key, description, and acceptance criteria in context
+
 ## Requirements
 - Atlassian MCP must be available and configured
 - Valid authentication (API token or OAuth)
