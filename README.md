@@ -7,10 +7,11 @@ This repository provides a blueprint for configuring the OpenCode Agent Toolkit.
 1. Copy `.env.example` to `.env` and fill in your API keys:
    - `GITHUB_TOKEN`: Your GitHub Personal Access Token (with `repo` scope for PR access)
 
-2. **OS-Specific Configuration**: This toolkit automatically detects your OS and uses the appropriate config:
-   - **macOS**: Uses `.opencode/opencode.macos.jsonc` (with `host.docker.internal`)
-   - **Linux**: Uses `.opencode/opencode.linux.jsonc` (with `--network host`)
-   - Run `make opencode` to install the correct config to `~/.config/opencode/`
+2. **OS-Specific Configuration**: This toolkit automatically detects your OS and generates the appropriate config:
+   - **macOS**: Uses `.opencode/opencode.macos.jsonc` template (with `host.docker.internal`)
+   - **Linux**: Uses `.opencode/opencode.linux.jsonc` template (with `--network host`)
+   - Run `make opencode` to generate `.opencode/opencode.jsonc` and install to `~/.config/opencode/`
+   - Only the generated `opencode.jsonc` is copied (OS-specific templates remain in the repo)
 
 This repository serves as a blueprint/template for OpenCode agent configuration. Use it to bootstrap new projects.
 

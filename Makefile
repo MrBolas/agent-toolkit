@@ -14,13 +14,18 @@ help:
 	@echo "  make clean-mcp         - Clean up orphaned chroma-mcp containers"
 
 opencode:
-	mkdir -p ~/.config/opencode
+	@echo "Generating OS-specific opencode.jsonc..."
 	@if [ "$$(uname -s)" = "Darwin" ]; then \
-		cp .opencode/opencode.macos.jsonc ~/.config/opencode/opencode.jsonc; \
+		cp .opencode/opencode.macos.jsonc .opencode/opencode.jsonc; \
+		echo "✓ Using macOS configuration"; \
 	else \
-		cp .opencode/opencode.linux.jsonc ~/.config/opencode/opencode.jsonc; \
+		cp .opencode/opencode.linux.jsonc .opencode/opencode.jsonc; \
+		echo "✓ Using Linux configuration"; \
 	fi
-	rsync -a --ignore-existing .opencode/ ~/.config/opencode/
+	@echo "Installing to ~/.config/opencode/..."
+	@mkdir -p ~/.config/opencode
+	@rsync -a --exclude='opencode.macos.jsonc' --exclude='opencode.linux.jsonc' .opencode/ ~/.config/opencode/
+	@echo "✓ OpenCode configuration installed successfully"
 
 openspec:
 	@echo "Installing OpenSpec CLI globally..."

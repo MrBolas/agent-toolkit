@@ -6,8 +6,22 @@ This repository provides a blueprint for configuring OpenCode multi-agent system
 
 - `.opencode/agent/` - Agent configurations (orchestrator, developer, code_reviewer, tester)
 - `.opencode/command/` - Custom commands for common workflows
-- `.opencode/opencode.*.jsonc` - OS-specific configurations (macOS, Linux)
+- `.opencode/opencode.*.jsonc` - OS-specific configuration templates (macOS, Linux)
+- `.opencode/opencode.jsonc` - Generated config (created by `make opencode`, gitignored)
 - `docker-compose.yml` - Infrastructure for ChromaDB (deprecated, migrating to Serena)
+
+### Configuration Management
+
+The toolkit uses OS-specific configuration templates:
+- `opencode.macos.jsonc` - Template for macOS (uses `host.docker.internal`)
+- `opencode.linux.jsonc` - Template for Linux (uses `--network host`)
+
+Running `make opencode` will:
+1. Detect your OS and copy the appropriate template to `opencode.jsonc`
+2. Install the configuration to `~/.config/opencode/`
+3. Exclude the OS-specific templates from the installation (only `opencode.jsonc` is copied)
+
+This ensures only one configuration file is active at a time.
 
 ## Agent Architecture
 
