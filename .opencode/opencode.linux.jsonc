@@ -127,7 +127,7 @@
         "mcp-remote",
         "https://mcp.atlassian.com/v1/sse"
       ],
-      "enabled": false
+      "enabled": true
     },
     "context7": {
       "type": "remote",
