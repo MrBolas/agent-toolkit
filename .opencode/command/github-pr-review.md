@@ -41,9 +41,12 @@ Review a GitHub PR with automated code review and inline comments. Provides a co
 - Manual PR commenting required
 
 ## Implementation Notes
+
+**PR URL or reference: $ARGUMENTS**
+
 Execute these steps:
 
-1. **Parse PR URL** and validate format
+1. **Parse PR URL** from $ARGUMENTS and validate format
 2. **Check GitHub MCP availability**
 3. **If GitHub MCP available:**
    - Fetch PR details and changed files

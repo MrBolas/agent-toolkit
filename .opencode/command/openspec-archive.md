@@ -31,10 +31,12 @@ Archive a completed OpenSpec change by merging the approved spec deltas into the
 
 ## Implementation Notes
 
+**Change name to archive: $ARGUMENTS**
+
 Execute these steps:
 
-1. **Validate completion**:
-   - Ensure openspec/changes/{change-name}/ exists
+1. **Validate completion** for $ARGUMENTS:
+   - Ensure openspec/changes/$ARGUMENTS/ exists
    - Verify all tasks in tasks.md are marked complete `[x]`
    - Check that implementation has been tested and reviewed
    - Warn if incomplete tasks found (require --yes to proceed)

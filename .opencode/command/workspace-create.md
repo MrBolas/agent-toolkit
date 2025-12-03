@@ -103,9 +103,11 @@ Each worktree has:
 
 ## Implementation
 
+**Ticket/issue ID and optional description: $ARGUMENTS**
+
 Execute these steps:
 
-1. **Validate ticket/issue ID** is provided
+1. **Parse arguments**: Extract ticket/issue ID from $ARGUMENTS (first argument is ID, rest is optional description)
 2. **Check MCP availability:**
    - If ID matches Jira format (XXX-123) and Atlassian MCP available → fetch from Jira
    - Else if ID is numeric/#numeric and GitHub MCP available → fetch from GitHub

@@ -31,10 +31,12 @@ Create an OpenSpec change proposal that captures spec updates for a new feature 
 
 ## Implementation Notes
 
+**Feature description or ticket/issue ID: $ARGUMENTS**
+
 Execute these steps:
 
 1. **Apply ticket-fetch pattern** (see _fragments/ticket-fetch.md):
-   - Parse input to determine if it's a ticket ID or description
+   - Parse $ARGUMENTS to determine if it's a ticket ID or description
    - Fetch from Jira/GitHub if ID detected and MCP available
    - Extract requirements from fetched data or use manual description
 

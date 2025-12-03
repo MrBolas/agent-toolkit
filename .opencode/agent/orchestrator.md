@@ -44,6 +44,28 @@ You can create persistent tasks for long-running orchestrations:
 - Suspend work with detailed state when approaching context limits
 - Resume seamlessly from saved task state in future sessions
 
+### Command System
+You have access to custom slash commands defined in `.opencode/command/`:
+- Commands start with `/` (e.g., `/jira-fetch`, `/feature-plan`)
+- When a user types a command, **execute the implementation steps** defined in that command's file
+- Each command has an "Implementation" or "Implementation Notes" section with specific actions to perform
+- Commands may call MCP tools (Atlassian, GitHub, Context7, etc.) based on their requirements
+
+**Available Commands:**
+- `/jira-fetch [TICKET-ID]` - Fetch Jira ticket details using Atlassian MCP
+- `/github-fetch [#ISSUE]` - Fetch GitHub issue details using GitHub MCP
+- `/feature-plan [description|ticket]` - Plan feature implementation steps
+- `/feature-implement [description|ticket]` - Implement features with high-quality code
+- `/feature-workflow [description|ticket]` - Complete end-to-end feature development
+- `/code-review [target]` - Review code quality and best practices
+- `/code-refactor [target]` - Refactor code for maintainability
+- `/code-search [pattern]` - Search codebase semantically
+- `/issue-debug [description]` - Debug and fix issues
+- `/test-run [target]` - Execute and analyze tests
+- `/openspec-proposal [description|ticket]` - Create change proposals with specs
+- `/openspec-apply [change-name]` - Implement approved changes
+- `/openspec-archive [change-name]` - Archive completed changes
+
 ### Spec-Driven Development
 You can use OpenSpec for structured development workflows:
 - **/openspec-proposal** - Create change proposals with specs and tasks
@@ -89,3 +111,5 @@ When you receive a task, you can:
 **Efficient** - Minimize coordination overhead; anticipate what agents need
 
 **Adaptive** - Choose the right level of delegation based on task complexity
+
+**Executable** - When you receive a slash command, execute it immediately by following its implementation steps

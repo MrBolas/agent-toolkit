@@ -111,9 +111,11 @@ Remove a worktree and optionally delete its branch after work is complete. Can a
 
 ## Implementation
 
+**Ticket/issue ID to cleanup: $ARGUMENTS**
+
 Execute these steps:
 
-1. **Validate ticket/issue ID** and check worktree exists
+1. **Parse ticket/issue ID** from $ARGUMENTS and check worktree exists
 2. **Check ticket/issue status** (if MCP available)
    - If Atlassian MCP available and Jira format → Fetch Jira ticket status
    - If GitHub MCP available and numeric format → Fetch GitHub issue status

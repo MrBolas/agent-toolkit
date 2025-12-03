@@ -31,31 +31,56 @@ Fetch detailed information about a Jira ticket from Atlassian for use in plannin
 
 ## Implementation
 
-When this command is invoked, perform the following steps:
+**Ticket ID to fetch: $ARGUMENTS**
 
-1. **Extract Ticket Reference**: Parse the ticket reference from the command argument
-   - Support formats: `PROJ-123`, `JIRA-456`, or full Atlassian URLs
-   - Extract the project key and ticket number
+Execute these steps to fetch the Jira ticket:
 
-2. **Fetch Ticket Data**: Use the Atlassian MCP to retrieve ticket information
-   - Call the appropriate Atlassian MCP tool to fetch the ticket
-   - Include all relevant fields: title, description, status, assignee, priority, type, comments, related issues
+### Step 1: Parse the Ticket Reference
+Extract the ticket key from the provided argument: $ARGUMENTS
+- Input format: `PROJ-123`, `WTM-336`, `JIRA-456`, or full URLs like `https://company.atlassian.net/browse/PROJ-789`
+- Extract just the ticket key (e.g., `WTM-336` from any format)
 
-3. **Format Response**: Present the information in a clear, structured format
-   - Use the example output format as a template
-   - Include emoji indicators for visual clarity (🎫 for ticket header)
-   - Format acceptance criteria as checkboxes if present
-   - List related issues and recent comments
+### Step 2: Call Atlassian MCP
+Use the available Atlassian MCP tools to fetch the ticket:
+- Look for Atlassian MCP tools in your available tools list
+- Call the appropriate tool to retrieve ticket information for the extracted ticket key
+- Request all available fields: title, description, status, assignee, priority, type, acceptance criteria, comments, related issues
 
-4. **Error Handling**: Handle common failure scenarios
-   - Ticket not found: Inform user and verify ticket reference format
-   - Authentication issues: Guide user to check MCP configuration
-   - Permission denied: Explain access requirements
-   - MCP unavailable: Inform user that Atlassian MCP must be configured
+### Step 3: Format and Present Results
+Display the fetched information in a structured, readable format:
 
-5. **Context Preservation**: Store the fetched information for use in subsequent commands
-   - This data will be used by `/feature-plan` and other workflow commands
-   - Include ticket key, description, and acceptance criteria in context
+```
+🎫 **Jira Ticket: [TICKET-KEY]**
+**Title:** [ticket title]
+**Status:** [current status]
+**Assignee:** [assignee email/name]
+**Priority:** [priority level]
+**Type:** [issue type]
+
+**Description:**
+[ticket description text]
+
+**Acceptance Criteria:** (if present)
+- [ ] [criterion 1]
+- [ ] [criterion 2]
+
+**Related Issues:** (if present)
+- [KEY-1]: [title]
+- [KEY-2]: [title]
+
+**Comments:** ([count] comments)
+- [Author]: [comment text]
+```
+
+### Step 4: Handle Errors Gracefully
+If issues occur:
+- **MCP not available**: "The Atlassian MCP is not available. Please ensure it's configured in `.opencode/opencode.*.jsonc`"
+- **Ticket not found**: "Ticket [KEY] not found. Please verify the ticket key and your access permissions."
+- **Authentication failed**: "Authentication failed. Please check your Atlassian API token configuration."
+- **Permission denied**: "You don't have permission to access ticket [KEY]. Please verify your Jira access."
+
+### Step 5: Preserve Context
+Keep the fetched ticket information in context for use by subsequent commands like `/feature-plan` or `/feature-implement`.
 
 ## Requirements
 - Atlassian MCP must be available and configured

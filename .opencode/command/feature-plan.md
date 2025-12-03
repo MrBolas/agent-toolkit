@@ -58,9 +58,12 @@ Plan implementation steps for a feature using code analysis. If a ticket/issue I
 - Manual requirement gathering
 
 ## Implementation Notes
+
+**Feature description or ticket/issue ID: $ARGUMENTS**
+
 Execute these steps:
 
-1. **Parse input**: Determine if it's a ticket/issue ID or manual description
+1. **Parse input**: Determine if $ARGUMENTS is a ticket/issue ID or manual description
 2. **Fetch requirements** (if ID provided):
    - If Jira format and Atlassian MCP available → Fetch ticket details
    - If GitHub format and GitHub MCP available → Fetch issue details

@@ -31,9 +31,11 @@ Implement an approved OpenSpec change by executing the tasks defined in the chan
 
 ## Implementation Notes
 
+**Change name to apply: $ARGUMENTS**
+
 Execute these steps:
 
-1. **Validate change exists**:
+1. **Validate change exists** for $ARGUMENTS:
    - Ensure openspec/changes/{change-name}/ folder exists
    - Verify proposal.md, tasks.md, and specs/ are present
    - Confirm specs have been reviewed and approved
