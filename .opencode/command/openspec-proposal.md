@@ -114,11 +114,6 @@ Execute these steps:
      THEN [expected result]
      ```
 
-8. **Store context in Serena**:
-   - Save proposal summary for future reference
-   - Link to ticket/issue if applicable
-   - Document architectural decisions made
-
 ## OpenSpec Delta Format
 
 Spec deltas show what will change in the main specs:
