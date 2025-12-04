@@ -1,6 +1,7 @@
 ---
 description: Implements features and edits code
 mode: subagent
+model: anthropic/claude-haiku-4-20250514
 disable: false
 temperature: 0.3
 tools:
