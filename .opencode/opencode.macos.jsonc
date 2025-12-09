@@ -91,6 +91,14 @@
               "context": 131072
             }
           }
+        },
+        "glm-4.6v-flash-q8": {
+          "name": "GLM 4.6V Flash Q8",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
         }
       }
     }
