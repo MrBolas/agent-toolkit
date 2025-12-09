@@ -256,6 +256,38 @@ Commands are grouped by the primary object they operate on:
 
 This creates appropriate guardrails while enabling productivity.
 
+## Token Optimization: Dynamic Context Pruning (DCP)
+
+This toolkit includes the [Dynamic Context Pruning plugin](https://github.com/Tarquinen/opencode-dynamic-context-pruning) to automatically optimize token usage across long sessions.
+
+### How It Works
+
+DCP uses **automatic deduplication** to remove redundant tool outputs from conversation history:
+- Identifies repeated tool calls (e.g., reading the same file multiple times)
+- Keeps only the most recent output
+- Runs automatically on every request with **zero LLM cost**
+
+### Configuration
+
+DCP is configured in `.opencode/dcp.jsonc` with a conservative strategy:
+- **Deduplication only** - No AI analysis overhead
+- **Protected tools** - Critical tools like `task`, `todowrite`, `todoread` are never pruned
+- **Safe for multi-agent system** - Subagents won't accidentally lose context
+
+### Strategy Options
+
+If you need more aggressive token optimization in long sessions, DCP supports additional strategies:
+- **`onIdle`** - Semantic analysis during idle moments (uses LLM but lighter weight)
+- **`onTool`** - AI analysis when the `prune` tool is manually called
+
+See the [DCP README](https://github.com/Tarquinen/opencode-dynamic-context-pruning#configuration) for full configuration options.
+
+### Trade-offs
+
+- **Benefit**: Significant token savings in long sessions (especially with many repeated file reads)
+- **Cost**: Prompt caching efficiency slightly reduced (DCP changes message content, invalidating cache prefixes)
+- **Result**: Usually token savings outweigh cache miss cost
+
 ## External Knowledge
 
 When project knowledge is insufficient:

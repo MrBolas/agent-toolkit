@@ -1,0 +1,28 @@
+// Dynamic Context Pruning (DCP) Configuration
+// Option A: Conservative strategy - deduplication only, zero LLM overhead
+// See: https://github.com/Tarquinen/opencode-dynamic-context-pruning
+
+{
+  "enabled": true,
+  
+  // Strategy triggers
+  // - onIdle: runs when OpenCode is idle (background optimization)
+  // - onTool: runs when AI calls the prune tool manually
+  // Option A: Empty arrays = deduplication only (always runs automatically)
+  "strategies": {
+    "onIdle": [],              // No AI analysis during idle time
+    "onTool": []               // No AI analysis when prune tool called
+  },
+
+  // Tools that are never pruned from context
+  // Protects critical state management and workflow tools
+  "protectedTools": [
+    "task",                    // Multi-step task coordination
+    "todowrite",               // Todo list management
+    "todoread",                // Todo list reading
+    "prune",                   // Pruning control
+    "batch",                   // Batch operations
+    "write",                   // File writing
+    "edit"                     // File editing
+  ]
+}
