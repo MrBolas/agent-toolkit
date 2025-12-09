@@ -130,27 +130,27 @@
        ],
        "enabled": false
      },
-     "github": {
-       "type": "local",
-       "command": [
-         "docker",
-         "run",
-         "--rm",
-         "-i",
-         "-e",
-         "GITHUB_PERSONAL_ACCESS_TOKEN",
-         "ghcr.io/github/github-mcp-server:latest"
-       ],
-       "enabled": true
-     },
-    "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-      "headers": {
-        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      "github": {
+        "type": "local",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-i",
+          "-e",
+          "GITHUB_PERSONAL_ACCESS_TOKEN",
+          "ghcr.io/github/github-mcp-server:latest"
+        ],
+        "enabled": false
       },
-      "enabled": true
-    },
+     "context7": {
+       "type": "remote",
+       "url": "https://mcp.context7.com/mcp",
+       "headers": {
+         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+       },
+       "enabled": false
+     },
     "serena": {
       "type": "local",
       "command": [
