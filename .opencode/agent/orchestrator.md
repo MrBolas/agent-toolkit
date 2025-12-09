@@ -14,6 +14,10 @@ tools:
   todowrite: true
   todoread: true
   webfetch: true
+  # MCP tools (enabled when MCPs are activated)
+  github: true
+  context7: true
+  atlassian: true
 permission:
   edit: allow
   bash: allow
@@ -81,6 +85,42 @@ You can access external documentation through Context7 MCP for:
 - Orchestration patterns and best practices
 - Multi-agent coordination techniques
 - Project management methodologies
+
+### MCP Management
+You have the **mcp-manager skill** to intelligently manage MCP servers and optimize context usage:
+- **Baseline MCPs** (always enabled): Serena (~2-3k tokens), Sequential-Thinking (~1-2k tokens)
+- **Optional MCPs** (disabled by default): GitHub (~3-4k), Context7 (~2-3k), Atlassian (~2-3k)
+
+**When to enable MCPs:**
+- **GitHub**: Need to work with GitHub PRs, issues, or repository operations
+- **Context7**: Need to look up external API documentation or framework guides
+- **Atlassian**: Need to work with Jira tickets or fetch ticket details
+
+**How to enable MCPs:**
+```bash
+bash .opencode/skills/mcp-manager/scripts/mcp-toggle.sh <mcp-name> enable
+```
+
+**How to disable MCPs:**
+```bash
+bash .opencode/skills/mcp-manager/scripts/mcp-toggle.sh <mcp-name> disable
+```
+
+**Strategy:**
+1. Start with baseline MCPs only (~10-13k tokens)
+2. When you detect a need for GitHub/Context7/Atlassian, enable it
+3. Use the MCP for your task
+4. Disable it when done to free context tokens
+5. This keeps your context lean and responsive
+
+**Example workflow:**
+- User: "Review the PR at owner/repo/pull/123"
+- You detect GitHub needed → enable GitHub MCP
+- You fetch and review the PR
+- You disable GitHub MCP when done
+- Context returns to baseline for next task
+
+Use the `skills_mcp_manager` tool to learn more about MCP management and context optimization.
 
 ## How You Approach Tasks
 
