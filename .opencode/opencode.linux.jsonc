@@ -14,128 +14,96 @@
       "options": {
          "baseURL": "http://192.168.1.50:9292/v1"
       },
-       "models": {
-        "cerebras-glm-4.5-air-reap-82b": {
-          "name": "Cerebras GLM 4.5 Air REAP 82B",
-          "options": {
-            "limit": {
-              "context": 131072
-            }
-          }
-        },
-        "glm-4.5-air-Q5": {
-          "name": "GLM 4.5 Air Q5",
-          "options": {
-            "limit": {
-              "context": 131072
-            }
-          }
-        },
-        "glm-4.5-air-Q6": {
-          "name": "GLM 4.5 Air Q6",
-          "options": {
-            "limit": {
-              "context": 131072
-            }
-          }
-        },
-        "gpt-oss-120b": {
-          "name": "GPT OSS 120B",
-            "options": {
-              "limit": {
-                "context": 65536
-              }
-          }
-        },
-        "gpt-oss-20b": {
-          "name": "GPT OSS 20B",
-          "options": {
-            "limit": {
-              "context": 131072
-            }
-          }
-        },
-        "qwen3-coder-30b-instruct": {
-          "name": "Qwen3 Coder 30B Instruct",
-          "options": {
-            "limit": {
-              "context": 131072
-            }
-          }
-        },
-        "qwen3-vl-30b-instruct": {
-          "name": "Qwen3 VL 30B Instruct",
-          "options": {
-            "limit": {
-              "context": 131072
-            }
-          }
-        },
-        "qwen3-vl-30b-thinking": {
-          "name": "Qwen3 VL 30B Thinking",
-          "options": {
-            "limit": {
-              "context": 131072
-            }
-          }
-        },
-        "qwen3-next-80b-instruct": {
-          "name": "Qwen3 Next 80B Instruct",
-          "options": {
-            "limit": {
-              "context": 131072
-            }
-          }
-        },
-        "qwen3-next-80b-instruct-q6": {
-          "name": "Qwen3 Next 80B Instruct Q6",
-          "options": {
-            "limit": {
-              "context": 131072
-            }
-          }
-        },
-         "glm-4.6v-flash-q8": {
-           "name": "GLM 4.6V Flash Q8",
+        "models": {
+         "gpt-oss-120b": {
+           "name": "GPT OSS 120B",
+           "options": {
+             "limit": {
+               "context": 65536
+             }
+           }
+         },
+         "gpt-oss-20b": {
+           "name": "GPT OSS 20B",
            "options": {
              "limit": {
                "context": 131072
              }
            }
          },
-          "devstral-small-2-24b-instruct-q8": {
-            "name": "Devstral Small 2 24B Instruct Q8",
-            "options": {
-              "limit": {
-                "context": 131072
-              }
-            }
-          },
-          "devstral-small-2-24b-instruct-q6": {
-            "name": "Devstral Small 2 24B Instruct Q6",
-            "options": {
-              "limit": {
-                "context": 131072
-              }
-            }
-          },
-          "devstral-small-2-24b-instruct-q5": {
-            "name": "Devstral Small 2 24B Instruct Q5",
-            "options": {
-              "limit": {
-                "context": 131072
-              }
-            }
-          },
-          "devstral-small-2-24b-instruct-q4": {
-            "name": "Devstral Small 2 24B Instruct Q4",
-            "options": {
-              "limit": {
-                "context": 131072
-              }
-            }
-          }
-       }
+         "qwen3-coder-30b-instruct": {
+           "name": "Qwen3 Coder 30B Instruct",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         },
+         "qwen3-next-80b-instruct": {
+           "name": "Qwen3 Next 80B Instruct",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         },
+         "qwen3-next-80b-instruct-q4": {
+           "name": "Qwen3 Next 80B Instruct Q4",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         },
+         "qwen3-next-80b-instruct-q6": {
+           "name": "Qwen3 Next 80B Instruct Q6",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         },
+         "qwen3-next-80b-thinking": {
+           "name": "Qwen3 Next 80B Thinking",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         },
+         "qwen3-next-80b-thinking-q4": {
+           "name": "Qwen3 Next 80B Thinking Q4",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         },
+         "qwen3-next-80b-thinking-q6": {
+           "name": "Qwen3 Next 80B Thinking Q6",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         },
+         "qwen3-vl-30b-instruct": {
+           "name": "Qwen3 VL 30B Instruct",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         },
+         "qwen3-vl-30b-thinking": {
+           "name": "Qwen3 VL 30B Thinking",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         }
+        }
      }
    },
 
