@@ -96,19 +96,51 @@
             }
           }
         },
-        "glm-4.6v-flash-q8": {
-          "name": "GLM 4.6V Flash Q8",
-          "options": {
-            "limit": {
-              "context": 131072
+         "glm-4.6v-flash-q8": {
+           "name": "GLM 4.6V Flash Q8",
+           "options": {
+             "limit": {
+               "context": 131072
+             }
+           }
+         },
+          "devstral-small-2-24b-instruct-q8": {
+            "name": "Devstral Small 2 24B Instruct Q8",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            }
+          },
+          "devstral-small-2-24b-instruct-q6": {
+            "name": "Devstral Small 2 24B Instruct Q6",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            }
+          },
+          "devstral-small-2-24b-instruct-q5": {
+            "name": "Devstral Small 2 24B Instruct Q5",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            }
+          },
+          "devstral-small-2-24b-instruct-q4": {
+            "name": "Devstral Small 2 24B Instruct Q4",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
             }
           }
-        }
-      }
-    }
-  },
+       }
+     }
+   },
 
-   "share": "disabled",
+    "share": "disabled",
    "mcp": {
      "chroma": {
        "type": "local",
