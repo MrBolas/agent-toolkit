@@ -1,7 +1,6 @@
 ---
 description: A specialized agent for testing tasks, including test writing, execution, coverage analysis, and framework management
 mode: subagent
-model: anthropic/claude-haiku-4-5
 disable: false
 temperature: 0.2
 tools:
