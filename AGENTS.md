@@ -8,7 +8,7 @@ See [README.md](README.md) for setup instructions and usage examples.
 
 ## Project Structure
 
-- `.opencode/agent/` - Agent system prompts (orchestrator, developer, code_reviewer, tester, jira-mcp, github-mcp)
+- `.opencode/agent/` - Agent system prompts (orchestrator, developer, code_reviewer, tester, jira-mcp, github-mcp, context7-mcp)
 - `.opencode/command/` - OpenSpec workflow commands (proposal, apply, archive, validate)
 - `.opencode/skills/` - Reusable knowledge (code-search, documentation-standards)
 - `.opencode/opencode.*.jsonc` - OS-specific configuration templates (macOS, Linux)
@@ -45,6 +45,7 @@ This toolkit uses a **primary + subagent** pattern with **zero MCP context pollu
 - **@tester** - Runs tests, reports results, suggests fixes for failures
 - **@jira-mcp** - Jira interface (isolated MCP access, zero context pollution)
 - **@github-mcp** - GitHub interface (isolated MCP access, zero context pollution)
+- **@context7-mcp** - Context7 interface (isolated MCP access, zero context pollution)
 
 **Important:** Subagents are loaded dynamically when called. Only the orchestrator is always in context. See individual agent files for detailed descriptions.
 
@@ -115,6 +116,7 @@ All agent prompts use meta-prompting language:
 **MCP Tools** are isolated to dedicated subagents:
 - Atlassian MCP: Only available in @jira-mcp
 - GitHub MCP: Only available in @github-mcp
+- Context7 MCP: Only available in @context7-mcp
 - Serena MCP: Available to all agents (semantic code search)
 - Sequential-thinking MCP: Available to all agents (complex reasoning)
 
@@ -200,6 +202,7 @@ This toolkit includes the [Dynamic Context Pruning plugin](https://github.com/Ta
 **MCPs are disabled globally** and only load when subagents are called:
 - Atlassian MCP: Disabled, loads only when @jira-mcp is called
 - GitHub MCP: Disabled, loads only when @github-mcp is called
+- Context7 MCP: Disabled, loads only when @context7-mcp is called
 - Serena MCP: Enabled (semantic code search is frequently needed)
 - Sequential-thinking MCP: Enabled (complex reasoning support)
 

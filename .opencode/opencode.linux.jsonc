@@ -108,11 +108,11 @@
    },
 
   "mcp": {
-    "chroma": {
-      "type": "local",
-      "command": ["docker", "run", "--network", "host", "--rm", "-i", "ghcr.io/chroma-core/chroma-mcp:latest", "chroma-mcp", "--client-type", "http", "--host", "localhost", "--port", "8420", "--ssl", "false"],
-      "enabled": false
-    },
+     "chroma": {
+       "type": "local",
+       "command": ["docker", "run", "--network", "host", "--rm", "-i", "ghcr.io/chroma-core/chroma-mcp:latest", "chroma-mcp", "--client-type", "http", "--host", "localhost", "--port", "8420", "--ssl", "false"],
+       "enabled": false
+     },
     "serena": {
       "type": "local",
       "command": [
@@ -126,37 +126,37 @@
       ],
       "enabled": true
     },
-    "github": {
-      "type": "local",
-      "command": [
-        "docker",
-        "run",
-        "--rm",
-        "-i",
-        "-e",
-        "GITHUB_PERSONAL_ACCESS_TOKEN",
-        "ghcr.io/github/github-mcp-server:latest"
-      ],
-      "enabled": false
-    },
-    "atlassian": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "mcp-remote",
-        "https://mcp.atlassian.com/v1/sse"
-      ],
-      "enabled": false
-    },
-    "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-      "headers": {
-        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
-      },
-      "enabled": false
-    },
+     "github": {
+       "type": "local",
+       "command": [
+         "docker",
+         "run",
+         "--rm",
+         "-i",
+         "-e",
+         "GITHUB_PERSONAL_ACCESS_TOKEN",
+         "ghcr.io/github/github-mcp-server:latest"
+       ],
+       "enabled": true
+     },
+     "atlassian": {
+       "type": "local",
+       "command": [
+         "npx",
+         "-y",
+         "mcp-remote",
+         "https://mcp.atlassian.com/v1/sse"
+       ],
+       "enabled": true
+     },
+     "context7": {
+       "type": "remote",
+       "url": "https://mcp.context7.com/mcp",
+       "headers": {
+         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+       },
+       "enabled": true
+     },
      "sequential-thinking": {
        "type": "local",
        "command": [

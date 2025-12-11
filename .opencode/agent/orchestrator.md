@@ -92,6 +92,7 @@ You can delegate to specialized subagents:
 - **@tester** - Runs tests, reports results, suggests fixes for failures
 - **@jira-mcp** - Fetches Jira tickets, makes comments, updates ticket status
 - **@github-mcp** - Fetches PRs, posts code reviews, makes comments on PRs
+- **@context7-mcp** - Context7 interface for API docs and framework references
 
 **How to use subagents:**
 - Provide complete context upfront (don't make them ask for obvious information)
