@@ -1,277 +1,499 @@
 # OpenCode Agent Toolkit
 
-This repository provides a blueprint for configuring the OpenCode Agent Toolkit.
+A **spec-driven, multi-agent system** for software development with semantic code understanding and zero MCP context pollution.
 
-## Setup
+**Key Features:**
+- **4 OpenSpec Commands** - Proposal → Apply → Validate → Archive workflow
+- **6 Specialized Agents** - Orchestrator + 5 focused subagents
+- **Zero Context Pollution** - MCPs isolated to dedicated subagents
+- **Semantic Memory** - Serena MCP for persistent code understanding
+- **Meta-Prompting** - Agents have autonomy within clear boundaries
 
-1. Copy `.env.example` to `.env` and fill in your API keys:
-   - `GITHUB_TOKEN`: Your GitHub Personal Access Token (with `repo` scope for PR access)
+See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed design decisions and trade-offs.
 
-2. **OS-Specific Configuration**: This toolkit automatically detects your OS and generates the appropriate config:
-   - **macOS**: Uses `.opencode/opencode.macos.jsonc` template (with `host.docker.internal`)
-   - **Linux**: Uses `.opencode/opencode.linux.jsonc` template (with `--network host`)
-   - Run `make opencode` to generate `.opencode/opencode.jsonc` and install to `~/.config/opencode/`
-   - Only the generated `opencode.jsonc` is copied (OS-specific templates remain in the repo)
+---
 
-This repository serves as a blueprint/template for OpenCode agent configuration. Use it to bootstrap new projects.
+## Quick Start
 
-### Using as a Template
-
-1. **For new projects**: Copy the `.opencode` folder to your project root:
-   ```bash
-   cp -r /path/to/agent-toolkit/.opencode /path/to/your-project/
-   cd /path/to/your-project
-   npm install  # Install dependencies in .opencode/
-   ```
-
-2. **Optional - Install globally** (for reference or fallback):
-   ```bash
-   make opencode  # Copies to ~/.config/opencode/
-   ```
-
-### Project-Local Configuration
-
-Each project should have its own `.opencode/` directory with:
-- Agent configurations
-- Skills (like chromadb)
-- Dependencies (node_modules)
-- Logs
-
-Agents will always use the **project-local** `.opencode/` directory in the repository they're working on.
-
-## Parallel Ticket Development
-
-Work on multiple tickets simultaneously using **git worktrees** with **Jira integration** via Atlassian MCP.
-
-### Create a Ticket Workspace
-
-In OpenCode TUI:
-```
-/ticket-create PROJ-123
-```
-
-Or with manual description:
-```
-/ticket-create AUTH-456 "Implement OAuth2 authentication"
-```
-
-Or use the script:
-```bash
-./scripts/create-ticket-workspace.sh PROJ-123
-```
-
-**With Jira Integration (Atlassian MCP enabled):**
-- ✅ Automatically fetches ticket details from Jira
-- ✅ Populates TICKET.md with description, acceptance criteria
-- ✅ Stores ticket context in Serena
-- ✅ Links related tickets and subtasks
-
-This creates:
-- New worktree at `../agent-toolkit-PROJ-123/`
-- New branch: `feature/PROJ-123`
-- Isolated `.serena/` project data with Jira context
-- `TICKET.md` with comprehensive ticket details
-
-### Work on the Ticket
+### 1. Setup
 
 ```bash
-cd ../agent-toolkit-AUTH-123
-opencode  # Start OpenCode in this worktree
+# Copy environment template
+cp .env.example .env
+
+# Edit .env and add your tokens:
+# - GITHUB_TOKEN (for GitHub MCP)
+# - JIRA_API_TOKEN (for Atlassian MCP)
+
+# Generate OS-specific config and install
+make opencode
 ```
 
-Each worktree has:
-- ✅ Same `.opencode/` configuration (shared from master)
-- ✅ Isolated `.serena/` memories (ticket-specific knowledge)
-- ✅ Independent OpenCode session
-- ✅ Shared git history
+**OS-Specific Configuration:**
+- **macOS**: Uses `.opencode/opencode.macos.jsonc` (with `host.docker.internal`)
+- **Linux**: Uses `.opencode/opencode.linux.jsonc` (with `--network host`)
+- `make opencode` detects your OS and generates the appropriate config
 
-### Manage Workspaces
+### 2. Use as Template
 
-**List active workspaces with Jira status:**
+**For new projects:**
+```bash
+cp -r /path/to/agent-toolkit/.opencode /path/to/your-project/
+cd /path/to/your-project
+npm install  # Install dependencies in .opencode/
 ```
-/ticket-list
+
+**For global reference:**
+```bash
+make opencode  # Copies to ~/.config/opencode/
 ```
-Shows: worktree path, branch, commit, Jira status, assignee, priority
 
-**Clean up when done:**
+---
+
+## Architecture Overview
+
+### Agents
+
+This toolkit uses a **primary + subagent** pattern with clear role separation:
+
+- **orchestrator** (primary) - Daily driver, coordinates tasks, delegates to specialists
+- **@developer** (subagent) - Implements features incrementally, updates task checkboxes
+- **@code_reviewer** (subagent) - Reviews code quality, classifies issues by severity
+- **@tester** (subagent) - Runs tests, analyzes failures, suggests fixes
+- **@jira-mcp** (subagent) - Jira interface (zero context pollution)
+- **@github-mcp** (subagent) - GitHub interface (zero context pollution)
+
+**Key Principle:** Subagents cannot delegate to each other - only the orchestrator coordinates.
+
+### Commands (4 Total)
+
+All development flows through the **OpenSpec workflow**:
+
+1. **`/openspec-proposal [description|ticket]`** - Create change proposals with specs and tasks
+2. **`/openspec-apply [change-name]`** - Implement approved changes (orchestrator → developer → code_reviewer → tester)
+3. **`/openspec-validate [change-name]`** - Validate spec structure before implementation
+4. **`/openspec-archive [change-name]`** - Merge completed changes into main specs
+
+### Skills (2 Total)
+
+Reusable knowledge that persists in agent context:
+
+1. **`skills_code_search`** - Semantic code search methodology
+2. **`skills_documentation_standards`** - Documentation templates and standards
+
+---
+
+## Design Philosophy
+
+### 1. Spec-Driven Development
+
+All features start with a proposal that defines:
+- **What** will change (specs)
+- **How** it will be implemented (tasks)
+- **Why** it's needed (context)
+
+This ensures human-AI alignment before implementation begins.
+
+### 2. Zero Context Pollution
+
+**Problem:** MCPs add 3-4k tokens each to every conversation.
+
+**Solution:** Isolate MCPs to dedicated subagents:
+- Orchestrator delegates to `@jira-mcp` or `@github-mcp`
+- MCPs only load in subagent context
+- Primary agent stays lightweight (~10-13k baseline tokens)
+
+### 3. Meta-Prompting
+
+Agent system prompts define:
+1. **WHO** they are (role and identity)
+2. **PURPOSE** (what they're trying to achieve)
+3. **WHAT THEY CAN DO** (capabilities, not prescriptions)
+
+This gives agents autonomy within clear boundaries.
+
+### 4. Sequential Task Execution
+
+**Decision:** Developer implements tasks one at a time, sequentially.
+
+**Why:**
+- Simpler orchestration (no inter-agent coordination)
+- Natural dependency handling
+- Easier to debug
+- Sufficient for most workflows
+
+**Trade-off:** Slower than parallel execution, but avoids complexity.
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for full design rationale.
+
+---
+
+## OpenSpec Workflow
+
+### Example: Adding User Authentication
+
+```bash
+# 1. Create a proposal
+/openspec-proposal "add user authentication with JWT tokens"
+
+# Orchestrator creates:
+# - openspec/changes/add-user-auth/proposal.md
+# - openspec/changes/add-user-auth/specs/auth-service.md
+# - openspec/changes/add-user-auth/tasks.md
+
+# 2. Review and refine the proposal
+# Edit specs and tasks as needed
+
+# 3. Implement the change
+/openspec-apply add-user-auth
+
+# Orchestrator coordinates with USER CONFIRMATION at each phase:
+# - @developer implements tasks sequentially
+# - [WAIT] User confirms: "Proceed with code review?"
+# - @code_reviewer reviews implementation
+# - [WAIT] User confirms: "Proceed with testing?"
+# - @tester runs test suite
+# - [WAIT] User confirms: "Archive this change?"
+
+# 4. Archive when user approves
+/openspec-archive add-user-auth
+
+# Merges specs into main specs directory
+# Moves change to archive
 ```
-/ticket-cleanup PROJ-123
+
+### With Jira Integration
+
+```bash
+# Fetch Jira ticket and create proposal
+# Orchestrator delegates to @jira-mcp (zero context pollution)
+# Change name will be "WTM-263" (uses ticket code)
+/openspec-proposal WTM-263
+
+# Rest of workflow is the same (with user confirmations)
+/openspec-apply WTM-263
+# [User confirms at each phase: implementation → review → testing → archive]
+/openspec-archive WTM-263
 ```
-- Removes worktree and optionally deletes branch
-- Can update Jira ticket status (Done/In Review)
-- Adds comment to Jira with branch/PR info
 
-### Why Worktrees + Jira Integration?
+---
 
-- **Parallel work**: Multiple tickets open simultaneously
-- **No context switching**: Each ticket has its own terminal/editor
-- **Isolated Serena**: Ticket-specific knowledge doesn't pollute other tickets
-- **Shared config**: All tickets use the same agent configuration
-- **Jira integration**: Automatic ticket context and status updates
-- **Rich context**: Acceptance criteria, related tickets, and subtasks in TICKET.md
+## Typical Workflows
 
-### Atlassian MCP Setup
+### Feature Development
 
-The Atlassian MCP is enabled by default and provides:
-- Automatic Jira ticket fetching
-- Ticket status tracking
-- Jira status updates on cleanup
-- Rich ticket context in Serena
+```
+User: /openspec-proposal "add dark mode toggle"
+  ↓
+Orchestrator: Creates proposal with specs and tasks
+  ↓
+User: /openspec-apply add-dark-mode
+  ↓
+Orchestrator: Searches Serena for high-level patterns
+  ↓
+Orchestrator: @developer implement these tasks
+  ↓
+@developer: Implements tasks sequentially, updates checkboxes
+  ↓
+Orchestrator: [WAITS] "Implementation complete. Proceed with code review?"
+  ↓
+User: "Yes, proceed"
+  ↓
+Orchestrator: @code_reviewer review the implementation
+  ↓
+@code_reviewer: Reviews code, classifies issues by severity
+  ↓
+Orchestrator: Evaluates feedback, asks user for critical issues
+  ↓
+Orchestrator: [WAITS] "Code review complete. Proceed with testing?"
+  ↓
+User: "Yes, proceed"
+  ↓
+Orchestrator: @tester run tests
+  ↓
+@tester: Runs tests, reports results
+  ↓
+Orchestrator: [WAITS] "Tests pass. Archive this change?"
+  ↓
+User: "Yes, archive" OR /openspec-archive add-dark-mode
+```
 
-**Authentication**: Follow Atlassian MCP prompts on first use to authenticate with your Jira instance.
+### Code Review
 
-See `PARALLEL-DEVELOPMENT.md` for detailed guide.
+```
+User: @code_reviewer review src/auth/
+  ↓
+@code_reviewer: 
+  - Searches Serena for project standards
+  - Reviews code against specs
+  - Classifies issues (CRITICAL, HIGH, MEDIUM, LOW)
+  - Provides actionable feedback
+```
 
-## Commands
+### Testing
 
-### Code Review & Analysis
-- **`/review-pr <url>`** - Automated PR code review with inline comments
-- **`/code-review`** - Review code for quality, security, and best practices
-- **`/refactor`** - Refactor code for clarity and maintainability
+```
+User: @tester run the test suite
+  ↓
+@tester:
+  - Executes tests
+  - Reports pass/fail with details
+  - Suggests fixes for failures
+```
 
-### Development Workflow
-- **`/implement`** - Implement a feature or fix
-- **`/test`** - Run tests and analyze results
-- **`/debug`** - Debug issues and errors
-
-### Ticket Management (Parallel Development)
-- **`/ticket-create <id> [description]`** - Create a new ticket worktree with Jira integration
-- **`/ticket-list`** - List all active ticket worktrees with Jira status
-- **`/ticket-cleanup <id>`** - Clean up a completed ticket worktree and update Jira
-
-### Documentation & Planning
-- **`/document`** - Generate or update documentation
-- **`/feature-plan`** - Plan a new feature implementation
-- **`/query`** - Query Serena for project knowledge
-
-## Agents
-
-This toolkit uses a streamlined **primary + subagent** architecture with 4 focused agents:
-
-- **orchestrator** (primary): Coordinates tasks, delegates to specialists, and makes strategic decisions
-- **developer** (subagent): Implements features, refactors code, and builds software
-- **code_reviewer** (subagent): Evaluates code quality, security, and best practices
-- **tester** (subagent): Executes tests, analyzes failures, and validates functionality
-
-**Key Principles:**
-- All agents use **meta-prompting** language (describing capabilities, not prescribing actions)
-- **Subagents cannot delegate** to each other - only the orchestrator can coordinate
-- Each agent has optimized **temperature** settings for its task type
-- **Serena MCP** replaces ChromaDB for semantic memory and code analysis
-
-The orchestrator delegates using @mentions (e.g., `@developer implement user auth`) with complete context.
+---
 
 ## MCP Integrations
 
-This toolkit integrates multiple MCP (Model Context Protocol) servers for enhanced capabilities:
+This toolkit uses **MCP isolation** to prevent context pollution:
 
-### Serena MCP - Semantic Code Memory
+### Serena MCP (Always Enabled)
 
-**Serena MCP** provides semantic code understanding and persistent memory across sessions.
-
-### Quick Start
-
-Serena runs automatically when OpenCode starts (no separate setup needed):
-
-1. **Query existing knowledge**:
-   ```
-   Search Serena for authentication patterns in this codebase
-   ```
-
-2. **Store architectural decisions**:
-   ```
-   Store this database migration strategy in Serena for future reference
-   ```
-
-3. **Before making changes**:
-   ```
-   Check Serena for existing error handling patterns
-   ```
-
-### How It Works
-
-- **Automatic integration**: Serena MCP is enabled in `.opencode/opencode.*.jsonc`
-- **Semantic search**: Understands code by meaning, not just text matching
-- **Cross-session memory**: Knowledge persists across OpenCode sessions
-- **All agents have access**: Each agent can query and store in Serena
-
-### Best Practices
-
-1. **Before implementation**: Query Serena for existing patterns
-2. **After significant changes**: Store architectural decisions and new patterns
-3. **For consistency**: Check Serena when choosing implementation approaches
-4. **Use hierarchical organization**: Structure knowledge by area/component/feature
-
-### Migration from ChromaDB
-
-This toolkit originally used ChromaDB. Serena MCP provides superior:
-- Semantic understanding of code structure
-- Automatic indexing and retrieval
-- No manual database management
-- Better integration with OpenCode workflows
-
-ChromaDB support remains available but disabled by default.
-
-### Atlassian MCP - Jira Integration
-
-**Atlassian MCP** provides seamless Jira integration for ticket management:
-
-**Features:**
-- Automatic ticket detail fetching
-- Live ticket status tracking
-- Bidirectional sync (git → Jira)
-- Rich context for agents
+**Semantic code understanding and persistent memory.**
 
 **Usage:**
 ```
-/ticket-create PROJ-123  # Fetches from Jira
-/ticket-list             # Shows Jira status
-/ticket-cleanup PROJ-123 # Updates Jira
+# Orchestrator searches for high-level patterns
+Search Serena for authentication architecture patterns
+
+# Developer searches for implementation patterns
+Search Serena for how we handle JWT token validation
 ```
 
+**Features:**
+- Semantic search (understands code by meaning)
+- Cross-session memory (knowledge persists)
+- Automatic indexing and retrieval
+- Available to all agents (~2-3k tokens)
+
+**Best Practices:**
+1. Query Serena before implementation for existing patterns
+2. Store architectural decisions after significant changes
+3. Use hierarchical organization (area/component/feature)
+
+---
+
+### Atlassian MCP (Isolated to @jira-mcp)
+
+**Jira integration with zero context pollution.**
+
+**Usage:**
+```
+# Orchestrator delegates to @jira-mcp
+/openspec-proposal WTM-263
+
+# Behind the scenes:
+# - Orchestrator calls @jira-mcp subagent
+# - @jira-mcp loads Atlassian MCP (~2-3k tokens)
+# - Fetches ticket details
+# - Returns to orchestrator
+# - MCP unloads (zero pollution)
+```
+
+**Features:**
+- Automatic ticket fetching
+- Ticket status tracking
+- Bidirectional sync (git → Jira)
+- Rich context for proposals
+
 **Setup:**
-- Enabled by default in both Linux and macOS
+- Enabled in `@jira-mcp` subagent only
 - Authenticate on first use
 - Works with any Jira instance
 
-### Context7 MCP - Documentation Lookup
+---
 
-**Context7 MCP** provides access to external documentation:
+### GitHub MCP (Isolated to @github-mcp)
 
-**Features:**
-- API documentation lookup
-- Framework guides
-- Best practices and patterns
+**GitHub integration with zero context pollution.**
 
 **Usage:**
-Agents automatically use Context7 when they need external documentation.
+```
+# Orchestrator delegates to @github-mcp
+@github-mcp fetch PR #123
 
-### GitHub MCP - Repository Integration
-
-**GitHub MCP** provides GitHub API access (disabled by default):
+# Behind the scenes:
+# - Orchestrator calls @github-mcp subagent
+# - @github-mcp loads GitHub MCP (~3-4k tokens)
+# - Fetches PR details
+# - Returns to orchestrator
+# - MCP unloads (zero pollution)
+```
 
 **Features:**
 - PR management
 - Issue tracking
 - Repository operations
+- Code review posting
 
-**Enable:**
-Set `GITHUB_PERSONAL_ACCESS_TOKEN` in `.env` and enable in config.
+**Setup:**
+- Enabled in `@github-mcp` subagent only
+- Set `GITHUB_PERSONAL_ACCESS_TOKEN` in `.env`
+- Authenticate on first use
+
+---
+
+### Context7 MCP (Available to All)
+
+**External documentation lookup.**
+
+**Usage:**
+Agents automatically use Context7 when they need external API docs or framework guides.
+
+**Features:**
+- API documentation
+- Framework guides
+- Best practices
+
+**Note:** Adds ~2-3k tokens when active.
+
+---
+
+### Why MCP Isolation?
+
+**Problem:** MCPs add 3-4k tokens each to every conversation.
+
+**Solution:** Isolate MCPs to dedicated subagents:
+- Orchestrator delegates to `@jira-mcp` or `@github-mcp`
+- MCPs only load in subagent context
+- Subagent returns results and unloads
+- Primary agent stays lightweight (~10-13k baseline)
+
+**Result:** Zero MCP context pollution in daily driver.
+
+## Key Metrics
+
+| Metric | Before | After | Change |
+|--------|--------|-------|--------|
+| Commands | 20 | 4 | **-80%** |
+| Agents | 4 | 6 | +50% (clearer roles) |
+| Skills | 0 | 2 | +2 |
+| MCP Context Pollution | High | **Zero** | **Eliminated** |
+| Command Complexity | High | **Low** | **Simplified** |
+| Agent Autonomy | Low | **High** | **Increased** |
+
+---
+
+## Design Trade-offs
+
+### Sequential vs Parallel Execution
+
+**Decision:** Tasks execute sequentially (one at a time).
+
+**Why:**
+- Simpler orchestration (no inter-agent coordination)
+- Natural dependency handling
+- Easier to debug
+- Sufficient for most workflows
+
+**Trade-off:** Slower than parallel, but avoids complexity.
+
+**Future:** Can add parallel execution if needed.
+
+---
+
+### Single Developer vs Multiple
+
+**Decision:** One `@developer` subagent handles all implementation.
+
+**Why:**
+- Simpler orchestration (no task distribution)
+- Maintains code consistency
+- Easier context management
+
+**Trade-off:** Can't parallelize across developers.
+
+**Future:** Can add multiple developers with explicit task distribution.
+
+---
+
+### User Confirmation Strategy
+
+**Decision:** Ask user confirmation for:
+- **Phase transitions** (implementation → code review → testing → archive)
+- **CRITICAL code review issues**
+- **Test failures**
+
+For HIGH/MEDIUM: Ask user first.
+For LOW/OPTIONAL: Proceed without confirmation.
+
+**Why:**
+- User maintains full control over workflow progression
+- Can review implementation before code review
+- Can review code review results before testing
+- Can review test results before archiving
+- Critical issues always require attention
+
+**Trade-off:** Requires more user interaction, but provides explicit control.
+
+**Workflow Checkpoints:**
+1. After implementation → Ask before code review
+2. After code review → Ask before testing
+3. After testing → Ask before archiving
+
+---
 
 ## Troubleshooting
 
-### ChromaDB Admin UI shows no collections
-**Problem**: The MCP server was using `--client-type ephemeral`, creating a temporary in-memory database instead of connecting to your persistent ChromaDB.
+### MCPs Not Loading
 
-**Solution**: 
-1. Ensure configs use `--client-type http` (already fixed in this repo)
-2. Reinstall config: `make opencode`
-3. Restart your OpenCode session
-4. Verify connection: `@memory_manager list all collections`
+**Problem:** Atlassian or GitHub MCP not available when calling `@jira-mcp` or `@github-mcp`.
 
-### Config changes not taking effect
+**Solution:**
+1. Verify MCP is enabled in subagent config
+2. Check MCP command is correct for your OS
+3. Verify environment variables (`.env` file)
+4. Restart OpenCode
+
+---
+
+### Skills Not Discoverable
+
+**Problem:** `skills_code_search` or `skills_documentation_standards` not available.
+
+**Solution:**
+1. Verify skill files exist in `.opencode/skills/`
+2. Verify skill names match config
+3. Restart OpenCode
+4. Check agent has tool access enabled
+
+---
+
+### Config Changes Not Taking Effect
+
 After modifying `.opencode/opencode.*.jsonc` files:
+
 ```bash
 make opencode  # Copy to ~/.config/opencode/
 # Then restart OpenCode
 ```
+
+---
+
+## Further Reading
+
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Detailed design decisions, trade-offs, and system architecture
+- **[AGENTS.md](AGENTS.md)** - Agent configurations and delegation patterns
+- **OpenCode Documentation** - https://opencode.ai
+- **Skills Plugin** - https://github.com/malhashemi/opencode-skills
+
+---
+
+## Document History
+
+- **Created:** December 2024
+- **Last Updated:** December 2024
+- **Status:** Active
+- **Maintainer:** Agent Toolkit Repository
+
+---
+
+## Questions?
+
+For detailed information about:
+- **Design decisions** → See [ARCHITECTURE.md](ARCHITECTURE.md)
+- **Agent behavior** → See [AGENTS.md](AGENTS.md)
+- **OpenSpec workflow** → See `openspec/` directory
+- **Configuration** → See `.opencode/opencode.*.jsonc`
+
+This architecture represents significant design decisions made through iterative refinement. Update this documentation when making changes to prevent regression.

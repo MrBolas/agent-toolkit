@@ -47,9 +47,13 @@ Execute these steps:
    - Identify related components or systems
 
 3. **Generate change name**:
-   - Create unique, descriptive folder name from description
-   - Format: lowercase-with-hyphens
-   - Example: "add-profile-filters", "implement-2fa"
+   - **If Jira ticket**: Use ticket code as change name (e.g., "WTM-263", "PROJ-456")
+   - **If GitHub issue**: Use issue number format (e.g., "issue-123", "gh-456")
+   - **If description only**: Create descriptive folder name (lowercase-with-hyphens)
+   - Examples:
+     - Jira: "WTM-263" (keep original case)
+     - GitHub: "issue-123" or "gh-123"
+     - Description: "add-profile-filters", "implement-2fa"
 
 4. **Create change folder structure**:
    ```
@@ -59,6 +63,8 @@ Execute these steps:
    ├── design.md        # Technical decisions (optional)
    └── specs/           # Delta files showing spec updates
    ```
+   
+   **Note:** {change-name} should be the Jira ticket code (e.g., WTM-263) if available, otherwise use descriptive name.
 
 5. **Generate proposal.md**:
    ```markdown

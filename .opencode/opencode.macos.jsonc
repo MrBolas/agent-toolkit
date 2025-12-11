@@ -108,7 +108,7 @@
      }
    },
 
-    "share": "disabled",
+  "share": "disabled",
    "mcp": {
      "chroma": {
        "type": "local",
@@ -130,19 +130,6 @@
        ],
        "enabled": false
      },
-      "github": {
-        "type": "local",
-        "command": [
-          "docker",
-          "run",
-          "--rm",
-          "-i",
-          "-e",
-          "GITHUB_PERSONAL_ACCESS_TOKEN",
-          "ghcr.io/github/github-mcp-server:latest"
-        ],
-        "enabled": false
-      },
      "context7": {
        "type": "remote",
        "url": "https://mcp.context7.com/mcp",
@@ -174,17 +161,40 @@
         "mcp/sequentialthinking"
       ],
       "enabled": true
-    }
-  },
-  "permission": {
-    "bash": {
-      "rm -rf *": "deny",
-      "rm -rf /": "deny",
-      "git push --force": "ask",
-      "git push -f": "ask",
-      "npm publish": "ask",
-      "docker system prune -a": "ask"
-    },
+     },
+     "atlassian": {
+       "type": "local",
+       "command": [
+         "npx",
+         "-y",
+         "mcp-remote",
+         "https://mcp.atlassian.com/v1/sse"
+       ],
+       "enabled": false
+     },
+     "github": {
+       "type": "local",
+       "command": [
+         "docker",
+         "run",
+         "--rm",
+         "-i",
+         "-e",
+         "GITHUB_PERSONAL_ACCESS_TOKEN",
+         "ghcr.io/github/github-mcp-server:latest"
+       ],
+       "enabled": false
+     }
+   },
+   "permission": {
+      "bash": {
+        "rm -rf *": "deny",
+        "rm -rf /": "deny",
+        "git push --force": "ask",
+        "git push -f": "ask",
+        "npm publish": "ask",
+        "docker system prune -a": "ask"
+      },
     "doom_loop": "ask",
     "external_directory": "ask"
   }

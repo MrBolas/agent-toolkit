@@ -1,14 +1,18 @@
 # OpenCode Agent Toolkit
 
-This repository provides a blueprint for configuring OpenCode multi-agent systems with semantic memory.
+This repository provides a blueprint for configuring OpenCode multi-agent systems with semantic memory and zero MCP context pollution.
+
+## Quick Start
+
+See [README.md](README.md) for setup instructions and usage examples.
 
 ## Project Structure
 
-- `.opencode/agent/` - Agent configurations (orchestrator, developer, code_reviewer, tester)
-- `.opencode/command/` - Custom commands for common workflows
+- `.opencode/agent/` - Agent system prompts (orchestrator, developer, code_reviewer, tester, jira-mcp, github-mcp)
+- `.opencode/command/` - OpenSpec workflow commands (proposal, apply, archive, validate)
+- `.opencode/skills/` - Reusable knowledge (code-search, documentation-standards)
 - `.opencode/opencode.*.jsonc` - OS-specific configuration templates (macOS, Linux)
 - `.opencode/opencode.jsonc` - Generated config (created by `make opencode`, gitignored)
-- `docker-compose.yml` - Infrastructure for ChromaDB (deprecated, migrating to Serena)
 
 ### Configuration Management
 
@@ -23,275 +27,283 @@ Running `make opencode` will:
 
 This ensures only one configuration file is active at a time.
 
+---
+
 ## Agent Architecture
 
-This toolkit uses a **primary + subagent** pattern:
+This toolkit uses a **primary + subagent** pattern with **zero MCP context pollution**:
 
-- **orchestrator** (primary) - Coordinates tasks, delegates to specialists, makes strategic decisions
-- **developer** (subagent) - Implements features, refactors code, writes new functionality
-- **code_reviewer** (subagent) - Evaluates code quality, security, and best practices
-- **tester** (subagent) - Runs tests, analyzes failures, validates functionality
+### Primary Agent
 
-**Important**: Subagents cannot call other subagents. Only the orchestrator can delegate.
+- **orchestrator** - Daily driver, coordinates tasks, delegates to specialists, makes strategic decisions
+  - See `.opencode/agent/orchestrator.md` for detailed capabilities and responsibilities
+
+### Subagents (Loaded Dynamically)
+
+- **@developer** - Implements features incrementally, updates task checkboxes, searches for implementation patterns
+- **@code_reviewer** - Reviews code against specs, classifies issues by severity, provides actionable feedback
+- **@tester** - Runs tests, reports results, suggests fixes for failures
+- **@jira-mcp** - Jira interface (isolated MCP access, zero context pollution)
+- **@github-mcp** - GitHub interface (isolated MCP access, zero context pollution)
+
+**Important:** Subagents are loaded dynamically when called. Only the orchestrator is always in context. See individual agent files for detailed descriptions.
+
+---
+
+## OpenSpec Workflow
+
+The toolkit implements **spec-driven development** with explicit user confirmation at each phase.
+
+### Commands
+
+1. **`/openspec-proposal [description|ticket]`**
+   - Create change proposals with specs and tasks
+   - If Jira ticket provided: change name uses ticket code (e.g., WTM-263)
+   - If description provided: change name is descriptive (e.g., add-dark-mode)
+
+2. **`/openspec-apply [change-name]`**
+   - Orchestrate implementation with explicit user confirmation at each phase:
+     - After implementation → Ask before code review
+     - After code review → Ask before testing
+     - After testing → Ask before archiving
+
+3. **`/openspec-validate [change-name]`**
+   - Validate spec structure and formatting before implementation
+
+4. **`/openspec-archive [change-name]`**
+   - Merge specs into main specs directory and archive completed changes
+
+### Workflow Example
+
+```bash
+# 1. Create proposal from Jira ticket
+/openspec-proposal WTM-263
+
+# 2. Review and refine specs in openspec/changes/WTM-263/
+
+# 3. Implement with user confirmation at each phase
+/openspec-apply WTM-263
+# [User confirms] → Implementation starts
+# [User confirms] → Code review starts
+# [User confirms] → Testing starts
+# [User confirms] → Archive
+
+# 4. Archive when complete
+/openspec-archive WTM-263
+```
+
+---
 
 ## Code Standards
 
 ### Meta-Prompting Style
+
 All agent prompts use meta-prompting language:
 - Describe **capabilities** (what agents *can* do), not prescriptions (what they *must* do)
 - Frame choices and options, not rigid workflows
 - Enable agent autonomy within clear boundaries
 
-### Tool Usage
-- **Serena MCP**: Primary semantic memory and code analysis tool
-  - Use for understanding existing patterns and architectural decisions
-  - Store significant outcomes for future reference
-  - Query before making changes to maintain consistency
-  
-- **Context7 MCP**: External documentation lookup
-  - Use when project knowledge is insufficient
-  - Good for API references and framework documentation
+### Tool Access
 
-### Delegation Best Practices
-When the orchestrator delegates:
-1. Provide complete context upfront (don't make subagents ask for obvious details)
-2. Explain *why* this subagent is appropriate for the task
-3. Include relevant findings from Serena searches
-4. Set clear success criteria
+**Agent-specific tool permissions** are defined in each agent's `.md` file:
+- Orchestrator: Full access (bash, edit, write, read, grep, serena, webfetch)
+- Developer: Full implementation access (write, edit, bash)
+- Code Reviewer: Read-only (no write/edit/bash)
+- Tester: Limited (bash allowed, write/edit require user approval)
+- MCP Subagents: Only MCP tools (no file access)
 
-## Memory Strategy
+**MCP Tools** are isolated to dedicated subagents:
+- Atlassian MCP: Only available in @jira-mcp
+- GitHub MCP: Only available in @github-mcp
+- Serena MCP: Available to all agents (semantic code search)
+- Sequential-thinking MCP: Available to all agents (complex reasoning)
 
-### Serena Integration
-- Memories are stored in Serena's semantic code database
-- Before significant changes, query Serena for existing patterns
-- After significant work, store outcomes and architectural decisions
+### Semantic Memory (Serena)
+
+- Query Serena before implementation for existing patterns
+- Store architectural decisions and new patterns after significant work
 - Use hierarchical organization for large codebases
 
-### Task Persistence
+See individual agent files for how each agent uses Serena.
+
+---
+
+## Skills
+
+Reusable knowledge that persists in agent context:
+
+1. **`skills_code_search`** (`.opencode/skills/code-search/SKILL.md`)
+   - Semantic code search methodology
+   - Available to: orchestrator, developer, code_reviewer
+
+2. **`skills_documentation_standards`** (`.opencode/skills/documentation-standards/SKILL.md`)
+   - Documentation templates and standards
+   - Available to: developer, code_reviewer
+
+---
+
+## Delegation Pattern
+
+When the orchestrator delegates to a subagent:
+
+1. **Provide complete context upfront**
+   - Don't make subagents ask for obvious details
+   - Include relevant findings from Serena searches
+   - Pass full task list and specifications
+
+2. **Be specific about what you need**
+   - Clear success criteria
+   - Explain why this subagent is appropriate
+
+3. **Let them work autonomously**
+   - Subagents have autonomy within their domain
+   - They can make intelligent decisions about approach
+   - They report progress and results
+
+4. **Evaluate their output**
+   - Orchestrator makes final decisions
+   - Orchestrator coordinates next steps
+
+---
+
+## Task Persistence
+
 For complex multi-step work:
+
 - Use `todowrite` to create persistent tasks
 - Update progress as work proceeds
 - Suspend with detailed state when approaching context limits
 - Resume from saved state in future sessions
 
-## Command Reference
+---
 
-All commands follow the `<object>-<action>` pattern for consistency and discoverability.
+## Token Optimization
 
-### Command Pattern
+### Baseline Context (~23k tokens)
 
-Commands are organized by the object they operate on:
-- `jira-*` - Jira ticket operations
-- `github-*` - GitHub operations (issues, PRs)
-- `feature-*` - Feature development workflow
-- `code-*` - Code operations (refactor, review, search)
-- `issue-*` - Generic issue/bug debugging
-- `test-*` - Testing operations
-- `docs-*` - Documentation generation
-- `openspec-*` - Spec-driven development
-- `workspace-*` - Workspace management
+- Orchestrator system prompt: ~2-3k
+- Serena MCP: ~6k
+- Sequential-thinking MCP: ~0.7k
+- Skills (code-search + documentation-standards): ~2.2k
+- Config + infrastructure: ~12k
 
-### Available Commands
+### Dynamic Context Pruning (DCP)
 
-#### External Integrations
+This toolkit includes the [Dynamic Context Pruning plugin](https://github.com/Tarquinen/opencode-dynamic-context-pruning) to automatically optimize token usage across long sessions:
 
-**Jira**
-- `/jira-fetch <ticket-key>` - Fetch Jira ticket details (e.g., WTM-263)
+- **Automatic deduplication** - Removes redundant tool outputs
+- **Zero LLM cost** - Runs automatically on every request
+- **Protected tools** - Critical tools like `task`, `todowrite`, `todoread` are never pruned
 
-**GitHub**
-- `/github-fetch <issue-ref>` - Fetch GitHub issue details (e.g., #123)
-- `/github-pr-review <pr-ref>` - Review a GitHub pull request comprehensively
+### MCP Isolation Strategy
 
-#### Feature Development
+**MCPs are disabled globally** and only load when subagents are called:
+- Atlassian MCP: Disabled, loads only when @jira-mcp is called
+- GitHub MCP: Disabled, loads only when @github-mcp is called
+- Serena MCP: Enabled (semantic code search is frequently needed)
+- Sequential-thinking MCP: Enabled (complex reasoning support)
 
-- `/feature-plan <description|ticket>` - Plan implementation steps for a feature
-- `/feature-implement <description|ticket>` - Implement a feature with high-quality code
-- `/feature-workflow <description|ticket>` - Complete end-to-end feature workflow
+This prevents ~7-10k tokens of context pollution from unused MCPs.
 
-#### Code Operations
+---
 
-- `/code-refactor <target>` - Refactor code for better quality and maintainability
-- `/code-review <target>` - Review code for quality, security, and best practices
-- `/code-search <pattern>` - Search codebase for patterns, symbols, or concepts
+## Architecture Decisions
 
-#### Issue Management
+For detailed design decisions, trade-offs, and rationale, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
-- `/issue-debug <description>` - Debug and fix issues in the codebase (generic, works with any issue tracker)
+Key decisions include:
+- Sequential task execution (not parallel)
+- Single developer subagent (not multiple)
+- Developer chooses task order (orchestrator provides list)
+- MCPs isolated to dedicated subagents (zero context pollution)
+- User confirmation required for phase transitions
+- Meta-prompting for agent capabilities (not prescriptions)
 
-#### Testing
-
-- `/test-run <target>` - Run tests and analyze results
-
-#### Documentation
-
-- `/docs-generate <target>` - Generate or update documentation
-
-#### Spec-Driven Development (OpenSpec)
-
-- `/openspec-proposal <description|ticket>` - Create a change proposal with specs
-- `/openspec-apply <change-name>` - Implement an approved change
-- `/openspec-archive <change-name>` - Archive completed changes into main specs
-- `/openspec-validate` - Validate OpenSpec structure and consistency
-
-#### Workspace Management
-
-- `/workspace-create <name>` - Create a new workspace for isolated work
-- `/workspace-cleanup` - Clean up temporary files and artifacts
-- `/workspace-list` - List available workspaces
-
-### Quick Reference by Use Case
-
-**Starting from a Jira Ticket**
-```bash
-/jira-fetch WTM-263              # Fetch ticket details
-/feature-plan WTM-263            # Plan implementation
-/feature-implement WTM-263       # Implement feature
-/code-review                     # Review code
-/test-run                        # Run tests
-```
-
-**Starting from a GitHub Issue**
-```bash
-/github-fetch #123               # Fetch issue details
-/feature-plan #123               # Plan implementation
-/feature-implement #123          # Implement feature
-/github-pr-review                # Review PR
-```
-
-**GitHub PR Review Workflow**
-```bash
-/github-fetch #123               # Fetch issue context
-/github-pr-review #456           # Review the PR
-/code-review src/                # Deep dive into specific code
-/test-run                        # Validate changes
-```
-
-**OpenSpec Workflow**
-```bash
-/openspec-proposal WTM-263       # Create proposal with specs
-# Review and refine proposal
-/openspec-apply my-feature       # Implement approved change
-/openspec-archive my-feature     # Archive to main specs
-```
-
-**Code Quality Workflow**
-```bash
-/code-search "authentication"    # Find relevant code
-/code-refactor auth/login.ts     # Refactor specific code
-/code-review auth/               # Review changes
-/test-run auth/                  # Run tests
-```
-
-**Debugging Workflow**
-```bash
-/issue-debug "login fails"       # Debug the issue
-/code-review                     # Review fix
-/test-run                        # Validate fix
-```
-
-### Command Organization
-
-Commands are stored in two locations:
-- **Root level** (`.opencode/command/*.md`) - Executable commands
-- **Subdirectories** (`.opencode/command/*/`) - Source/backup (not executable)
-
-Only root-level commands are recognized by OpenCode.
-
-### Design Principles
-
-**Object Grouping**
-Commands are grouped by the primary object they operate on:
-- **Platform-specific objects** (jira, github) - Operations on external platforms
-- **Development objects** (feature, code, issue) - Core development activities
-- **Process objects** (test, docs, openspec, workspace) - Development processes
-
-**Naming Consistency**
-- Use the most specific object name (e.g., `github-pr-review` not `pr-review`)
-- Keep actions simple and clear (fetch, plan, implement, review, etc.)
-- Maintain consistency across similar operations
-
-### Tips
-
-- Use tab completion to discover commands by object prefix
-- Commands can accept ticket/issue IDs (PROJ-123, #123) or descriptions
-- Most commands integrate with Jira/GitHub when ticket IDs are provided
-- OpenSpec commands work together as a complete workflow
-- GitHub commands handle both issues and pull requests
+---
 
 ## Common Workflows
 
-### Feature Development from Jira Ticket
-1. `/jira-fetch WTM-263` - Fetch ticket details
-2. `/feature-plan WTM-263` - Orchestrator plans implementation
-3. `/feature-implement WTM-263` - @developer implements
-4. `/code-review` - @code_reviewer evaluates
-5. `/test-run` - @tester validates
-6. Orchestrator stores architectural decisions in Serena
+### Spec-Driven Development
 
-### Spec-Driven Development with OpenSpec
-1. `/openspec-proposal WTM-263` - Create change proposal with specs and tasks
-2. Review and refine proposals until requirements are clear
-3. `/openspec-apply my-feature` - Implement approved changes
-4. `/code-review` - @code_reviewer evaluates implemented code
-5. `/openspec-archive my-feature` - Merge completed changes into main specs
+```bash
+# 1. Create proposal
+/openspec-proposal WTM-263
+
+# 2. Review and refine specs
+# (Edit openspec/changes/WTM-263/proposal.md, tasks.md, specs/)
+
+# 3. Implement with confirmations
+/openspec-apply WTM-263
+# Orchestrator coordinates: developer → code_reviewer → tester
+# User confirms at each phase transition
+
+# 4. Archive when complete
+/openspec-archive WTM-263
+```
 
 ### Code Review
-1. `/code-review` command or mention @code_reviewer
-2. Reviewer analyzes against project standards (from Serena)
-3. Provides structured feedback with severity/issue/suggestion/rationale
-4. Stores significant patterns back to Serena
+
+```bash
+# Mention @code_reviewer in conversation
+@code_reviewer review src/auth/
+
+# Code reviewer will:
+# - Search Serena for project standards
+# - Review code against specifications
+# - Classify issues by severity (CRITICAL, HIGH, MEDIUM, LOW)
+# - Provide actionable feedback
+```
 
 ### Testing
-1. `/test-run` command or mention @tester
-2. Tester executes tests and analyzes failures
-3. May coordinate with @developer for fixes
-4. Stores coverage insights to Serena
 
-## Permissions Philosophy
+```bash
+# Mention @tester in conversation
+@tester run the test suite
 
-- **orchestrator**: Full access (edit, bash, webfetch allowed)
-- **developer**: Full implementation access
-- **code_reviewer**: Read-only (edit/write denied)
-- **tester**: Ask for edit/bash (needs user approval)
+# Tester will:
+# - Execute tests
+# - Report pass/fail with details
+# - Suggest fixes for failures
+```
 
-This creates appropriate guardrails while enabling productivity.
+### Jira Integration
 
-## Token Optimization: Dynamic Context Pruning (DCP)
+```bash
+# Orchestrator delegates to @jira-mcp
+@jira-mcp fetch ticket WTM-263
 
-This toolkit includes the [Dynamic Context Pruning plugin](https://github.com/Tarquinen/opencode-dynamic-context-pruning) to automatically optimize token usage across long sessions.
+# Or use in proposal creation
+/openspec-proposal WTM-263
+# Automatically fetches ticket details and creates proposal
+```
 
-### How It Works
-
-DCP uses **automatic deduplication** to remove redundant tool outputs from conversation history:
-- Identifies repeated tool calls (e.g., reading the same file multiple times)
-- Keeps only the most recent output
-- Runs automatically on every request with **zero LLM cost**
-
-### Configuration
-
-DCP is configured in `.opencode/dcp.jsonc` with a conservative strategy:
-- **Deduplication only** - No AI analysis overhead
-- **Protected tools** - Critical tools like `task`, `todowrite`, `todoread` are never pruned
-- **Safe for multi-agent system** - Subagents won't accidentally lose context
-
-### Strategy Options
-
-If you need more aggressive token optimization in long sessions, DCP supports additional strategies:
-- **`onIdle`** - Semantic analysis during idle moments (uses LLM but lighter weight)
-- **`onTool`** - AI analysis when the `prune` tool is manually called
-
-See the [DCP README](https://github.com/Tarquinen/opencode-dynamic-context-pruning#configuration) for full configuration options.
-
-### Trade-offs
-
-- **Benefit**: Significant token savings in long sessions (especially with many repeated file reads)
-- **Cost**: Prompt caching efficiency slightly reduced (DCP changes message content, invalidating cache prefixes)
-- **Result**: Usually token savings outweigh cache miss cost
+---
 
 ## External Knowledge
 
 When project knowledge is insufficient:
+- Use Serena for semantic code search (available to all agents)
 - Use Context7 for API docs and framework references
 - Use webfetch for blog posts and best practices
-- Use Atlassian MCP for Jira ticket integration (`/atlassian-ticket-fetch`)
 - Always verify external information against project standards
+
+---
+
+## Further Reading
+
+- **[README.md](README.md)** - Setup, quick start, and usage examples
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Design decisions, trade-offs, and system architecture
+- **Agent Files** - See `.opencode/agent/*.md` for detailed agent descriptions
+- **Command Files** - See `.opencode/command/*.md` for implementation details
+- **Skill Files** - See `.opencode/skills/*/SKILL.md` for methodology and best practices
+
+---
+
+## Document History
+
+- **Created:** December 2024
+- **Last Updated:** December 2024
+- **Status:** Current
+- **Maintainer:** Agent Toolkit Repository
+
+This document provides an overview of the agent architecture. For detailed information, see the referenced documents above.
