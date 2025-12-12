@@ -15,129 +15,129 @@
       "options": {
          "baseURL": "http://192.168.1.50:9292/v1"
       },
-        "models": {
-         "gpt-oss-120b": {
-           "name": "GPT OSS 120B",
-           "options": {
-             "limit": {
-               "context": 65536
-             }
-           }
-         },
-         "gpt-oss-20b": {
-           "name": "GPT OSS 20B",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "qwen3-coder-30b-instruct": {
-           "name": "Qwen3 Coder 30B Instruct",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "qwen3-next-80b-instruct": {
-           "name": "Qwen3 Next 80B Instruct",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "qwen3-next-80b-instruct-q4": {
-           "name": "Qwen3 Next 80B Instruct Q4",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "qwen3-next-80b-instruct-q6": {
-           "name": "Qwen3 Next 80B Instruct Q6",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "qwen3-next-80b-thinking": {
-           "name": "Qwen3 Next 80B Thinking",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "qwen3-next-80b-thinking-q4": {
-           "name": "Qwen3 Next 80B Thinking Q4",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "qwen3-next-80b-thinking-q6": {
-           "name": "Qwen3 Next 80B Thinking Q6",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "qwen3-vl-30b-instruct": {
-           "name": "Qwen3 VL 30B Instruct",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "qwen3-vl-30b-thinking": {
-           "name": "Qwen3 VL 30B Thinking",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         }
+      "models": {
+        "gpt-oss-120b": {
+          "name": "GPT OSS 120B",
+          "options": {
+            "limit": {
+              "context": 65536
+            }
+          }
+        },
+        "gpt-oss-20b": {
+          "name": "GPT OSS 20B",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
+        },
+        "qwen3-coder-30b-instruct": {
+          "name": "Qwen3 Coder 30B Instruct",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
+        },
+        "qwen3-next-80b-instruct": {
+          "name": "Qwen3 Next 80B Instruct",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
+        },
+        "qwen3-next-80b-instruct-q4": {
+          "name": "Qwen3 Next 80B Instruct Q4",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
+        },
+        "qwen3-next-80b-instruct-q6": {
+          "name": "Qwen3 Next 80B Instruct Q6",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
+        },
+        "qwen3-next-80b-thinking": {
+          "name": "Qwen3 Next 80B Thinking",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
+        },
+        "qwen3-next-80b-thinking-q4": {
+          "name": "Qwen3 Next 80B Thinking Q4",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
+        },
+        "qwen3-next-80b-thinking-q6": {
+          "name": "Qwen3 Next 80B Thinking Q6",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
+        },
+        "qwen3-vl-30b-instruct": {
+          "name": "Qwen3 VL 30B Instruct",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
+        },
+        "qwen3-vl-30b-thinking": {
+          "name": "Qwen3 VL 30B Thinking",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          }
         }
+      }
      }
    },
 
   "share": "disabled",
    "mcp": {
-      "chroma": {
-        "type": "local",
-        "command": [
-          "docker",
-          "run",
-          "--rm",
-          "-i",
-          "ghcr.io/chroma-core/chroma-mcp:latest",
-          "chroma-mcp",
-          "--client-type",
-          "http",
-          "--host",
-          "host.docker.internal",
-          "--port",
-          "8420",
-          "--ssl",
-          "false"
-        ],
-        "enabled": false
+    "chroma": {
+      "type": "local",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "ghcr.io/chroma-core/chroma-mcp:latest",
+        "chroma-mcp",
+        "--client-type",
+        "http",
+        "--host",
+        "host.docker.internal",
+        "--port",
+        "8420",
+        "--ssl",
+        "false"
+      ],
+      "enabled": false
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       },
-      "context7": {
-        "type": "remote",
-        "url": "https://mcp.context7.com/mcp",
-        "headers": {
-          "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
-        },
-        "enabled": true
-      },
+      "enabled": true
+    },
     "serena": {
       "type": "local",
       "command": [
@@ -161,31 +161,31 @@
         "mcp/sequentialthinking"
       ],
       "enabled": true
-     },
-      "atlassian": {
-        "type": "local",
-        "command": [
-          "npx",
-          "-y",
-          "mcp-remote",
-          "https://mcp.atlassian.com/v1/sse"
-        ],
-        "enabled": true
-      },
-      "github": {
-        "type": "local",
-        "command": [
-          "docker",
-          "run",
-          "--rm",
-          "-i",
-          "-e",
-          "GITHUB_PERSONAL_ACCESS_TOKEN",
-          "ghcr.io/github/github-mcp-server:latest"
-        ],
-        "enabled": true
-      }
-   },
+    },
+    "atlassian": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "mcp-remote",
+        "https://mcp.atlassian.com/v1/sse"
+      ],
+      "enabled": false
+    },
+    "github": {
+      "type": "local",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server:latest"
+      ],
+      "enabled": true
+    }
+  },
    "permission": {
       "bash": {
         "rm -rf *": "deny",
