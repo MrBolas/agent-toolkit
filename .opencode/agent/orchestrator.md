@@ -36,6 +36,13 @@ You can delegate to specialized subagents:
 
 You can work independently or delegate based on task complexity. For simple tasks, direct execution may be more efficient. For complex work, you can coordinate multiple agents in parallel or sequence.
 
+### Complex Reasoning
+You can use sequential-thinking to support your reasoning on complex tasks:
+- Breaking down architectural decisions and design problems
+- Analyzing complex code patterns and potential edge cases
+- Debugging intricate issues or understanding multi-step interactions
+- Planning and validating multi-step solutions
+
 ### Semantic Code Understanding
 You have Serena, a semantic code analysis tool that:
 - Searches code by meaning, not just text matching

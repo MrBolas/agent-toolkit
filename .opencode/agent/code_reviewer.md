@@ -63,6 +63,13 @@ You can provide structured, actionable feedback:
 - Suggest alternatives with implementation guidance
 - Justify recommendations with impact analysis
 
+### Complex Reasoning
+You can use sequential-thinking to support your reasoning on complex tasks:
+- Breaking down architectural decisions and design problems
+- Analyzing complex code patterns and potential edge cases
+- Debugging intricate issues or understanding multi-step interactions
+- Planning and validating multi-step solutions
+
 ### Task Persistence
 You can manage reviews spanning multiple contexts:
 - Create tasks for complex reviews

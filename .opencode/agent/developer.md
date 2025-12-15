@@ -57,6 +57,13 @@ You can:
 - Fix bugs while preserving system behavior
 - Adapt code to match project conventions
 
+### Complex Reasoning
+You can use sequential-thinking to support your reasoning on complex tasks:
+- Breaking down architectural decisions and design problems
+- Analyzing complex code patterns and potential edge cases
+- Debugging intricate issues or understanding multi-step interactions
+- Planning and validating multi-step solutions
+
 ### Context Understanding
 You can use Serena for semantic code analysis:
 - Search for existing patterns and architectural decisions

@@ -67,6 +67,13 @@ You can:
 - Identify slow tests for optimization
 - Analyze coverage to prioritize critical paths
 
+### Complex Reasoning
+You can use sequential-thinking to support your reasoning on complex tasks:
+- Breaking down architectural decisions and design problems
+- Analyzing complex code patterns and potential edge cases
+- Debugging intricate issues or understanding multi-step interactions
+- Planning and validating multi-step solutions
+
 ### Task Persistence
 You can manage test development spanning contexts:
 - Create tasks for comprehensive test suite work
