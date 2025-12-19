@@ -15,70 +15,138 @@
          "baseURL": "http://192.168.1.50:9292/v1"
       },
        "models": {
-         "glm-4.6v-ud-q4": {
-           "name": "GLM 4.6V UD Q4",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "glm-4.6v-ud-q5": {
-           "name": "GLM 4.6V UD Q5",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-          "gpt-oss-120b": {
-            "name": "GPT OSS 120B",
+          "glm-4.6v-ud-q4": {
+            "name": "GLM 4.6V UD Q4",
             "options": {
               "limit": {
                 "context": 131072
               }
+            },
+            "providerOptions": {
+              "local-llama.cpp": {
+                "temperature": 0.8,
+                "top_p": 0.6,
+                "top_k": 2,
+                "repetition_penalty": 1.1
+              }
             }
           },
-         "qwen3-coder-30b-instruct": {
-           "name": "Qwen3 Coder 30B Instruct",
-           "options": {
-             "limit": {
-               "context": 131072
+          "glm-4.6v-ud-q5": {
+            "name": "GLM 4.6V UD Q5",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            },
+            "providerOptions": {
+              "local-llama.cpp": {
+                "temperature": 0.8,
+                "top_p": 0.6,
+                "top_k": 2,
+                "repetition_penalty": 1.1
+              }
+            }
+          },
+           "gpt-oss-120b": {
+             "name": "GPT OSS 120B",
+             "options": {
+               "limit": {
+                 "context": 131072
+               }
+             },
+             "providerOptions": {
+               "local-llama.cpp": {
+                 "temperature": 1.0,
+                 "top_p": 1.0,
+                 "top_k": 0,
+                 "min_p": 0.0
+               }
              }
-           }
-         },
-         "qwen3-next-80b-instruct-q6": {
-           "name": "Qwen3 Next 80B Instruct Q6",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "qwen3-next-80b-thinking-q6": {
-           "name": "Qwen3 Next 80B Thinking Q6",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "qwen3-vl-30b-instruct-q6": {
-           "name": "Qwen3 VL 30B Instruct Q6",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         },
-         "qwen3-vl-30b-thinking-q6": {
-           "name": "Qwen3 VL 30B Thinking Q6",
-           "options": {
-             "limit": {
-               "context": 131072
-             }
-           }
-         }
+           },
+          "qwen3-coder-30b-instruct": {
+            "name": "Qwen3 Coder 30B Instruct",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            },
+            "providerOptions": {
+              "local-llama.cpp": {
+                "temperature": 0.7,
+                "top_p": 0.8,
+                "top_k": 20,
+                "repetition_penalty": 1.05
+              }
+            }
+          },
+          "qwen3-next-80b-instruct-q6": {
+            "name": "Qwen3 Next 80B Instruct Q6",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            },
+            "providerOptions": {
+              "local-llama.cpp": {
+                "temperature": 0.7,
+                "top_p": 0.8,
+                "top_k": 20,
+                "min_p": 0
+              }
+            }
+          },
+          "qwen3-next-80b-thinking-q6": {
+            "name": "Qwen3 Next 80B Thinking Q6",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            },
+            "providerOptions": {
+              "local-llama.cpp": {
+                "temperature": 0.6,
+                "top_p": 0.95,
+                "top_k": 20,
+                "min_p": 0
+              }
+            }
+          },
+          "qwen3-vl-30b-instruct-q6": {
+            "name": "Qwen3 VL 30B Instruct Q6",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            },
+            "providerOptions": {
+              "local-llama.cpp": {
+                "temperature": 0.7,
+                "top_p": 0.8,
+                "top_k": 20,
+                "presence_penalty": 1.5,
+                "repetition_penalty": 1.0,
+                "seed": 3407
+              }
+            }
+          },
+          "qwen3-vl-30b-thinking-q6": {
+            "name": "Qwen3 VL 30B Thinking Q6",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            },
+            "providerOptions": {
+              "local-llama.cpp": {
+                "temperature": 1.0,
+                "top_p": 0.95,
+                "top_k": 20,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "seed": 1234
+              }
+            }
+          }
        }
      }
    },
