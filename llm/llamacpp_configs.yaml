@@ -1,0 +1,85 @@
+models:
+  glm-4.6v-ud:
+    description: "GLM 4.6V UD"
+    huggingface_url: "https://huggingface.co/unsloth/GLM-4.6V-GGUF"
+    parameters:
+      temperature: 0.8
+      top_p: 0.6
+      top_k: 2
+      max_generated_tokens: 16384
+      repetition_penalty: 1.1
+    notes: "General purpose GLM model - parameters averaged between Q4/Q5 variants"
+    context_window: 131072
+    quantizations:
+      - q4
+      - q5
+
+  gpt-oss-120b:
+    description: "GPT OSS 120B"
+    huggingface_url: "https://huggingface.co/unsloth/gpt-oss-120b-GGUF"
+    parameters:
+      temperature: 1.0
+      top_p: 1.0
+      top_k: 0
+      min_p: 0.0
+    notes: "Large GPT model with higher creativity settings"
+    context_window: 131072
+
+  qwen3-coder-30b-instruct:
+    description: "Qwen3 Coder 30B Instruct"
+    huggingface_url: "https://huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF"
+    parameters:
+      temperature: 0.7
+      top_p: 0.8
+      top_k: 20
+      repetition_penalty: 1.05
+    notes: "Code-focused model with low temperature for deterministic outputs"
+    context_window: 131072
+
+  qwen3-next-80b-instruct-q6:
+    description: "Qwen3 Next 80B Instruct Q6"
+    huggingface_url: "https://huggingface.co/unsloth/Qwen3-Next-80B-A3B-Instruct-GGUF"
+    parameters:
+      temperature: 0.7
+      top_p: 0.8
+      top_k: 20
+      min_p: 0
+    notes: "Large instruction-tuned model with balanced parameters"
+    context_window: 131072
+
+  qwen3-next-80b-thinking-q6:
+    description: "Qwen3 Next 80B Thinking Q6"
+    huggingface_url: "https://huggingface.co/unsloth/Qwen3-Next-80B-A3B-Thinking-GGUF"
+    parameters:
+      temperature: 0.6
+      top_p: 0.95
+      top_k: 20
+      min_p: 0
+    notes: "Thinking-optimized model with moderate creativity and penalties"
+    context_window: 131072
+
+  qwen3-vl-30b-instruct-q6:
+    description: "Qwen3 VL 30B Instruct Q6"
+    huggingface_url: "https://huggingface.co/unsloth/Qwen3-VL-30B-A3B-Instruct-GGUF"
+    parameters:
+      temperature: 0.7
+      top_p: 0.8
+      top_k: 20
+      presence_penalty: 1.5
+      repetition_penalty: 1.0
+      seed: 3407
+    notes: "Vision-language model with stable, deterministic outputs"
+    context_window: 131072
+
+  qwen3-vl-30b-thinking-q6:
+    description: "Qwen3 VL 30B Thinking Q6"
+    huggingface_url: "https://huggingface.co/Qwen/Qwen2-VL-72B-Instruct"
+    parameters:
+      temperature: 1.0
+      top_p: 0.95
+      top_k: 20
+      presence_penalty: 0.0
+      repetition_penalty: 1.0
+      seed: 1234
+    notes: "Vision-language thinking model with moderate creativity"
+    context_window: 131072
