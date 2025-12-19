@@ -32,14 +32,14 @@
              }
            }
          },
-         "gpt-oss-120b": {
-           "name": "GPT OSS 120B",
-           "options": {
-             "limit": {
-               "context": 65536
-             }
-           }
-         },
+          "gpt-oss-120b": {
+            "name": "GPT OSS 120B",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            }
+          },
          "qwen3-coder-30b-instruct": {
            "name": "Qwen3 Coder 30B Instruct",
            "options": {

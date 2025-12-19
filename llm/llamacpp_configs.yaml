@@ -6,7 +6,6 @@ models:
       temperature: 0.8
       top_p: 0.6
       top_k: 2
-      max_generated_tokens: 16384
       repetition_penalty: 1.1
     notes: "General purpose GLM model - parameters averaged between Q4/Q5 variants"
     context_window: 131072
