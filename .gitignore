@@ -1,10 +1,8 @@
-# Git
+ # Git
 .DS_Store
 *.log
 *.tmp
 
-# Data
-chroma_data
-
 # OpenCode base config (use OS-specific files instead)
 .opencode/opencode.jsonc
+

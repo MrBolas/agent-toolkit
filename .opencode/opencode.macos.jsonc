@@ -152,29 +152,9 @@
      }
    },
 
-  "share": "disabled",
-   "mcp": {
-    "chroma": {
-      "type": "local",
-      "command": [
-        "docker",
-        "run",
-        "--rm",
-        "-i",
-        "ghcr.io/chroma-core/chroma-mcp:latest",
-        "chroma-mcp",
-        "--client-type",
-        "http",
-        "--host",
-        "host.docker.internal",
-        "--port",
-        "8420",
-        "--ssl",
-        "false"
-      ],
-      "enabled": false
-    },
-    "context7": {
+   "share": "disabled",
+    "mcp": {
+     "context7": {
       "type": "remote",
       "url": "https://mcp.context7.com/mcp",
       "headers": {

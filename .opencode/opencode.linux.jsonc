@@ -151,13 +151,8 @@
      }
    },
 
-  "mcp": {
-     "chroma": {
-       "type": "local",
-       "command": ["docker", "run", "--network", "host", "--rm", "-i", "ghcr.io/chroma-core/chroma-mcp:latest", "chroma-mcp", "--client-type", "http", "--host", "localhost", "--port", "8420", "--ssl", "false"],
-       "enabled": false
-     },
-    "serena": {
+   "mcp": {
+     "serena": {
       "type": "local",
       "command": [
         "uvx",

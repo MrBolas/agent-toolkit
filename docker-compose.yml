@@ -1,53 +1,11 @@
-services:
-  chromadb:
-    image: chromadb/chroma:latest
-    container_name: chromadb
-    ports:
-      - "8420:8000"
-    volumes:
-      - ./chroma_data:/data
-    environment:
-      CHROMA_SERVER_HOST: 0.0.0.0
-      CHROMA_SERVER_HTTP_PORT: 8000
-      CHROMA_SERVER_CORS_ALLOW_ORIGINS: '["*"]'
-    networks:
-      - agent-network
+ services:
+   sequential-thinking-mcp:
+     image: mcp/sequentialthinking
+     container_name: sequential-thinking-mcp
+     command: ["--rm", "-i"]
+     networks:
+       - agent-network
 
-  chromadb-admin:
-    build:
-      context: https://github.com/flanker/chromadb-admin.git
-      dockerfile: Dockerfile
-    container_name: chromadb-admin
-    ports:
-      - "3001:3001"
-    environment:
-      CHROMADB_URL: http://chromadb:8000
-    depends_on:
-      - chromadb
-    networks:
-      - agent-network
-
-  sequential-thinking-mcp:
-    image: mcp/sequentialthinking
-    container_name: sequential-thinking-mcp
-    command: ["--rm", "-i"]
-    networks:
-      - agent-network
-
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-    networks:
-      - agent-network
-
-networks:
-  agent-network:
-    driver: bridge
-
-volumes:
-  ollama_data:
-  chroma_data:
+ networks:
+   agent-network:
+     driver: bridge
