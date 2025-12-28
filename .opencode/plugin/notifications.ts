@@ -8,11 +8,14 @@ export const notificationsPlugin: Plugin = async ({ project, client, $, director
   // Get project name safely
   const projectName = (project as any)?.name || directory || "unknown"
 
+  // Debug mode - set to true to enable logging
+  const isDebug = false
+
   // Setup logging to file
   const logDir = `${directory}/.opencode/plugin/logs`
   const sessionId = Date.now().toString()
   const logFile = `${logDir}/session-${sessionId}.log`
-  
+
   // Ensure logs directory exists
   try {
     Bun.spawnSync(["mkdir", "-p", logDir])
@@ -20,12 +23,14 @@ export const notificationsPlugin: Plugin = async ({ project, client, $, director
     console.error("Failed to create logs directory:", error)
   }
 
-  // Log to file function
+  // Log to file function (only writes if debug mode is enabled)
   const logToFile = async (message: string) => {
+    if (!isDebug) return
+
     try {
       const timestamp = new Date().toISOString()
       const logMessage = `[${timestamp}] ${message}\n`
-      
+
       // Append to log file using fs module
       const fs = await import("fs")
       fs.appendFileSync(logFile, logMessage, { encoding: "utf8" })

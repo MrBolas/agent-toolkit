@@ -1,0 +1,17 @@
+{
+  "name": "@agent-toolkit/notifications",
+  "version": "1.0.0",
+  "description": "Cross-platform notifications for OpenCode with OpenSpec workflow hooks",
+  "type": "module",
+  "exports": {
+    "./notifications.ts": "./notifications.ts"
+  },
+  "dependencies": {
+    "@opencode-ai/plugin": "latest",
+    "@opencode-ai/sdk": "latest"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "typescript": "^5.9.3"
+  }
+}
