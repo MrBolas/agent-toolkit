@@ -337,6 +337,7 @@ export const asyncDelegationPlugin: Plugin = async ({ client, directory, project
           const now = Date.now()
           const sessionList = sessions.map((s: any) => {
             const duration = Math.floor((now - s.startTime) / 1000)
+
             return {
               sessionId: s.id,
               agent: s.agent,
