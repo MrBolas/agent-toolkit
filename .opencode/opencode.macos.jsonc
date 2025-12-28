@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["@tarquinen/opencode-dcp@0.4.12", "opencode-skills", "./plugin/notifications.ts"],
+  "plugin": ["@tarquinen/opencode-dcp@0.4.12", "./plugin/notifications.ts"],
   "experimental": {
     "primary_tools": ["prune"]
   },
