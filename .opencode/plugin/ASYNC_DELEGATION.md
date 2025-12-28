@@ -1,7 +1,7 @@
 # Async Delegation Plugin
 
-**Status:** Phase 2 (Context Injection) - Complete ✅
-**Version:** 1.1.0
+**Status:** Phase 2.1 (Context Injection + Status Check) - Complete ✅
+**Version:** 1.1.1
 **Author:** Agent Toolkit
 
 ## Overview
@@ -13,13 +13,15 @@ The Async Delegation Plugin enables **fire-and-forget parallel execution** of ta
 - **Fire-and-forget delegation** - Tasks run in background, you can continue working immediately
 - **Automatic notifications** - Get notified (visual + sound + voice) when tasks complete
 - **Context injection** - Results automatically flow back to orchestrator without asking
+- **Status checking** - View all active background tasks and their duration
 - **Session tracking** - Monitor all background tasks from a central place
 - **Cross-platform support** - Works on macOS and Linux
 
-### Current Phase (Phase 2)
+### Current Phase (Phase 2.1)
 
 **Implemented:**
 - ✅ `async_delegate` tool - Delegate tasks to agents in background
+- ✅ `async_status` tool - Check status of all active background tasks
 - ✅ Session tracking with Map
 - ✅ Completion notifications (visual, sound, voice)
 - ✅ SDK integration for background session management
@@ -29,7 +31,9 @@ The Async Delegation Plugin enables **fire-and-forget parallel execution** of ta
 - ✅ **Error handling** - Errors flow back to orchestrator for decision-making
 
 **Coming Soon (Phases 3-4):**
-- 🔲 Multi-session management - Status checking, cancellation, cleanup
+- 🔲 `async_cancel` tool - Cancel running background tasks
+- 🔲 `async_cleanup` tool - Clean up orphaned sessions
+- 🔲 Timeout handling - Auto-cancel long-running sessions
 - 🔲 Dynamic resource limits - Adjusts based on CPU/memory
 - 🔲 Orchestrator integration - Auto-detection of independent tasks
 
@@ -91,10 +95,83 @@ Delegates a task to an agent in the background. The task runs independently and 
 3. Returns immediately with session ID
 4. Session continues running independently
 5. When session completes (idle event):
-   - Visual notification appears
-   - Sound plays (Glass on macOS)
-   - Voice announcement: "Developer finished..."
-   - Session is removed from tracking
+    - Visual notification appears
+    - Sound plays (Glass on macOS)
+    - Voice announcement: "Developer finished..."
+    - Session is removed from tracking
+6. Status can be checked with `@async_status`
+
+---
+
+### `async_status`
+
+Check status of all active background tasks.
+
+#### Arguments
+
+| Parameter | Type | Required | Description |
+|-----------|------|-----------|-------------|
+| None | - | - |
+
+#### Returns
+
+```typescript
+{
+  count: number
+  sessions: Array<{
+    sessionId: string
+    agent: string
+    task: string
+    duration: string
+    status: string
+  }>
+  message: string
+}
+```
+
+#### Examples
+
+**Check all active tasks:**
+```bash
+@async_status
+
+# Returns:
+{
+  count: 3,
+  sessions: [
+    {
+      sessionId: "ses_abc123",
+      agent: "@developer",
+      task: "Create user model",
+      duration: "245s",
+      status: "running"
+    },
+    {
+      sessionId: "ses_def456",
+      agent: "@tester",
+      task: "Run test suite",
+      duration: "98s",
+      status: "running"
+    },
+    {
+      sessionId: "ses_ghi789",
+      agent: "@developer",
+      task: "Create auth service",
+      duration: "76s",
+      status: "running"
+    }
+  ],
+  message: "Found 3 active background tasks"
+}
+```
+
+#### Behavior
+
+1. Lists all sessions in activeSessions Map
+2. Calculates duration for each session
+3. Returns detailed information for each session
+4. Shows count and message summary
+
 
 ---
 

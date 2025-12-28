@@ -312,6 +312,49 @@ export const asyncDelegationPlugin: Plugin = async ({ client, directory, project
           }
         },
       }),
+
+      /**
+       * Check status of all active background tasks
+       *
+       * Lists all currently running sessions with their details.
+       */
+      async_status: tool({
+        description: "List all active background tasks with their current status and duration",
+        args: {},
+        async execute(args, ctx) {
+          await logToFile(`📋 async_status called: checking ${activeSessions.size} sessions`)
+
+          const sessions = Array.from(activeSessions.values())
+
+          if (sessions.length === 0) {
+            return {
+              count: 0,
+              sessions: [],
+              message: "No active background tasks",
+            }
+          }
+
+          const now = Date.now()
+          const sessionList = sessions.map((s: any) => {
+            const duration = Math.floor((now - s.startTime) / 1000)
+            return {
+              sessionId: s.id,
+              agent: s.agent,
+              task: s.task,
+              duration: `${duration}s`,
+              status: "running",
+            }
+          })
+
+          await logToFile(`📊 Status check: ${sessions.length} active sessions`)
+
+          return {
+            count: sessions.length,
+            sessions: sessionList,
+            message: `Found ${sessions.length} active background task${sessions.length !== 1 ? 's' : ''}`,
+          }
+        },
+      }),
     },
 
     event: async ({ event }) => {
