@@ -14,6 +14,19 @@ interface BackgroundSession {
 }
 
 /**
+ * Extracted summary from background session
+ */
+interface SessionSummary {
+  agent: string
+  task: string
+  duration: number
+  status: 'success' | 'error' | 'cancelled'
+  filesModified?: string[]
+  summary: string
+  error?: string
+}
+
+/**
  * Async Delegation Plugin
  *
  * Enables fire-and-forget parallel execution of tasks across multiple agents.
@@ -23,7 +36,126 @@ interface BackgroundSession {
  * - async_delegate tool
  * - Session tracking
  * - Completion notifications
+ *
+ * Phase 2: Context injection
+ * - Result extraction from background sessions
+ * - Automatic injection into orchestrator session
+ * - Error handling and injection
  */
+
+/**
+ * Extract summary from session messages
+ * Gets the last assistant message and parses for key information
+ */
+const extractSummary = (messages: any): SessionSummary => {
+  try {
+    // Find the last assistant message
+    const assistantMessages = messages.data.filter((m: any) => m.info.role === 'assistant')
+    const lastMessage = assistantMessages[assistantMessages.length - 1]
+
+    if (!lastMessage) {
+      return {
+        status: 'success',
+        summary: 'Task completed (no message content)',
+      } as any
+    }
+
+    // Extract text from parts
+    const textParts = lastMessage.parts
+      ?.filter((p: any) => p.type === 'text')
+      ?.map((p: any) => p.text)
+      ?.join('\n') || ''
+
+    // Extract files modified/changed
+    const filesModified: string[] = []
+    const fileMatches = textParts.matchAll(/(?:Modified|Changed|Added|Created|Deleted):\n([\s\S]+?)(?:\n\n|\n[A-Z]|\n#|$)/g)
+    for (const match of fileMatches) {
+      const files = match[1]
+        .split('\n')
+        .filter(f => f.trim().startsWith('- ') || f.trim().startsWith('+ '))
+        .map(f => f.trim().replace(/^[-+]\s*/, ''))
+        .filter(f => f.length > 0)
+      filesModified.push(...files)
+    }
+
+    // Extract errors
+    const errorMatch = textParts.match(/Error:\n([\s\S]+?)(?:\n\n|\n[A-Z]|\n#|$)/)
+    const error = errorMatch ? errorMatch[1].trim() : undefined
+
+    // Determine status
+    const status = error ? 'error' : 'success'
+
+    // Create summary (truncate to 500 chars)
+    const summary = textParts.slice(0, 500) + (textParts.length > 500 ? '...' : '')
+
+    return {
+      status,
+      summary,
+      filesModified: filesModified.length > 0 ? filesModified : undefined,
+      error,
+    } as any
+  } catch (error) {
+    return {
+      status: 'error',
+      summary: `Failed to extract summary: ${error}`,
+      error: String(error),
+    } as any
+  }
+}
+
+/**
+ * Inject session result into orchestrator session
+ * Uses SDK to send noReply message to parent session
+ */
+const injectContext = async (
+  sdkClient: any,
+  parentSessionId: string,
+  sessionInfo: BackgroundSession,
+  summary: SessionSummary,
+  logToFile: (msg: string) => Promise<void>
+): Promise<void> => {
+  try {
+    await logToFile(`💉 Injecting context into session: ${parentSessionId}`)
+
+    // Check if parent session still exists
+    try {
+      await sdkClient.session.get({ path: { id: parentSessionId } })
+    } catch (error: any) {
+      await logToFile(`⚠️ Parent session ${parentSessionId} no longer exists`)
+      return // Parent session gone, don't inject
+    }
+
+    // Build injection message
+    const duration = Math.floor((Date.now() - sessionInfo.startTime) / 1000)
+
+    let message: string
+    if (summary.status === 'error') {
+      message = `## Background Task Failed\n\n**Agent:** ${sessionInfo.agent}\n**Task:** ${sessionInfo.task}\n**Duration:** ${duration}s\n\n**Error:**\n\`\`\`\n${summary.error}\n\`\`\`\n\n**Action Required:** Review error and decide to retry, fix, or abandon.\n\n**Full Summary:**\n${summary.summary}`
+    } else {
+      message = `## Background Task Completed\n\n**Agent:** ${sessionInfo.agent}\n**Task:** ${sessionInfo.task}\n**Duration:** ${duration}s\n**Status:** ✅ Success\n`
+
+      if (summary.filesModified && summary.filesModified.length > 0) {
+        message += `\n\n**Files Modified (${summary.filesModified.length}):**\n${summary.filesModified.map(f => `- ${f}`).join('\n')}`
+      }
+
+      message += `\n\n**Summary:**\n${summary.summary}`
+    }
+
+    // Inject into parent session (noReply to avoid triggering AI)
+    await sdkClient.session.prompt({
+      path: { id: parentSessionId },
+      body: {
+        noReply: true,
+        parts: [{ type: 'text', text: message }],
+      },
+    })
+
+    await logToFile(`✅ Context injected successfully`)
+  } catch (error: any) {
+    await logToFile(`❌ Failed to inject context: ${error}`)
+  }
+}
+
 export const asyncDelegationPlugin: Plugin = async ({ client, directory, project }) => {
   // Create SDK client for background session management
   const sdkClient = createOpencodeClient({ baseUrl: "http://localhost:4096" })
@@ -194,16 +326,52 @@ export const asyncDelegationPlugin: Plugin = async ({ client, directory, project
           const duration = Math.floor((Date.now() - sessionInfo.startTime) / 1000)
           await logToFile(`⏱️  Duration: ${duration}s`)
 
-          // Send completion notification
-          const agentName = sessionInfo.agent.replace("@", "")
-          const taskPreview = sessionInfo.task.slice(0, 100)
-          const voiceMessage = `${agentName} finished ${sessionInfo.task.slice(0, 50)}`
+          try {
+            // Fetch session messages to extract results
+            const messages = await sdkClient.session.messages({
+              path: { id: sessionInfo.id },
+            })
 
-          await sendNotification(
-            `${agentName} finished`,
-            taskPreview,
-            voiceMessage
-          )
+            await logToFile(`📄 Fetched ${messages.data.length} messages from session`)
+
+            // Extract summary
+            const summary = extractSummary(messages)
+            await logToFile(`📝 Extracted summary: status=${summary.status}, ${summary.filesModified?.length || 0} files`)
+
+            // Inject context into orchestrator session
+            await injectContext(
+              sdkClient,
+              sessionInfo.parentSessionId,
+              sessionInfo,
+              summary,
+              logToFile
+            )
+
+            // Send completion notification
+            const agentName = sessionInfo.agent.replace("@", "")
+            const taskPreview = sessionInfo.task.slice(0, 100)
+            const voiceMessage = `${agentName} finished ${sessionInfo.task.slice(0, 50)}`
+
+            await sendNotification(
+              `${agentName} finished`,
+              taskPreview,
+              voiceMessage
+            )
+
+          } catch (error: any) {
+            await logToFile(`❌ Failed to process session completion: ${error}`)
+
+            // Still send notification even if extraction fails
+            const agentName = sessionInfo.agent.replace("@", "")
+            const taskPreview = sessionInfo.task.slice(0, 100)
+            const voiceMessage = `${agentName} finished ${sessionInfo.task.slice(0, 50)}`
+
+            await sendNotification(
+              `${agentName} finished`,
+              `${taskPreview} (some errors occurred)`,
+              voiceMessage
+            )
+          }
 
           // Clean up tracking
           activeSessions.delete(event.properties.id)

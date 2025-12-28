@@ -1,7 +1,7 @@
 # Async Delegation Plugin
 
-**Status:** Phase 1 (Core) - Complete ✅
-**Version:** 1.0.0
+**Status:** Phase 2 (Context Injection) - Complete ✅
+**Version:** 1.1.0
 **Author:** Agent Toolkit
 
 ## Overview
@@ -12,10 +12,11 @@ The Async Delegation Plugin enables **fire-and-forget parallel execution** of ta
 
 - **Fire-and-forget delegation** - Tasks run in background, you can continue working immediately
 - **Automatic notifications** - Get notified (visual + sound + voice) when tasks complete
+- **Context injection** - Results automatically flow back to orchestrator without asking
 - **Session tracking** - Monitor all background tasks from a central place
 - **Cross-platform support** - Works on macOS and Linux
 
-### Current Phase (Phase 1)
+### Current Phase (Phase 2)
 
 **Implemented:**
 - ✅ `async_delegate` tool - Delegate tasks to agents in background
@@ -23,9 +24,11 @@ The Async Delegation Plugin enables **fire-and-forget parallel execution** of ta
 - ✅ Completion notifications (visual, sound, voice)
 - ✅ SDK integration for background session management
 - ✅ File logging for debugging
+- ✅ **Result extraction** - Parse session messages for summary and files modified
+- ✅ **Context injection** - Automatically inject results into orchestrator session
+- ✅ **Error handling** - Errors flow back to orchestrator for decision-making
 
-**Coming Soon (Phases 2-4):**
-- 🔲 Context injection - Results flow back to orchestrator automatically
+**Coming Soon (Phases 3-4):**
 - 🔲 Multi-session management - Status checking, cancellation, cleanup
 - 🔲 Dynamic resource limits - Adjusts based on CPU/memory
 - 🔲 Orchestrator integration - Auto-detection of independent tasks
@@ -116,6 +119,12 @@ Background session completes
   ↓
 Plugin receives session.idle event
   ↓
+Fetch session messages from SDK
+  ↓
+Extract summary (files changed, errors, findings)
+  ↓
+Inject context into orchestrator (noReply)
+  ↓
 Send notification (visual + sound + voice)
   ↓
 Clean up tracking
@@ -139,7 +148,54 @@ where BackgroundSession = {
 **Tracking Lifecycle:**
 1. Session created → Added to Map
 2. Session running → Tracked in Map
-3. Session idle → Removed from Map, notification sent
+3. Session idle → Fetch messages, extract summary, inject context, notification, removed from Map
+
+### Context Injection (New in Phase 2)
+
+When a background session completes, the plugin:
+
+1. **Fetches messages** via SDK `session.messages()`
+2. **Extracts summary** from last assistant message:
+   - Files modified/changed/added
+   - Errors encountered
+   - Key findings
+3. **Injects into orchestrator** via `session.prompt({ noReply: true })`
+4. **Formats as markdown** for easy reading
+
+**Example injection (success):**
+```markdown
+## Background Task Completed
+
+**Agent:** @developer
+**Task:** Create user authentication system with JWT
+**Duration:** 245s
+**Status:** ✅ Success
+
+**Files Modified (3):**
+- src/auth/index.ts (added login function)
+- src/auth/types.ts (added Auth interface)
+- src/middleware/auth.ts (added JWT middleware)
+
+**Summary:**
+Implemented JWT-based authentication with token refresh. Added login endpoint that validates credentials and returns JWT tokens. Ready for testing.
+```
+
+**Example injection (error):**
+```markdown
+## Background Task Failed
+
+**Agent:** @tester
+**Task:** Run complete test suite
+**Duration:** 30s
+**Status:** ❌ Error
+
+**Error:**
+```
+AssertionError: Expected 200 but got 500 in src/api/user.test.ts:45
+```
+
+**Action Required:** Review error and decide to retry, fix, or abandon.
+```
 
 ### Notifications
 
@@ -376,27 +432,30 @@ None required.
 
 ---
 
-## Limitations (Phase 1)
+## Limitations (Phase 2)
 
 ### Current Limitations
 
-1. **No status checking** - Can't see active session status (Phase 2+)
-2. **No cancellation** - Can't cancel running tasks (Phase 2+)
-3. **No result injection** - Results don't flow back to orchestrator (Phase 2)
-4. **No queuing** - Exceeds resource limits silently (Phase 3)
-5. **Fixed notification style** - Can't disable sound/voice separately (Phase 3)
+1. **No status checking** - Can't see active session status (Phase 3)
+2. **No cancellation** - Can't cancel running tasks (Phase 3)
+3. **No queuing** - Exceeds resource limits silently (Phase 3)
+4. **No cleanup tool** - Orphaned sessions accumulate (Phase 3)
+5. **No resource limits** - Unlimited parallel sessions (Phase 3)
 
-### Future Enhancements (Phases 2-4)
+### Completed Enhancements
 
 - ✅ **Phase 2:** Context injection - Results automatically injected into orchestrator
 - ✅ **Phase 2:** Error handling - Errors flow back to orchestrator
-- ✅ **Phase 3:** `async_status` tool - Check status of all background tasks
-- ✅ **Phase 3:** `async_cancel` tool - Cancel background tasks
-- ✅ **Phase 3:** `async_cleanup` tool - Clean up orphaned sessions
-- ✅ **Phase 3:** Dynamic resource limits - Adjust based on CPU/memory
-- ✅ **Phase 3:** Session queuing - Queue tasks when at max limit
-- ✅ **Phase 4:** Auto-detection - Orchestrator detects independent tasks
-- ✅ **Phase 4:** Manual parallel control - User says "run in parallel"
+
+### Future Enhancements (Phases 3-4)
+
+- 🔲 **Phase 3:** `async_status` tool - Check status of all background tasks
+- 🔲 **Phase 3:** `async_cancel` tool - Cancel background tasks
+- 🔲 **Phase 3:** `async_cleanup` tool - Clean up orphaned sessions
+- 🔲 **Phase 3:** Dynamic resource limits - Adjust based on CPU/memory
+- 🔲 **Phase 3:** Session queuing - Queue tasks when at max limit
+- 🔲 **Phase 4:** Auto-detection - Orchestrator detects independent tasks
+- 🔲 **Phase 4:** Manual parallel control - User says "run in parallel"
 
 ---
 
@@ -500,9 +559,23 @@ await sdkClient.session.prompt({
 
 ## Changelog
 
-### Version 1.0.0 (Phase 1 - Current)
+### Version 1.1.0 (Phase 2 - Current)
 
 **Added:**
+- ✅ Result extraction from session messages
+- ✅ Automatic context injection into orchestrator
+- ✅ Error handling for background tasks
+- ✅ File modification tracking
+- ✅ `extractSummary()` function
+- ✅ `injectContext()` function
+
+**Behavior Changes:**
+- Background task results now automatically appear in orchestrator session
+- Errors are injected and formatted for review
+- File modifications are listed in context injection
+- No AI response is triggered (noReply: true)
+
+**From Version 1.0.0:**
 - ✅ `async_delegate` tool
 - ✅ Background session creation via SDK
 - ✅ Session tracking with Map
@@ -511,7 +584,6 @@ await sdkClient.session.prompt({
 - ✅ Cross-platform support (macOS, Linux)
 
 **Planned:**
-- 🔲 Context injection (Phase 2)
 - 🔲 Multi-session management (Phase 3)
 - 🔲 Orchestrator integration (Phase 4)
 
@@ -527,6 +599,6 @@ For issues or questions:
 
 ---
 
-**Status:** Phase 1 complete ✅
-**Next:** Phase 2 - Context Injection
+**Status:** Phase 2 complete ✅
+**Next:** Phase 3 - Multi-Session Management
 **Timeline:** Phase 2 implementation (Days 4-5)
