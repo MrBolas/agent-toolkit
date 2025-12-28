@@ -115,19 +115,17 @@ Check status of all active background tasks.
 
 #### Returns
 
-```typescript
-{
-  count: number
-  sessions: Array<{
-    sessionId: string
-    agent: string
-    task: string
-    duration: string
-    status: string
-  }>
-  message: string
-}
-```
+**String:** Formatted message showing all active background tasks
+
+Format:
+- If no active tasks: "No active background tasks"
+- If active tasks:
+  ```
+  Found 3 active background tasks:
+  - **@developer** (245s): Create user model
+  - **@developer** (98s): Create auth service
+  - **@tester** (76s): Run test suite
+  ```
 
 #### Examples
 

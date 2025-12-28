@@ -327,17 +327,13 @@ export const asyncDelegationPlugin: Plugin = async ({ client, directory, project
           const sessions = Array.from(activeSessions.values())
 
           if (sessions.length === 0) {
-            return {
-              count: 0,
-              sessions: [],
-              message: "No active background tasks",
-            }
+            await logToFile(`📋 No active sessions`)
+            return "No active background tasks"
           }
 
           const now = Date.now()
           const sessionList = sessions.map((s: any) => {
             const duration = Math.floor((now - s.startTime) / 1000)
-
             return {
               sessionId: s.id,
               agent: s.agent,
@@ -349,11 +345,16 @@ export const asyncDelegationPlugin: Plugin = async ({ client, directory, project
 
           await logToFile(`📊 Status check: ${sessions.length} active sessions`)
 
-          return {
-            count: sessions.length,
-            sessions: sessionList,
-            message: `Found ${sessions.length} active background task${sessions.length !== 1 ? 's' : ''}`,
+          // Return formatted message for AI to read
+          let statusMessage = `No active background tasks`
+          if (sessions.length > 0) {
+            statusMessage = `Found ${sessions.length} active background task${sessions.length !== 1 ? 's' : ''}:\n\n`
+            for (const s of sessionList) {
+              statusMessage += `- **${s.agent}** (${s.duration}): ${s.task.slice(0, 60)}\n`
+            }
           }
+
+          return statusMessage
         },
       }),
     },
