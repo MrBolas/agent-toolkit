@@ -38,6 +38,17 @@ export const notificationsPlugin: Plugin = async ({ project, client, $, director
   const logDir = `${directory}/.opencode/plugin/logs`
   const sessionId = Date.now().toString()
   const MAX_LOG_SIZE = 1024 * 1024  // 1MB max per file
+  
+  // Track recent voice announcements to prevent duplicates (file-based for cross-instance deduplication)
+  const announcementLockDir = `${logDir}/announcements`
+  const ANNOUNCEMENT_COOLDOWN = 2000 // 2 seconds cooldown
+  
+  // Ensure announcement lock directory exists
+  try {
+    Bun.spawnSync(["mkdir", "-p", announcementLockDir])
+  } catch (error) {
+    console.error("Failed to create announcement lock directory: " + error)
+  }
 
   // Get log file path (synchronous to use in async contexts)
   const getLogFile = (): string => {
@@ -125,6 +136,65 @@ export const notificationsPlugin: Plugin = async ({ project, client, $, director
     return {}
   }
 
+  // Check if voice announcement was recently made (file-based lock for cross-instance deduplication)
+  // This is the ONLY mechanism preventing 3x announcements from 3 plugin instances
+  const shouldAnnounce = async (voiceMessage: string): Promise<boolean> => {
+    try {
+      const crypto = require("crypto")
+      const fs = require("fs")
+      
+      // Create hash of message for filename
+      const hash = crypto.createHash('md5').update(voiceMessage).digest('hex')
+      const lockFile = `${announcementLockDir}/${hash}.lock`
+      
+      await log(`🔒 Attempting to acquire lock for: "${voiceMessage}" (hash: ${hash})`, LogLevel.DEBUG)
+      
+      // Try to create lock file atomically (only one instance will succeed)
+      try {
+        // Attempt atomic file creation with exclusive flag
+        fs.writeFileSync(lockFile, Date.now().toString(), { flag: 'wx' })
+        
+        // Successfully created lock file - this instance wins, announce!
+        await log(`✅ Lock acquired! This instance will announce.`, LogLevel.DEBUG)
+        return true
+      } catch (error: any) {
+        if (error.code === 'EEXIST') {
+          // Lock file already exists - check if it's recent or stale
+          await log(`⚠️ Lock file exists, checking age...`, LogLevel.DEBUG)
+          try {
+            const stats = fs.statSync(lockFile)
+            const age = Date.now() - stats.mtimeMs
+            
+            await log(`📊 Lock file age: ${age}ms (cooldown: ${ANNOUNCEMENT_COOLDOWN}ms)`, LogLevel.DEBUG)
+            
+            if (age < ANNOUNCEMENT_COOLDOWN) {
+              // Lock file is recent (< 2 seconds) - another instance is announcing, skip
+              await log(`❌ Lock is recent, skipping announcement (another instance is handling it)`, LogLevel.DEBUG)
+              return false
+            } else {
+              // Lock file is stale (> 2 seconds) - safe to announce again
+              // Update timestamp and announce
+              fs.writeFileSync(lockFile, Date.now().toString())
+              await log(`✅ Lock is stale, updating and announcing`, LogLevel.DEBUG)
+              return true
+            }
+          } catch (statError) {
+            // Error reading lock file stats - assume it's safe to announce
+            await log(`⚠️ Error reading lock file stats, allowing announcement`, LogLevel.DEBUG)
+            return true
+          }
+        }
+        // Other error (not EEXIST) - assume it's safe to announce
+        await log(`⚠️ Unexpected error (${error.code}), allowing announcement`, LogLevel.DEBUG)
+        return true
+      }
+    } catch (error) {
+      // Unexpected error - assume it's safe to announce (fail open)
+      await log(`⚠️ Unexpected error in shouldAnnounce: ${error}`, LogLevel.ERROR)
+      return true
+    }
+  }
+
   // Send notification with sound (always uses Glass sound)
   const sendNotification = async (
     title: string,
@@ -133,6 +203,15 @@ export const notificationsPlugin: Plugin = async ({ project, client, $, director
     voiceMessage?: string
   ): Promise<void> => {
     try {
+      // Check for duplicate voice announcements (cross-instance)
+      // This is the ONLY deduplication mechanism - file-based lock
+      if (useVoice && voiceMessage) {
+        const canAnnounce = await shouldAnnounce(voiceMessage)
+        if (!canAnnounce) {
+          await log(`⏭️ Skipping duplicate voice announcement: "${voiceMessage}"`, LogLevel.DEBUG)
+          return // Skip duplicate announcement
+        }
+      }
       if (isMac()) {
         // Visual notification with Glass sound
         const escapedTitle = title.replace(/"/g, '\\"')
@@ -193,8 +272,11 @@ export const notificationsPlugin: Plugin = async ({ project, client, $, director
   const parseAgentDelegation = async (event: any): Promise<{ agent: string; task: string } | null> => {
     await log(`🔍 parseAgentDelegation called with event: ${JSON.stringify(event, null, 2)}`, LogLevel.DEBUG)
     try {
-      // Try to get session title from properties
-      const sessionTitle = event.properties?.title || event.properties?.session?.title || ""
+      // Try to get session title from properties (check multiple locations)
+      const sessionTitle = event.properties?.info?.title || 
+                          event.properties?.title || 
+                          event.properties?.session?.title || 
+                          ""
       
       // Check for subagent_type field (most reliable for task tool events)
       const subagentType = event.properties?.subagent_type || event.subagent_type || ""
@@ -247,6 +329,8 @@ export const notificationsPlugin: Plugin = async ({ project, client, $, director
       // Extract task description (everything after agent name or first few words)
       let taskDescription = sessionTitle
         .replace(/@\w+[-\w]*/g, "") // Remove @mentions
+        .replace(/\(.*?\)/g, "") // Remove parenthetical content like (@developer subagent)
+        .replace(/subagent/gi, "") // Remove "subagent" word
         .replace(/^[:\-\s]+/, "") // Remove leading punctuation
         .trim()
 
