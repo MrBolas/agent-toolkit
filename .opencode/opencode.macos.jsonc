@@ -32,23 +32,38 @@
               }
             }
           },
-          "glm-4.6v-ud-q5": {
-            "name": "GLM 4.6V UD Q5",
-            "options": {
-              "limit": {
-                "context": 131072
-              }
-            },
-            "providerOptions": {
-              "local-llama.cpp": {
-                "temperature": 0.8,
-                "top_p": 0.6,
-                "top_k": 2,
-                "repetition_penalty": 1.1
-              }
-            }
-          },
-           "gpt-oss-120b": {
+           "glm-4.6v-ud-q5": {
+             "name": "GLM 4.6V UD Q5",
+             "options": {
+               "limit": {
+                 "context": 131072
+               }
+             },
+             "providerOptions": {
+               "local-llama.cpp": {
+                 "temperature": 0.8,
+                 "top_p": 0.6,
+                 "top_k": 2,
+                 "repetition_penalty": 1.1
+               }
+             }
+           },
+           "minimax-m21-reap-50-q4": {
+             "name": "MiniMax M21 Reap 50 Q4",
+             "options": {
+               "limit": {
+                 "context": 131072
+               }
+             },
+             "providerOptions": {
+               "local-llama.cpp": {
+                 "temperature": 1.0,
+                 "top_p": 0.95,
+                 "top_k": 40
+               }
+             }
+           },
+            "gpt-oss-120b": {
              "name": "GPT OSS 120B",
              "options": {
                "limit": {
