@@ -13,13 +13,15 @@ tools:
   webfetch: true
   write: true
   edit: true
-  skills_code_search: true
-  skills_documentation_standards: true
   # MCP tools disabled - can call @jira-mcp or @github-mcp if needed
   github*: false
   atlassian*: false
   context7*: false
 permission:
+  skill:
+    "code-search": "allow"
+    "documentation-standards": "allow"
+    "code-simplifier": "allow"
   write: allow
   edit: allow
   bash: allow

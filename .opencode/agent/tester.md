@@ -13,13 +13,15 @@ tools:
   webfetch: true
   write: false
   edit: false
-  skills_code_search: false
-  skills_documentation_standards: false
   # MCP tools disabled
   github*: false
   atlassian*: false
   context7*: false
 permission:
+  skill:
+    "code-search": "deny"
+    "documentation-standards": "deny"
+    "code-simplifier": "deny"
   bash: allow
   write: deny
   edit: deny

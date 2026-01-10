@@ -10,7 +10,7 @@ See [README.md](README.md) for setup instructions and usage examples.
 
 - `.opencode/agent/` - Agent system prompts (orchestrator, developer, code_reviewer, tester, jira-mcp, github-mcp, context7-mcp)
 - `.opencode/command/` - OpenSpec workflow commands (proposal, apply, archive, validate)
-- `.opencode/skills/` - Reusable knowledge (code-search, documentation-standards)
+- `.opencode/skill/` - Reusable knowledge (code-search, documentation-standards, code-simplifier)
 - `.opencode/opencode.*.jsonc` - OS-specific configuration templates (macOS, Linux)
 - `.opencode/opencode.jsonc` - Generated config (created by `make opencode`, gitignored)
 
@@ -134,13 +134,17 @@ See individual agent files for how each agent uses Serena.
 
 Reusable knowledge that persists in agent context:
 
-1. **`skills_code_search`** (`.opencode/skills/code-search/SKILL.md`)
+1. **`skills_code_search`** (`.opencode/skill/code-search/SKILL.md`)
    - Semantic code search methodology
    - Available to: orchestrator, developer, code_reviewer
 
-2. **`skills_documentation_standards`** (`.opencode/skills/documentation-standards/SKILL.md`)
+2. **`skills_documentation_standards`** (`.opencode/skill/documentation-standards/SKILL.md`)
    - Documentation templates and standards
    - Available to: developer, code_reviewer
+
+3. **`skills_code_simplifier`** (`.opencode/skill/code-simplifier/SKILL.md`)
+   - Code simplification principles and techniques
+   - Available to: orchestrator, developer, code_reviewer
 
 ---
 

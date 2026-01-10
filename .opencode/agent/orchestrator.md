@@ -13,12 +13,14 @@ tools:
   todowrite: true
   todoread: true
   webfetch: true
-  skills_code_search: true
   # MCP tools are NOT enabled - orchestrator delegates to @jira-mcp and @github-mcp instead
   github*: false
   context7*: false
   atlassian*: false
 permission:
+  skill:
+    "code-search": "allow"
+    "code-simplifier": "allow"
   edit: allow
   bash: allow
   webfetch: allow
