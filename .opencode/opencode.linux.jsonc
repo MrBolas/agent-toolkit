@@ -180,20 +180,29 @@
       ],
       "enabled": true
     },
-     "github": {
-       "type": "local",
-       "command": [
-         "docker",
-         "run",
-         "--rm",
-         "-i",
-         "-e",
-         "GITHUB_PERSONAL_ACCESS_TOKEN",
-         "ghcr.io/github/github-mcp-server:latest"
-       ],
-       "enabled": true
-     },
-     "atlassian": {
+      "github": {
+        "type": "local",
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-i",
+          "-e",
+          "GITHUB_PERSONAL_ACCESS_TOKEN",
+          "ghcr.io/github/github-mcp-server:latest"
+        ],
+        "enabled": true
+      },
+      "mastra": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@mastra/mcp-docs-server"
+        ],
+        "enabled": false
+      }
+    },
        "type": "local",
        "command": [
          "npx",
