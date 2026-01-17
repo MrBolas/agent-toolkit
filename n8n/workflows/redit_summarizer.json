@@ -1,0 +1,166 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "keepOnlySet": false,
+        "values": {
+          "interval": "0 * * * *"
+        },
+        "settings": {}
+      },
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [320, 80]
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/StrixHalo/.rss"
+      },
+      "name": "RSS - StrixHalo",
+      "type": "n8n-nodes-base.readFeed",
+      "typeVersion": 1,
+      "position": [320, 180]
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/opencodeCLI/.rss"
+      },
+      "name": "RSS - opencodeCLI",
+      "type": "n8n-nodes-base.readFeed",
+      "typeVersion": 1,
+      "position": [320, 280]
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/LocalLLaMA/.rss"
+      },
+      "name": "RSS - LocalLLaMA",
+      "type": "n8n-nodes-base.readFeed",
+      "typeVersion": 1,
+      "position": [320, 380]
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/LocalLLM/.rss"
+      },
+      "name": "RSS - LocalLLM",
+      "type": "n8n-nodes-base.readFeed",
+      "typeVersion": 1,
+      "position": [320, 480]
+    },
+    {
+      "parameters": {
+        "mergeBy": "none",
+        "mergeJson": {}
+      },
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [680, 330]
+    },
+    {
+      "parameters": {
+        "operation": "set"
+      },
+      "name": "Debug",
+      "type": "n8n-nodes-base.debug",
+      "typeVersion": 1,
+      "position": [840, 330]
+    }
+  ],
+  "connections": {
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "RSS - StrixHalo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS - opencodeCLI",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "RSS - LocalLLaMA",
+            "type": "main",
+            "index": 2
+          },
+          {
+            "node": "RSS - LocalLLM",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "RSS - StrixHalo": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS - opencodeCLI": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "RSS - LocalLLaMA": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "RSS - LocalLLM": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Debug",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": "1",
+  "name": "Reddit RSS Data Collector",
+  "type": "n8n-workflow",
+  "tags": [],
+  "Paused": false,
+  "pin": {
+    "x": 0,
+    "y": 0
+  }
+}
