@@ -1,9 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": [
-    "@tarquinen/opencode-dcp@0.4.12",
-    "./plugin/watchdog"
-  ],
+  "plugin": ["@tarquinen/opencode-dcp@0.4.12"],
   "experimental": {
     "primary_tools": ["prune"]
   },
