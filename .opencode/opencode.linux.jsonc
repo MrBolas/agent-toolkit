@@ -167,42 +167,42 @@
    },
 
    "mcp": {
-     "serena": {
+    "serena": {
+    "type": "local",
+    "command": [
+      "uvx",
+      "--from",
+      "git+https://github.com/oraios/serena",
+      "serena",
+      "start-mcp-server",
+      "--enable-web-dashboard",
+      "false"
+    ],
+    "enabled": true
+    },
+    "github": {
       "type": "local",
       "command": [
-        "uvx",
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server",
-        "--enable-web-dashboard",
-        "false"
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server:latest"
       ],
       "enabled": true
     },
-      "github": {
-        "type": "local",
-        "command": [
-          "docker",
-          "run",
-          "--rm",
-          "-i",
-          "-e",
-          "GITHUB_PERSONAL_ACCESS_TOKEN",
-          "ghcr.io/github/github-mcp-server:latest"
-        ],
-        "enabled": true
-      },
-      "mastra": {
-        "type": "local",
-        "command": [
-          "npx",
-          "-y",
-          "@mastra/mcp-docs-server"
-        ],
-        "enabled": false
-      }
+    "mastra": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@mastra/mcp-docs-server"
+      ],
+      "enabled": false
     },
+    "atlassian": {
        "type": "local",
        "command": [
          "npx",
@@ -211,28 +211,28 @@
          "https://mcp.atlassian.com/v1/sse"
        ],
        "enabled": true
-     },
-     "context7": {
-       "type": "remote",
-       "url": "https://mcp.context7.com/mcp",
-       "headers": {
-         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
-       },
-       "enabled": true
-     },
-     "sequential-thinking": {
-       "type": "local",
-       "command": [
-         "docker",
-         "run",
-         "--network",
-         "host",
-         "--rm",
-         "-i",
-         "mcp/sequentialthinking"
-       ],
-       "enabled": true
-     }
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      },
+      "enabled": true
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "docker",
+        "run",
+        "--network",
+        "host",
+        "--rm",
+        "-i",
+        "mcp/sequentialthinking"
+      ],
+      "enabled": true
+    }
    },
    "permission": {
       "bash": {

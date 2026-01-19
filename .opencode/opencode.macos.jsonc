@@ -176,7 +176,7 @@
         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       },
       "enabled": true
-    },
+     },
     "serena": {
       "type": "local",
       "command": [
@@ -223,8 +223,8 @@
          "ghcr.io/github/github-mcp-server:latest"
        ],
        "enabled": true
-     },
-     "mastra": {
+    },
+    "mastra": {
        "type": "local",
        "command": [
          "npx",
@@ -232,7 +232,7 @@
          "@mastra/mcp-docs-server"
        ],
        "enabled": false
-     }
+    }
    },
    "permission": {
       "bash": {
