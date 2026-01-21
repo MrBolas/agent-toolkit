@@ -31,53 +31,83 @@
               }
             }
           },
-           "glm-4.6v-ud-q5": {
-             "name": "GLM 4.6V UD Q5",
-             "options": {
-               "limit": {
-                 "context": 131072
-               }
-             },
-             "providerOptions": {
-               "local-llama.cpp": {
-                 "temperature": 0.8,
-                 "top_p": 0.6,
-                 "top_k": 2,
-                 "repetition_penalty": 1.1
-               }
-             }
-           },
-           "minimax-m21-reap-50-q4": {
-             "name": "MiniMax M21 Reap 50 Q4",
-             "options": {
-               "limit": {
-                 "context": 131072
-               }
-             },
-             "providerOptions": {
-               "local-llama.cpp": {
-                 "temperature": 1.0,
-                 "top_p": 0.95,
-                 "top_k": 40
-               }
-             }
-           },
-            "gpt-oss-120b": {
-             "name": "GPT OSS 120B",
-             "options": {
-               "limit": {
-                 "context": 131072
-               }
-             },
-             "providerOptions": {
-               "local-llama.cpp": {
-                 "temperature": 1.0,
-                 "top_p": 1.0,
-                 "top_k": 0,
-                 "min_p": 0.0
-               }
-             }
-           },
+          "glm-4.6v-ud-q5": {
+            "name": "GLM 4.6V UD Q5",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            },
+            "providerOptions": {
+              "local-llama.cpp": {
+                "temperature": 0.8,
+                "top_p": 0.6,
+                "top_k": 2,
+                "repetition_penalty": 1.1
+              }
+            }
+          },
+          "glm-4.7-flash-q6": {
+            "name": "GLM 4.7 Flash Q6",
+            "options": {
+              "limit": {
+                "context": 101072
+              }
+            },
+            "providerOptions": {
+              "local-llama.cpp": {
+                "temperature": 0.7,
+                "top_p": 1.0,
+                "min-p": 0.01,
+              }
+            }
+          },
+          "glm-4.7-flash-q8": {
+            "name": "GLM 4.7 Flash Q8",
+            "options": {
+              "limit": {
+                "context": 101072
+              }
+            },
+            "providerOptions": {
+              "local-llama.cpp": {
+                "temperature": 0.7,
+                "top_p": 1.0,
+                "min-p": 0.01,
+              }
+            }
+          },
+          "minimax-m21-reap-50-q4": {
+            "name": "MiniMax M21 Reap 50 Q4",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            },
+            "providerOptions": {
+              "local-llama.cpp": {
+                "temperature": 1.0,
+                "top_p": 0.95,
+                "top_k": 40
+              }
+            }
+          },
+          "gpt-oss-120b": {
+            "name": "GPT OSS 120B",
+            "options": {
+              "limit": {
+                "context": 131072
+              }
+            },
+            "providerOptions": {
+              "local-llama.cpp": {
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "top_k": 0,
+                "min_p": 0.0
+              }
+            }
+          },
           "qwen3-coder-30b-instruct": {
             "name": "Qwen3 Coder 30B Instruct",
             "options": {
