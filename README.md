@@ -468,7 +468,7 @@ For LOW/OPTIONAL: Proceed without confirmation.
 **Problem:** `skills_code_search` or `skills_documentation_standards` not available.
 
 **Solution:**
-1. Verify skill files exist in `.opencode/skills/`
+1. Verify skill files exist in `.opencode/skill/`
 2. Verify skill names match config
 3. Restart OpenCode
 4. Check agent has tool access enabled

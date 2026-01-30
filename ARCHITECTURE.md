@@ -224,13 +224,13 @@ These were replaced by agent behavior or skills:
 ### 2 Reusable Skills
 
 1. **`skills_code_search`**
-   - Location: `.opencode/skills/code-search/SKILL.md`
+   - Location: `.opencode/skill/code-search/SKILL.md`
    - Available to: orchestrator, developer, code_reviewer
    - Purpose: Teach agents how to search code semantically
    - Persists in context throughout conversations
 
 2. **`skills_documentation-standards`**
-   - Location: `.opencode/skills/documentation-standards/SKILL.md`
+   - Location: `.opencode/skill/documentation-standards/SKILL.md`
    - Available to: developer, code_reviewer
    - Purpose: Provide documentation standards and templates
    - Persists in context throughout conversations
@@ -575,7 +575,7 @@ You can search Serena for implementation patterns to inform your decisions.
 ### For Extending the System
 
 **Add a new skill:**
-1. Create `.opencode/skills/skill-name/SKILL.md`
+1. Create `.opencode/skill/skill-name/SKILL.md`
 2. Define WHO, PURPOSE, WHAT YOU CAN DO
 3. Enable in config for relevant agents
 4. Skills auto-discover on restart
@@ -646,7 +646,7 @@ Both files include:
 **Problem:** `skills_code_search` or `skills_documentation_standards` not available.
 
 **Solution:**
-1. Verify skill files exist in `.opencode/skills/`
+1. Verify skill files exist in `.opencode/skill/`
 2. Verify skill names match config
 3. Restart OpenCode
 4. Check that agent has tool access enabled

@@ -302,7 +302,7 @@ When project knowledge is insufficient:
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - Design decisions, trade-offs, and system architecture
 - **Agent Files** - See `.opencode/agent/*.md` for detailed agent descriptions
 - **Command Files** - See `.opencode/command/*.md` for implementation details
-- **Skill Files** - See `.opencode/skills/*/SKILL.md` for methodology and best practices
+- **Skill Files** - See `.opencode/skill/*/SKILL.md` for methodology and best practices
 
 ---
 
