@@ -13,6 +13,19 @@ models:
       - q4
       - q5
 
+  glm-4.7-flash:
+    description: "GLM 4.7 Flash"
+    huggingface_url: "https://huggingface.co/unsloth/GLM-4.7-Flash-GGUF"
+    parameters:
+      temperature: 0.7
+      top_p: 1.0
+      min_p: 0.01
+    notes: "Fast GLM model with balanced parameters for general use"
+    context_window: 101072
+    quantizations:
+      - q6
+      - q8
+
   gpt-oss-120b:
     description: "GPT OSS 120B"
     huggingface_url: "https://huggingface.co/unsloth/gpt-oss-120b-GGUF"
