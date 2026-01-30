@@ -48,6 +48,22 @@ npm install  # Install dependencies in .opencode/
 make opencode  # Copies to ~/.config/opencode/
 ```
 
+### 3. Claude Code Setup (Optional)
+
+If you also use **Claude Code**, you can install a mirrored configuration:
+
+```bash
+# Install Claude Code configuration
+make claude
+```
+
+This creates a parallel configuration in `~/.config/claude/` with:
+- Same MCP servers (Serena, GitHub, Atlassian, Context7, Sequential Thinking)
+- Same model configurations for local LLMs
+- Same permission settings
+
+See `.claude/README.md` for details.
+
 ---
 
 ## Architecture Overview

@@ -1,0 +1,249 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["@tarquinen/opencode-dcp@0.4.12"],
+  "experimental": {
+    "primary_tools": ["prune"]
+  },
+  "tui": {
+    "scroll_speed": 3
+  },
+
+  "provider": {
+    "local-llama.cpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local Llama.cpp",
+      "options": {
+        "baseURL": "http://192.168.1.50:9293/v1"
+      },
+      "models": {
+        "glm-4.6v-ud-q4": {
+          "name": "GLM 4.6V UD Q4",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          },
+          "providerOptions": {
+            "local-llama.cpp": {
+              "temperature": 0.8,
+              "top_p": 0.6,
+              "top_k": 2,
+              "repetition_penalty": 1.1
+            }
+          }
+        },
+        "glm-4.6v-ud-q5": {
+          "name": "GLM 4.6V UD Q5",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          },
+          "providerOptions": {
+            "local-llama.cpp": {
+              "temperature": 0.8,
+              "top_p": 0.6,
+              "top_k": 2,
+              "repetition_penalty": 1.1
+            }
+          }
+        },
+        "minimax-m21-reap-50-q4": {
+          "name": "MiniMax M21 Reap 50 Q4",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          },
+          "providerOptions": {
+            "local-llama.cpp": {
+              "temperature": 1.0,
+              "top_p": 0.95,
+              "top_k": 40
+            }
+          }
+        },
+        "gpt-oss-120b": {
+          "name": "GPT OSS 120B",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          },
+          "providerOptions": {
+            "local-llama.cpp": {
+              "temperature": 1.0,
+              "top_p": 1.0,
+              "top_k": 0,
+              "min_p": 0.0
+            }
+          }
+        },
+        "qwen3-coder-30b-instruct": {
+          "name": "Qwen3 Coder 30B Instruct",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          },
+          "providerOptions": {
+            "local-llama.cpp": {
+              "temperature": 0.7,
+              "top_p": 0.8,
+              "top_k": 20,
+              "repetition_penalty": 1.05
+            }
+          }
+        },
+        "qwen3-next-80b-instruct-q6": {
+          "name": "Qwen3 Next 80B Instruct Q6",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          },
+          "providerOptions": {
+            "local-llama.cpp": {
+              "temperature": 0.7,
+              "top_p": 0.8,
+              "top_k": 20,
+              "min_p": 0
+            }
+          }
+        },
+        "qwen3-next-80b-thinking-q6": {
+          "name": "Qwen3 Next 80B Thinking Q6",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          },
+          "providerOptions": {
+            "local-llama.cpp": {
+              "temperature": 0.6,
+              "top_p": 0.95,
+              "top_k": 20,
+              "min_p": 0
+            }
+          }
+        },
+        "qwen3-vl-30b-instruct-q6": {
+          "name": "Qwen3 VL 30B Instruct Q6",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          },
+          "providerOptions": {
+            "local-llama.cpp": {
+              "temperature": 0.7,
+              "top_p": 0.8,
+              "top_k": 20,
+              "presence_penalty": 1.5,
+              "repetition_penalty": 1.0,
+              "seed": 3407
+            }
+          }
+        },
+        "qwen3-vl-30b-thinking-q6": {
+          "name": "Qwen3 VL 30B Thinking Q6",
+          "options": {
+            "limit": {
+              "context": 131072
+            }
+          },
+          "providerOptions": {
+            "local-llama.cpp": {
+              "temperature": 1.0,
+              "top_p": 0.95,
+              "top_k": 20,
+              "presence_penalty": 0.0,
+              "repetition_penalty": 1.0,
+              "seed": 1234
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "share": "disabled",
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      },
+      "enabled": true
+    },
+    "serena": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--enable-web-dashboard",
+        "false"
+      ],
+      "enabled": true
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "mcp/sequentialthinking"
+      ],
+      "enabled": true
+    },
+    "atlassian": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "mcp-remote",
+        "https://mcp.atlassian.com/v1/sse"
+      ],
+      "enabled": false
+    },
+    "github": {
+      "type": "local",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server:latest"
+      ],
+      "enabled": true
+    },
+    "mastra": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@mastra/mcp-docs-server"
+      ],
+      "enabled": false
+    }
+  },
+  "permission": {
+    "bash": {
+      "rm -rf *": "deny",
+      "rm -rf /": "deny",
+      "git push --force": "ask",
+      "git push -f": "ask",
+      "npm publish": "ask",
+      "docker system prune -a": "ask"
+    },
+    "doom_loop": "ask",
+    "external_directory": "ask"
+  }
+}
