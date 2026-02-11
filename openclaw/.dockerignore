@@ -1,0 +1,4 @@
+# Build context exclusions
+.git
+.gitignore
+*.md
