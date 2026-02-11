@@ -1,16 +1,24 @@
-.PHONY: help opencode openspec clean status openclaw
+.PHONY: help opencode openspec clean status \
+       openclaw-build openclaw-onboard openclaw-start openclaw-stop \
+       openclaw-logs openclaw-shell openclaw-clean
 
 .DEFAULT_GOAL := help
 
 help:
 	@echo "Available commands:"
-	@echo "  make opencode          - Install OS-specific OpenCode configuration to ~/.config/opencode/"
-	@echo "  make openspec          - Install OpenSpec CLI globally"
-	@echo "  make clean             - Stop containers and remove volumes"
-	@echo "  make status            - Show status of all containers"
+	@echo "  make opencode            - Install OS-specific OpenCode configuration to ~/.config/opencode/"
+	@echo "  make openspec            - Install OpenSpec CLI globally"
+	@echo "  make clean               - Stop containers and remove volumes"
+	@echo "  make status              - Show status of all containers"
 	@echo ""
-	@echo "OpenClaw (Portable Docker):"
-	@echo "  make openclaw          - Show OpenClaw usage instructions"
+	@echo "OpenClaw:"
+	@echo "  make openclaw-build      - Build the OpenClaw Docker image"
+	@echo "  make openclaw-onboard    - Run the onboarding wizard (first time)"
+	@echo "  make openclaw-start      - Start the OpenClaw gateway"
+	@echo "  make openclaw-stop       - Stop the OpenClaw gateway"
+	@echo "  make openclaw-logs       - View gateway logs"
+	@echo "  make openclaw-shell      - Enter the container shell"
+	@echo "  make openclaw-clean      - Remove container and volumes"
 
 opencode:
 	@echo "Generating OS-specific opencode.jsonc..."
@@ -38,17 +46,45 @@ opencode:
  status:
 	docker compose ps
 
-# OpenClaw - Portable Docker (manual commands)
-openclaw:
-	@echo "OpenClaw Portable Docker Setup"
-	@echo "=============================="
+# OpenClaw targets
+OPENCLAW_IMAGE := openclaw
+OPENCLAW_CONTAINER := openclaw
+OPENCLAW_VOLUME := openclaw-data
+
+openclaw-build:
+	docker build -t $(OPENCLAW_IMAGE) ./openclaw
+
+openclaw-onboard:
+	docker run -it \
+		-v $(OPENCLAW_VOLUME):/home/node/.openclaw \
+		-p 18789:18789 \
+		-p 18790:18790 \
+		$(OPENCLAW_IMAGE) \
+		node openclaw.mjs onboard --no-install-daemon
+
+openclaw-start:
+	docker run -d \
+		--name $(OPENCLAW_CONTAINER) \
+		-v $(OPENCLAW_VOLUME):/home/node/.openclaw \
+		-p 18789:18789 \
+		-p 18790:18790 \
+		--restart unless-stopped \
+		$(OPENCLAW_IMAGE)
 	@echo ""
-	@echo "Files: openclaw/Dockerfile, openclaw/README.md"
-	@echo ""
-	@echo "Quick Start:"
-	@echo "  1. Build:        docker build -t openclaw ./openclaw"
-	@echo "  2. Onboard:      docker run -it -v openclaw-data:/data/.openclaw -p 18789:18789 openclaw node openclaw.mjs onboard --no-install-daemon"
-	@echo "  3. Start:        docker run -d --name openclaw -v openclaw-data:/data/.openclaw -p 18789:18789 openclaw node openclaw.mjs gateway --bind lan --port 18789"
-	@echo ""
-	@echo "See openclaw/README.md for full details."
+	@echo "OpenClaw running at http://localhost:18789"
+
+openclaw-stop:
+	docker stop $(OPENCLAW_CONTAINER)
+	docker rm $(OPENCLAW_CONTAINER)
+
+openclaw-logs:
+	docker logs -f $(OPENCLAW_CONTAINER)
+
+openclaw-shell:
+	docker exec -it $(OPENCLAW_CONTAINER) /bin/bash
+
+openclaw-clean:
+	-docker rm -f $(OPENCLAW_CONTAINER)
+	-docker volume rm $(OPENCLAW_VOLUME)
+	@echo "Container and volume removed."
 

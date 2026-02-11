@@ -1,52 +1,52 @@
-# OpenClaw - Portable Docker Setup
-# https://github.com/openclaw/openclaw
+# OpenClaw - Portable Self-Contained Docker
+# Based on the official Dockerfile: https://github.com/openclaw/openclaw/blob/main/Dockerfile
+# Difference: clones from GitHub instead of requiring a local checkout.
 
 FROM node:22-bookworm
 
-# Install build dependencies
-RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    git \
-    curl \
-    ca-certificates \
-    python3 \
-    make \
-    g++ \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-
-# Install Bun
+# Install Bun (required for build scripts)
 RUN curl -fsSL https://bun.sh/install | bash
 ENV PATH="/root/.bun/bin:${PATH}"
 
-# Enable pnpm
 RUN corepack enable
 
-# Set working directory
 WORKDIR /app
 
-# Clone OpenClaw
+# Clone OpenClaw from GitHub
 ARG OPENCLAW_VERSION=main
 RUN git clone --depth 1 --branch ${OPENCLAW_VERSION} https://github.com/openclaw/openclaw.git .
 
-# Install and build
-RUN pnpm install --frozen-lockfile && \
-    pnpm build && \
-    OPENCLAW_PREFER_PNPM=1 pnpm ui:build
+# Optional: install extra apt packages (e.g. ffmpeg, build-essential)
+ARG OPENCLAW_DOCKER_APT_PACKAGES=""
+RUN if [ -n "$OPENCLAW_DOCKER_APT_PACKAGES" ]; then \
+      apt-get update && \
+      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $OPENCLAW_DOCKER_APT_PACKAGES && \
+      apt-get clean && \
+      rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*; \
+    fi
 
-# Create data directory
-RUN mkdir -p /data/.openclaw/workspace && \
-    chown -R node:node /data
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
-# Set production environment
+# Build
+RUN pnpm build
+
+# Force pnpm for UI build (Bun may fail on ARM/Synology architectures)
+ENV OPENCLAW_PREFER_PNPM=1
+RUN pnpm ui:build
+
 ENV NODE_ENV=production
-ENV HOME=/data
 
-# Switch to non-root user
+# Allow non-root user to write temp files during runtime/tests
+RUN chown -R node:node /app
+
+# Security hardening: run as non-root user (uid 1000)
 USER node
 
-# Expose ports
+# Gateway + Bridge ports
 EXPOSE 18789 18790
 
-# Default command: show help
-CMD ["node", "openclaw.mjs", "--help"]
+# Start gateway server
+# --allow-unconfigured: allows first-time startup without config
+# --bind lan: allows connections from outside the container
+CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured", "--bind", "lan"]
