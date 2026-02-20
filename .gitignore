@@ -6,3 +6,8 @@
 # OpenCode base config (use OS-specific files instead)
 .opencode/opencode.jsonc
 
+# Environment files with secrets
+.env
+zeroclaw/.env
+zeroclaw/config.toml
+

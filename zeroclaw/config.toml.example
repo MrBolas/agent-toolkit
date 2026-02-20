@@ -1,0 +1,18 @@
+api_key = ""
+default_provider = "custom:http://llm.ai.home/v1/"
+default_model = "qwen3-coder-next-q6"
+default_temperature = 0.7
+
+[memory]
+backend = "sqlite"
+auto_save = true
+embedding_provider = "none"
+
+[gateway]
+port = 3000
+host = "[::]"
+allow_public_bind = true
+
+[channels_config.telegram]
+bot_token = "your-telegram-bot-token-here"
+allowed_users = ["your-telegram-username"]

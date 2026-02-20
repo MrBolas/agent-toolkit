@@ -1,0 +1,32 @@
+services:
+  zeroclaw:
+    build: .
+    container_name: zeroclaw
+    restart: unless-stopped
+    dns:
+      - 192.168.1.51
+    command: ["daemon"]
+    environment:
+      - API_KEY=${API_KEY:-}
+      - ZEROCLAW_MODEL=${ZEROCLAW_MODEL:-qwen3-coder-next-q6}
+    volumes:
+      - zeroclaw-data:/zeroclaw-data
+    ports:
+      - "${HOST_PORT:-3000}:3000"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "zeroclaw", "status"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  zeroclaw-data:

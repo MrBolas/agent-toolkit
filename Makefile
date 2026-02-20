@@ -1,4 +1,4 @@
-.PHONY: help opencode openspec clean status
+.PHONY: help opencode openspec clean status zeroclaw zeroclaw-down zeroclaw-logs
 
  .DEFAULT_GOAL := help
 
@@ -8,6 +8,9 @@
 	@echo "  make openspec          - Install OpenSpec CLI globally"
 	@echo "  make clean             - Stop containers and remove volumes"
 	@echo "  make status            - Show status of all containers"
+	@echo "  make zeroclaw          - Build and start ZeroClaw container"
+	@echo "  make zeroclaw-down     - Stop ZeroClaw container"
+	@echo "  make zeroclaw-logs     - Tail ZeroClaw container logs"
 
 opencode:
 	@echo "Generating OS-specific opencode.jsonc..."
@@ -34,4 +37,13 @@ opencode:
 
  status:
 	docker compose ps
+
+ zeroclaw:
+	docker compose -f zeroclaw/docker-compose.yml up -d --build
+
+ zeroclaw-down:
+	docker compose -f zeroclaw/docker-compose.yml down
+
+ zeroclaw-logs:
+	docker compose -f zeroclaw/docker-compose.yml logs -f
 
