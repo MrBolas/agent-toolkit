@@ -7,7 +7,7 @@ services:
     command: ["daemon"]
     environment:
       - API_KEY=${API_KEY:-}
-      - ZEROCLAW_MODEL=${ZEROCLAW_MODEL:-qwen3-coder-next-q6}
+      - ZEROCLAW_MODEL=${ZEROCLAW_MODEL:-qwen3.5-35b-a3b-ud-q6}
     volumes:
       - zeroclaw-data:/zeroclaw-data
     deploy:
