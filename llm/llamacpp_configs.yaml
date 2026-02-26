@@ -95,3 +95,19 @@ models:
       seed: 1234
     notes: "Vision-language thinking model with moderate creativity"
     context_window: 131072
+
+  qwen3.5-122b-a10b-ud-q5:
+    description: "Qwen3.5 122B A10B UD Q5"
+    huggingface_url: "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-GGUF"
+    notes: "Large MoE model (122B total / 10B activated) with hybrid reasoning capabilities"
+    context_window: 100000
+    quantizations:
+      - q5
+
+  qwen3.5-35b-a3b-ud-q6:
+    description: "Qwen3.5 35B A3B UD Q6"
+    huggingface_url: "https://huggingface.co/unsloth/Qwen3.5-35B-A3B-GGUF"
+    notes: "Medium MoE model (35B total / 3B activated) with hybrid reasoning capabilities"
+    context_window: 100000
+    quantizations:
+      - q6
