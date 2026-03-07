@@ -1,0 +1,32 @@
+# CoPaw Docker Compose Configuration
+# Official image: agentscope/copaw:latest
+# Documentation: https://copaw.agentscope.io/
+
+services:
+  copaw:
+    image: agentscope/copaw:latest
+    container_name: copaw
+    ports:
+      # Bind to all interfaces (0.0.0.0) to allow remote access
+      # Access from other machines: http://<host-ip>:8088
+      - "0.0.0.0:8088:8088"
+    volumes:
+      - copaw_data:/app/working
+    env_file:
+      - .env
+    # Enable host network access for local models (192.168.1.50)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # Alternative: Use host networking on Linux (uncomment below, remove ports)
+    # network_mode: host
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  copaw_data:
+    name: copaw_data
