@@ -20,7 +20,7 @@ opencode:
 	fi
 	@echo "Installing to ~/.config/opencode/..."
 	@mkdir -p ~/.config/opencode
-	@rsync -a --exclude='opencode.macos.jsonc' --exclude='opencode.linux.jsonc' .opencode/ ~/.config/opencode/
+	@rsync -au --exclude='opencode.macos.jsonc' --exclude='opencode.linux.jsonc' .opencode/ ~/.config/opencode/
 	@echo "✓ OpenCode configuration installed successfully"
 
  openspec:
