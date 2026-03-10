@@ -1,4 +1,4 @@
-.PHONY: help opencode openspec clean status zeroclaw zeroclaw-down zeroclaw-logs
+.PHONY: help opencode openspec clean status zeroclaw zeroclaw-down zeroclaw-logs moltis moltis-down moltis-logs
 
  .DEFAULT_GOAL := help
 
@@ -11,6 +11,9 @@
 	@echo "  make zeroclaw          - Build and start ZeroClaw container"
 	@echo "  make zeroclaw-down     - Stop ZeroClaw container"
 	@echo "  make zeroclaw-logs     - Tail ZeroClaw container logs"
+	@echo "  make moltis            - Start Moltis AI gateway container"
+	@echo "  make moltis-down       - Stop Moltis container"
+	@echo "  make moltis-logs       - Tail Moltis container logs"
 
 opencode:
 	@echo "Generating OS-specific opencode.jsonc..."
@@ -46,4 +49,15 @@ opencode:
 
  zeroclaw-logs:
 	docker compose -f zeroclaw/docker-compose.yml logs -f
+
+ moltis:
+	@test -f moltis/.env || (cp moltis/.env.example moltis/.env && echo "✓ Created moltis/.env from example — edit it to add your API keys")
+	@mkdir -p moltis/data
+	docker compose -f moltis/docker-compose.yml up -d
+
+ moltis-down:
+	docker compose -f moltis/docker-compose.yml down
+
+ moltis-logs:
+	docker compose -f moltis/docker-compose.yml logs -f
 

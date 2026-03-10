@@ -10,4 +10,7 @@
 .env
 zeroclaw/.env
 zeroclaw/config.toml
+moltis/.env
+moltis/config/moltis.toml
+moltis/data/
 

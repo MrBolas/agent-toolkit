@@ -1,0 +1,18 @@
+# Moltis configuration
+# Copy to moltis.toml and adjust as needed.
+# See https://github.com/moltis-org/moltis for full documentation.
+
+# --- Default provider and model ---
+# Uncomment and set your preferred defaults:
+# default_provider = "openrouter"
+# default_model = "anthropic/claude-sonnet-4-20250514"
+
+# --- Browser tool (Docker) ---
+# Required when running Moltis inside Docker so the browser
+# sandbox container can reach the host network.
+[tools.browser]
+container_host = "host.docker.internal"
+
+# --- Memory ---
+[memory]
+backend = "sqlite"

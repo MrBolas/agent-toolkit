@@ -1,0 +1,31 @@
+services:
+  moltis:
+    image: ghcr.io/moltis-org/moltis:latest
+    container_name: moltis
+    restart: unless-stopped
+    group_add:
+      - "981"  # Host 'docker' group GID — grants Docker socket access
+    ports:
+      - "13131:13131"   # Gateway (HTTPS) - web UI, API, WebSocket
+      - "13132:13132"   # HTTP - CA certificate download
+      - "1455:1455"     # OAuth callback (OpenAI Codex, etc.)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Linux browser sandbox support
+    # All environment variables (MOLTIS_PASSWORD, API keys) loaded from .env
+    env_file:
+      - .env
+    environment:
+      # Align data dir path inside container with host path so sibling sandbox
+      # containers get correct bind-mount sources (Docker resolves -v sources
+      # against the HOST filesystem, not the container's).
+      - MOLTIS_DATA_DIR=/home/mrballs/Documents/repos/agent-toolkit/moltis/data
+    volumes:
+      - ./config:/home/moltis/.config/moltis                                    # Configuration files
+      - ./data:/home/mrballs/Documents/repos/agent-toolkit/moltis/data          # Runtime data (host-path aligned for sandbox mounts)
+      - /var/run/docker.sock:/var/run/docker.sock                               # Sandbox execution (spawns isolated containers)
+    healthcheck:
+      test: ["CMD", "curl", "-fsk", "https://localhost:13131/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
