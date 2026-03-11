@@ -4,7 +4,9 @@
     "baseUrl": "http://192.168.1.50:9293/v1",
     "models": [
       "qwen3.5-35b-a3b-ud-mxfp4_thinking",
-      "qwen3.5-122b-a10b-mxfp4_thinking"
+      "qwen3.5-122b-a10b-mxfp4_thinking",
+      "qwen3.5-35b-a3b-ud-mxfp4_instruct",
+      "qwen3-coder-next-q6"
     ],
     "displayName": "192.168.1.50"
   }

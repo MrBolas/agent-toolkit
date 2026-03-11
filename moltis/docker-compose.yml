@@ -19,6 +19,9 @@ services:
       # containers get correct bind-mount sources (Docker resolves -v sources
       # against the HOST filesystem, not the container's).
       - MOLTIS_DATA_DIR=/home/mrballs/Documents/repos/agent-toolkit/moltis/data
+      # Allow Go toolchain to compile inside the sandbox by using a writable
+      # workspace path for temporary build artifacts instead of /tmp.
+      - GOTMPDIR=/home/mrballs/Documents/repos/agent-toolkit/moltis/data/repos/.gotmp
     volumes:
       - ./config:/home/moltis/.config/moltis                                    # Configuration files
       - ./data:/home/mrballs/Documents/repos/agent-toolkit/moltis/data          # Runtime data (host-path aligned for sandbox mounts)
