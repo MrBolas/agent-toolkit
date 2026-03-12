@@ -1,0 +1,12 @@
+{
+  "disabled": [
+    "custom-192-168-1-50::qwen3.5-4b-ud-q8",
+    "custom-192-168-1-50::qwen3.5-122b-a10b-mxfp4_thinking",
+    "custom-192-168-1-50::qwen3.5-122b-a10b-mxfp4_instruct",
+    "custom-192-168-1-50::qwen3.5-35b-a3b-ud-mxfp4_instruct",
+    "custom-192-168-1-50::nemotron-3-super-120b-a12b-mxfp4",
+    "custom-192-168-1-50::gpt-oss-120b",
+    "custom-192-168-1-50::qwen3-coder-30b-instruct"
+  ],
+  "unsupported": {}
+}
