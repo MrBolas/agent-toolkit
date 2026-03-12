@@ -1,8 +1,8 @@
-.PHONY: help opencode openspec clean status zeroclaw zeroclaw-down zeroclaw-logs moltis moltis-down moltis-logs
+.PHONY: help opencode openspec clean status zeroclaw zeroclaw-down zeroclaw-logs moltis moltis-build moltis-down moltis-logs
 
- .DEFAULT_GOAL := help
+.DEFAULT_GOAL := help
 
- help:
+help:
 	@echo "Available commands:"
 	@echo "  make opencode          - Install OS-specific OpenCode configuration to ~/.config/opencode/"
 	@echo "  make openspec          - Install OpenSpec CLI globally"
@@ -12,6 +12,7 @@
 	@echo "  make zeroclaw-down     - Stop ZeroClaw container"
 	@echo "  make zeroclaw-logs     - Tail ZeroClaw container logs"
 	@echo "  make moltis            - Start Moltis AI gateway container"
+	@echo "  make moltis-build      - Build Moltis AI gateway from source"
 	@echo "  make moltis-down       - Stop Moltis container"
 	@echo "  make moltis-logs       - Tail Moltis container logs"
 
@@ -29,35 +30,40 @@ opencode:
 	@rsync -a --exclude='opencode.macos.jsonc' --exclude='opencode.linux.jsonc' .opencode/ ~/.config/opencode/
 	@echo "✓ OpenCode configuration installed successfully"
 
- openspec:
+openspec:
 	@echo "Installing OpenSpec CLI globally..."
 	@npm install -g @fission-ai/openspec@latest
 	@echo "✓ OpenSpec CLI installed. Run 'openspec --version' to verify."
 
- clean:
+clean:
 	docker compose down -v
 	@echo "All containers stopped and volumes removed."
 
- status:
+status:
 	docker compose ps
 
- zeroclaw:
+zeroclaw:
 	docker compose -f zeroclaw/docker-compose.yml up -d --build
 
- zeroclaw-down:
+zeroclaw-down:
 	docker compose -f zeroclaw/docker-compose.yml down
 
- zeroclaw-logs:
+zeroclaw-logs:
 	docker compose -f zeroclaw/docker-compose.yml logs -f
 
- moltis:
+moltis:
 	@test -f moltis/.env || (cp moltis/.env.example moltis/.env && echo "✓ Created moltis/.env from example — edit it to add your API keys")
 	@mkdir -p moltis/data
-	docker compose -f moltis/docker-compose.yml up -d
+	docker compose -f moltis/docker-compose.yml up -d --build
 
- moltis-down:
+moltis-build:
+	@test -f moltis/.env || (cp moltis/.env.example moltis/.env && echo "✓ Created moltis/.env from example — edit it to add your API keys")
+	@mkdir -p moltis/data
+	docker compose -f moltis/docker-compose.yml build
+
+moltis-down:
 	docker compose -f moltis/docker-compose.yml down
 
- moltis-logs:
+moltis-logs:
 	docker compose -f moltis/docker-compose.yml logs -f
 

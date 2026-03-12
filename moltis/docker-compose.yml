@@ -1,10 +1,12 @@
 services:
   moltis:
-    image: ghcr.io/moltis-org/moltis:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: moltis
     restart: unless-stopped
     group_add:
-      - "981"  # Host 'docker' group GID — grants Docker socket access
+      - "${DOCKER_GID:-981}"  # Host 'docker' group GID — configure via DOCKER_GID env var
     ports:
       - "13131:13131"   # Gateway (HTTPS) - web UI, API, WebSocket
       - "13132:13132"   # HTTP - CA certificate download
@@ -18,13 +20,13 @@ services:
       # Align data dir path inside container with host path so sibling sandbox
       # containers get correct bind-mount sources (Docker resolves -v sources
       # against the HOST filesystem, not the container's).
-      - MOLTIS_DATA_DIR=/home/mrballs/Documents/repos/agent-toolkit/moltis/data
+      - MOLTIS_DATA_DIR=${MOLTIS_DATA_DIR:-/home/moltis/.moltis/data}
       # Allow Go toolchain to compile inside the sandbox by using a writable
       # workspace path for temporary build artifacts instead of /tmp.
-      - GOTMPDIR=/home/mrballs/Documents/repos/agent-toolkit/moltis/data/repos/.gotmp
+      - GOTMPDIR=${GOTMPDIR:-/home/moltis/.moltis/data/repos/.gotmp}
     volumes:
       - ./config:/home/moltis/.config/moltis                                    # Configuration files
-      - ./data:/home/mrballs/Documents/repos/agent-toolkit/moltis/data          # Runtime data (host-path aligned for sandbox mounts)
+      - ${MOLTIS_DATA_DIR:-./data}:${MOLTIS_DATA_DIR:-/home/moltis/.moltis/data} # Runtime data (host-path aligned for sandbox mounts)
       - /var/run/docker.sock:/var/run/docker.sock                               # Sandbox execution (spawns isolated containers)
     healthcheck:
       test: ["CMD", "curl", "-fsk", "https://localhost:13131/"]
