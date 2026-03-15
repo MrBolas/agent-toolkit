@@ -73,6 +73,7 @@ FROM debian:bookworm-slim
 #   (talks to mounted socket, no daemon in-container)
 # - tmux: terminal multiplexer available in deployed container
 # - vim-tiny: lightweight terminal text editor
+# - nodejs + npm: required for MCP servers (GitHub, filesystem, etc.)
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -qq && \
     apt-get install -yqq --no-install-recommends \
@@ -81,6 +82,8 @@ RUN apt-get update -qq && \
         curl \
         gnupg \
         libgomp1 \
+        nodejs \
+        npm \
         sudo \
         tmux \
         vim-tiny && \
