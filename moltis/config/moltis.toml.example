@@ -1,18 +1,157 @@
-# Moltis configuration
-# Copy to moltis.toml and adjust as needed.
+# Moltis Configuration Example
+# ============================
+# Copy this file to moltis.toml and adjust as needed.
+# This is a template with example configurations - replace placeholder values.
 # See https://github.com/moltis-org/moltis for full documentation.
 
-# --- Default provider and model ---
-# Uncomment and set your preferred defaults:
-# default_provider = "openrouter"
-# default_model = "anthropic/claude-sonnet-4-20250514"
+# ══════════════════════════════════════════════════════════════════════════════
+# SERVER
+# ══════════════════════════════════════════════════════════════════════════════
 
-# --- Browser tool (Docker) ---
-# Required when running Moltis inside Docker so the browser
-# sandbox container can reach the host network.
+[server]
+bind = "127.0.0.1"                # Address to bind to ("0.0.0.0" for all interfaces)
+port = 13131                      # Port number
+
+# ══════════════════════════════════════════════════════════════════════════════
+# LLM PROVIDERS
+# ══════════════════════════════════════════════════════════════════════════════
+
+[providers]
+offered = [
+    "openai",
+    "anthropic",
+    "openrouter",
+] # Enabled providers shown in UI
+
+# Example: OpenAI
+[providers.openai]
+enabled = false
+# api_key = "sk-..."              # Or set OPENAI_API_KEY env var
+
+# Example: Anthropic (Claude)
+[providers.anthropic]
+enabled = false
+# api_key = "sk-ant-..."          # Or set ANTHROPIC_API_KEY env var
+
+# Example: OpenRouter
+[providers.openrouter]
+enabled = false
+# api_key = "sk-or-..."           # Or set OPENROUTER_API_KEY env var
+
+# ══════════════════════════════════════════════════════════════════════════════
+# TOOLS
+# ══════════════════════════════════════════════════════════════════════════════
+
+[tools]
+agent_timeout_secs = 1200          # Max seconds for an agent run (0 = no timeout)
+agent_max_iterations = 50         # Max LLM/tool loop iterations before stopping
+
+# ── Web Search ────────────────────────────────────────────────────────────────
+
+[tools.web.search]
+enabled = true                    # Enable web search tool
+provider = "brave"                # Search provider: "brave" or "perplexity"
+max_results = 5                     # Number of results to return (1-10)
+timeout_seconds = 30                # HTTP request timeout
+cache_ttl_minutes = 15              # Cache results for this many minutes (0 = no cache)
+duckduckgo_fallback = true          # Enable DDG fallback without API keys
+# api_key = ""                      # Brave API key (or set BRAVE_API_KEY env var)
+
+# ── Web Fetch ─────────────────────────────────────────────────────────────────
+
+[tools.web.fetch]
+enabled = true                    # Enable web fetch tool
+max_chars = 50000                 # Max characters to return from fetched content
+timeout_seconds = 30              # HTTP request timeout
+cache_ttl_minutes = 15            # Cache fetched pages for this many minutes (0 = no cache)
+max_redirects = 3                   # Maximum HTTP redirects to follow
+readability = true                  # Use readability extraction for HTML (cleaner output)
+
+# ── Browser Automation ────────────────────────────────────────────────────────
+# Full browser control via Chrome DevTools Protocol (CDP).
+# Use for JavaScript-heavy sites, form filling, screenshots.
+
 [tools.browser]
-container_host = "host.docker.internal"
+enabled = true                    # Enable browser tool
+headless = true                   # Run without visible window (true = background)
+viewport_width = 2560             # Default viewport width in pixels (QHD for tech users)
+viewport_height = 1440            # Default viewport height in pixels
+device_scale_factor = 2.0         # HiDPI/Retina scaling (2.0 = Retina, 1.0 = standard)
+max_instances = 3                 # Maximum concurrent browser instances
+idle_timeout_secs = 300           # Close idle browsers after this many seconds (5 min)
+navigation_timeout_ms = 30000     # Page load timeout in milliseconds (30 sec)
+container_host = "host.docker.internal"  # Required for Docker - browser sandbox container host
+# chrome_path = "/usr/bin/chromium"  # Custom Chrome/Chromium binary path (auto-detected)
+# user_agent = "Custom UA"          # Custom user agent string
+chrome_args = ["--disable-features=LockProfileCookieDatabase"]  # Prevent profile lock issues
+allowed_domains = []                # Empty = all domains allowed (restrict for security)
+memory_limit_percent = 90
+sandbox_image = "browserless/chrome"
+low_memory_threshold_mb = 2048
+persist_profile = false             # Use ephemeral profiles (prevents lock issues)
 
-# --- Memory ---
+# ══════════════════════════════════════════════════════════════════════════════
+# MCP SERVERS
+# ══════════════════════════════════════════════════════════════════════════════
+# Model Context Protocol servers provide additional tools and capabilities.
+# See https://modelcontextprotocol.io for available servers.
+
+[mcp]
+
+# Example: GitHub integration
+# Requires: GITHUB_TOKEN environment variable set
+[mcp.servers.github]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-github"]
+env = { GITHUB_TOKEN = "${GITHUB_TOKEN}" }
+enabled = false                   # Set to true to enable (requires GITHUB_TOKEN)
+
+# Example: Filesystem access
+# [mcp.servers.filesystem]
+# command = "npx"
+# args = ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allow"]
+# enabled = false
+
+# ══════════════════════════════════════════════════════════════════════════════
+# MEMORY / EMBEDDINGS
+# ══════════════════════════════════════════════════════════════════════════════
+
 [memory]
-backend = "sqlite"
+disable_rag = false
+llm_reranking = false
+session_export = false
+
+# ══════════════════════════════════════════════════════════════════════════════
+# METRICS
+# ══════════════════════════════════════════════════════════════════════════════
+
+[metrics]
+enabled = true                    # Enable metrics collection
+prometheus_endpoint = true        # Expose /metrics endpoint for Prometheus scraping
+history_points = 360
+
+# ══════════════════════════════════════════════════════════════════════════════
+# AUTHENTICATION
+# ══════════════════════════════════════════════════════════════════════════════
+
+[auth]
+disabled = false                  # true = disable auth entirely (DANGEROUS if exposed)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# AGENT IDENTITY
+# ══════════════════════════════════════════════════════════════════════════════
+
+[identity]
+name = "moltis"
+emoji = "🤖"
+
+# ══════════════════════════════════════════════════════════════════════════════
+# USER PROFILE
+# ══════════════════════════════════════════════════════════════════════════════
+
+[user]
+# name = "Your Name"              # Your name (used in conversations)
+# timezone = "America/New_York"   # Your timezone (IANA format)
+# city = "New York"
+# region = "New York"
+# country = "USA"
