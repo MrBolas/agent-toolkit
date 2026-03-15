@@ -8,8 +8,8 @@ services:
     group_add:
       - "${DOCKER_GID:-981}"  # Host 'docker' group GID — configure via DOCKER_GID env var
     ports:
-      - "13131:13131"   # Gateway (HTTPS) - web UI, API, WebSocket
-      - "13132:13132"   # HTTP - CA certificate download
+      - "13131:13131"   # Gateway (HTTP) - web UI, API, WebSocket
+      - "13132:13132"   # HTTP - CA certificate download (unused when TLS disabled)
       - "1455:1455"     # OAuth callback (OpenAI Codex, etc.)
     extra_hosts:
       - "host.docker.internal:host-gateway"  # Linux browser sandbox support
@@ -17,19 +17,20 @@ services:
     env_file:
       - .env
     environment:
-      # Align data dir path inside container with host path so sibling sandbox
-      # containers get correct bind-mount sources (Docker resolves -v sources
-      # against the HOST filesystem, not the container's).
-      - MOLTIS_DATA_DIR=${MOLTIS_DATA_DIR:-/home/moltis/.moltis/data}
+      # Data directory now matches the volume mount point directly
+      # (changed from /home/moltis/.moltis/data to /home/moltis/.moltis)
+      - MOLTIS_DATA_DIR=/home/moltis/.moltis
       # Allow Go toolchain to compile inside the sandbox by using a writable
       # workspace path for temporary build artifacts instead of /tmp.
-      - GOTMPDIR=${GOTMPDIR:-/home/moltis/.moltis/data/repos/.gotmp}
+      - GOTMPDIR=/home/moltis/.moltis/repos/.gotmp
+      # GitHub MCP server requires this specific env var name
+      - GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}
     volumes:
       - ./config:/home/moltis/.config/moltis                                    # Configuration files
-      - ${MOLTIS_DATA_DIR:-./data}:${MOLTIS_DATA_DIR:-/home/moltis/.moltis/data} # Runtime data (host-path aligned for sandbox mounts)
+      - ./data:/home/moltis/.moltis                                              # Runtime data (mounts to parent to avoid volume shadowing)
       - /var/run/docker.sock:/var/run/docker.sock                               # Sandbox execution (spawns isolated containers)
     healthcheck:
-      test: ["CMD", "curl", "-fsk", "https://localhost:13131/"]
+      test: ["CMD", "curl", "-fs", "http://localhost:13131/"]
       interval: 30s
       timeout: 10s
       retries: 3
